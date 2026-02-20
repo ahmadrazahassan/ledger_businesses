@@ -7,7 +7,8 @@ export async function getFeaturedPosts(): Promise<PostWithRelations[]> {
   try {
     const supabase = await createClient();
     
-    const { data, error } = await supabase
+    // First try to get posts with featured_rank
+    const { data: featuredData, error: featuredError } = await supabase
       .from('posts')
       .select(`
         *,
@@ -19,8 +20,28 @@ export async function getFeaturedPosts(): Promise<PostWithRelations[]> {
       .order('featured_rank', { ascending: true })
       .limit(3);
 
-    if (error) throw error;
-    return data || [];
+    if (featuredError) throw featuredError;
+    
+    // If we have featured posts, return them
+    if (featuredData && featuredData.length > 0) {
+      return featuredData;
+    }
+    
+    // Otherwise, fall back to latest posts with highest views
+    const { data: fallbackData, error: fallbackError } = await supabase
+      .from('posts')
+      .select(`
+        *,
+        author:authors(*),
+        category:categories(*)
+      `)
+      .eq('status', 'published')
+      .order('view_count', { ascending: false })
+      .order('published_at', { ascending: false })
+      .limit(3);
+
+    if (fallbackError) throw fallbackError;
+    return fallbackData || [];
   } catch (error) {
     console.error('Error fetching featured posts:', error);
     return [];

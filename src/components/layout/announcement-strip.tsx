@@ -14,28 +14,7 @@ interface AnnouncementStripProps {
   items?: AnnouncementItem[];
 }
 
-const defaultItems: AnnouncementItem[] = [
-  {
-    label: 'New',
-    text: 'The 2026 Enterprise AI Report is live',
-    href: '#deep-dive',
-    cta: 'Read now',
-  },
-  {
-    label: 'Trending',
-    text: 'Why B2B SaaS Margins Are Compressing in 2026',
-    href: '/article/b2b-saas-margins-compressing-2026',
-    cta: 'Read',
-  },
-  {
-    label: 'Latest',
-    text: 'OpenAI Shifts Enterprise Strategy With Dedicated Infrastructure',
-    href: '/article/openai-enterprise-strategy-dedicated-infrastructure',
-    cta: 'Read',
-  },
-];
-
-export function AnnouncementStrip({ items = defaultItems }: AnnouncementStripProps) {
+export function AnnouncementStrip({ items = [] }: AnnouncementStripProps) {
   const [dismissed, setDismissed] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);

@@ -33,9 +33,17 @@ export default async function HomePage() {
   const mainFeatured = featured[0];
   const secondaryFeatured = featured.slice(1, 3);
 
+  // Prepare announcement items from trending posts
+  const announcementItems = trending.slice(0, 3).map((post, index) => ({
+    label: index === 0 ? 'Trending' : index === 1 ? 'Popular' : 'Latest',
+    text: post.title,
+    href: `/articles/${post.slug}`,
+    cta: 'Read',
+  }));
+
   return (
     <>
-      <AnnouncementStrip />
+      <AnnouncementStrip items={announcementItems} />
       <Header />
 
       <main>
