@@ -1,0 +1,135 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-accent: #ff5533;
+  --color-accent-foreground: #ffffff;
+  --color-gray: #5c5e66;
+  --color-gray-light: #999ba3;
+  --color-ink: #1e1f26;
+  --color-cream: #f8f9fa;
+  --color-warm: #f0f1f3;
+
+  --color-background: #f8f9fa;
+  --color-foreground: #1e1f26;
+  --color-card: #ffffff;
+  --color-card-foreground: #1e1f26;
+  --color-popover: #ffffff;
+  --color-popover-foreground: #1e1f26;
+  --color-primary: #1e1f26;
+  --color-primary-foreground: #f8f9fa;
+  --color-secondary: #edeef0;
+  --color-secondary-foreground: #1e1f26;
+  --color-muted: #e8e9eb;
+  --color-muted-foreground: #808080;
+  --color-destructive: #dc2626;
+  --color-border: rgba(30, 31, 38, 0.08);
+  --color-input: rgba(30, 31, 38, 0.08);
+  --color-ring: #ff5533;
+
+  --font-heading: "DM Sans", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-mono: "DM Mono", ui-monospace, monospace;
+
+  --radius-sm: 8px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 18px;
+  --radius-2xl: 22px;
+  --radius-3xl: 28px;
+  --radius-4xl: 36px;
+
+  --shadow-subtle: 0 1px 2px rgba(30, 31, 38, 0.03);
+  --shadow-card: 0 1px 4px rgba(30, 31, 38, 0.03), 0 6px 16px rgba(30, 31, 38, 0.03);
+  --shadow-elevated: 0 2px 8px rgba(30, 31, 38, 0.04), 0 12px 32px rgba(30, 31, 38, 0.06);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-cream text-ink antialiased;
+    font-family: var(--font-body);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-heading);
+    @apply font-bold;
+    letter-spacing: -0.03em;
+  }
+
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-accent;
+  }
+
+  ::selection {
+    @apply bg-accent text-ink;
+  }
+}
+
+@keyframes pulse-fade {
+
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+
+  50% {
+    opacity: 0.2;
+  }
+}
+
+.skeleton-pulse {
+  animation: pulse-fade 2s ease-in-out infinite;
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 30s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* ContentEditable placeholder */
+[contenteditable]:empty:before {
+  content: attr(data-placeholder);
+  color: rgba(30, 31, 38, 0.2);
+  pointer-events: none;
+}

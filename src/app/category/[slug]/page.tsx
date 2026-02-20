@@ -1,0 +1,124 @@
+import type { Metadata } from 'next';
+import Link from 'next/link';
+import { notFound } from 'next/navigation';
+import { Header } from '@/components/layout/header';
+import { Footer } from '@/components/layout/footer';
+import { SectionWrapper } from '@/components/layout/section-wrapper';
+import { PostCard } from '@/components/posts/post-card';
+import { IconChevronRight } from '@/components/icons';
+import { createClient } from '@/lib/supabase/server';
+
+interface CategoryPageProps {
+  params: Promise<{ slug: string }>;
+}
+
+async function getCategory(slug: string) {
+  const supabase = await createClient();
+  
+  const { data, error } = await supabase
+    .from('categories')
+    .select('*')
+    .eq('slug', slug)
+    .eq('is_active', true)
+    .single();
+
+  if (error) return null;
+  return data;
+}
+
+async function getCategoryPosts(categoryId: string) {
+  const supabase = await createClient();
+  
+  const { data, error } = await supabase
+    .from('posts')
+    .select(`
+      *,
+      author:authors(*),
+      category:categories(*)
+    `)
+    .eq('category_id', categoryId)
+    .eq('status', 'published')
+    .order('published_at', { ascending: false });
+
+  if (error) return [];
+  return data || [];
+}
+
+export async function generateMetadata({ params }: CategoryPageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const category = await getCategory(slug);
+  if (!category) return { title: 'Category Not Found' };
+
+  return {
+    title: `${category.name} — Ledger Businesses`,
+    description: category.description,
+    openGraph: {
+      title: `${category.name} — Ledger Businesses`,
+      description: category.description,
+    },
+  };
+}
+
+export default async function CategoryPage({ params }: CategoryPageProps) {
+  const { slug } = await params;
+  const category = await getCategory(slug);
+
+  if (!category) {
+    notFound();
+  }
+
+  const categoryPosts = await getCategoryPosts(category.id);
+
+  return (
+    <>
+      <Header />
+      <main>
+        <SectionWrapper className="pt-10 md:pt-16">
+          {/* Breadcrumb */}
+          <nav className="flex items-center gap-1.5 text-xs text-gray mb-8">
+            <Link href="/" className="hover:text-ink transition-colors">Home</Link>
+            <IconChevronRight size={10} className="text-gray-light" />
+            <Link href="/#topics" className="hover:text-ink transition-colors">Topics</Link>
+            <IconChevronRight size={10} className="text-gray-light" />
+            <span className="text-ink/50">{category.name}</span>
+          </nav>
+
+          {/* Category header */}
+          <div className="mb-10 pb-8 border-b border-ink/[0.06]">
+            <div className="flex items-center gap-3 mb-4">
+              <span className="w-2 h-2 rounded-full bg-accent" />
+              <span className="text-xs font-bold text-accent uppercase tracking-[0.1em]">Topic</span>
+            </div>
+            <h1 className="text-3xl md:text-4xl font-heading font-bold text-ink mb-3 tracking-[-0.02em]">
+              {category.name}
+            </h1>
+            <p className="text-base text-ink/50 max-w-xl leading-relaxed">
+              {category.description}
+            </p>
+            <div className="mt-4 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-accent/10 text-accent text-xs font-bold">
+              {categoryPosts.length} articles
+            </div>
+          </div>
+
+          {/* Posts */}
+          {categoryPosts.length > 0 ? (
+            <div>
+              {categoryPosts.map((post) => (
+                <PostCard key={post.id} post={post} />
+              ))}
+            </div>
+          ) : (
+            <div className="py-20 text-center">
+              <div className="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center mx-auto mb-4">
+                <span className="text-accent text-lg font-bold">0</span>
+              </div>
+              <p className="text-base font-semibold text-ink/50 mb-1">No articles yet</p>
+              <p className="text-sm text-gray">New content is published regularly.</p>
+            </div>
+          )}
+        </SectionWrapper>
+      </main>
+      <Footer />
+    </>
+  );
+}
