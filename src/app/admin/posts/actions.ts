@@ -13,7 +13,8 @@ export interface PostFormData {
   content_text: string;
   cover_image: string;
   author_id: string;
-  category_id: string;
+  category_id: string; // Primary category
+  category_ids?: string[]; // All selected categories
   tags: string[];
   status: PostStatus;
   published_at: string | null;
@@ -47,7 +48,7 @@ export async function createPost(data: PostFormData) {
       content_text: textContent,
       cover_image: data.cover_image || '',
       author_id: data.author_id,
-      category_id: data.category_id,
+      category_id: data.category_id, // Primary category
       tags: data.tags,
       status: data.status,
       published_at: data.status === 'published' && !data.published_at 
@@ -70,6 +71,28 @@ export async function createPost(data: PostFormData) {
     if (error) {
       console.error('Error creating post:', error);
       return { success: false, error: error.message };
+    }
+
+    // Insert category relationships
+    const categoryIds = data.category_ids && data.category_ids.length > 0 
+      ? data.category_ids 
+      : [data.category_id];
+
+    const categoryRelations = categoryIds.map(catId => ({
+      post_id: post.id,
+      category_id: catId,
+      is_primary: catId === data.category_id,
+    }));
+
+    const { error: catError } = await supabase
+      .from('post_categories')
+      .insert(categoryRelations);
+
+    if (catError) {
+      console.error('Error creating category relations:', catError);
+      // Rollback: delete the post
+      await supabase.from('posts').delete().eq('id', post.id);
+      return { success: false, error: `Failed to set categories: ${catError.message}` };
     }
 
     revalidatePath('/admin/posts');
@@ -107,7 +130,7 @@ export async function updatePost(id: string, data: PostFormData) {
       content_text: textContent,
       cover_image: data.cover_image || '',
       author_id: data.author_id,
-      category_id: data.category_id,
+      category_id: data.category_id, // Primary category
       tags: data.tags,
       status: data.status,
       published_at: data.published_at,
@@ -130,6 +153,33 @@ export async function updatePost(id: string, data: PostFormData) {
     if (error) {
       console.error('Error updating post:', error);
       return { success: false, error: error.message };
+    }
+
+    // Update category relationships
+    // First, delete existing relationships
+    await supabase
+      .from('post_categories')
+      .delete()
+      .eq('post_id', id);
+
+    // Then insert new relationships
+    const categoryIds = data.category_ids && data.category_ids.length > 0 
+      ? data.category_ids 
+      : [data.category_id];
+
+    const categoryRelations = categoryIds.map(catId => ({
+      post_id: id,
+      category_id: catId,
+      is_primary: catId === data.category_id,
+    }));
+
+    const { error: catError } = await supabase
+      .from('post_categories')
+      .insert(categoryRelations);
+
+    if (catError) {
+      console.error('Error updating category relations:', catError);
+      return { success: false, error: `Failed to update categories: ${catError.message}` };
     }
 
     revalidatePath('/admin/posts');
@@ -245,6 +295,25 @@ export async function getPost(id: string) {
       .single();
 
     if (error) throw error;
+    
+    // Fetch all categories for this post
+    const { data: postCategories } = await supabase
+      .from('post_categories')
+      .select(`
+        category_id,
+        is_primary,
+        category:categories(*)
+      `)
+      .eq('post_id', id);
+
+    if (data && postCategories) {
+      data.categories = postCategories.map(pc => ({
+        ...pc.category,
+        is_primary: pc.is_primary,
+      }));
+      data.category_ids = postCategories.map(pc => pc.category_id);
+    }
+
     return data;
   } catch (error) {
     console.error('Error fetching post:', error);

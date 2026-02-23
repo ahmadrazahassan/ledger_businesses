@@ -22,6 +22,7 @@ export default function NewPostPage() {
   const [contentHtml, setContentHtml] = useState('');
   const [coverImage, setCoverImage] = useState('');
   const [categoryId, setCategoryId] = useState('');
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [authorId, setAuthorId] = useState('');
   const [tags, setTags] = useState('');
   const [status, setStatus] = useState<PostStatus>('draft');
@@ -86,7 +87,8 @@ export default function NewPostPage() {
         content_text: contentHtml.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim(),
         cover_image: coverImage,
         author_id: authorId,
-        category_id: categoryId,
+        category_id: categoryId, // Primary category
+        category_ids: selectedCategories.length > 0 ? selectedCategories : [categoryId],
         tags: tags.split(',').map(t => t.trim()).filter(Boolean),
         status,
         published_at: publishDate || null,
@@ -287,20 +289,78 @@ export default function NewPostPage() {
             </div>
             <div className="p-6 space-y-4">
               <div>
-                <label className={labelClass}>Category</label>
-                <select
-                  value={categoryId}
-                  onChange={(e) => setCategoryId(e.target.value)}
-                  className={`${inputClass} cursor-pointer`}
-                >
-                  <option value="">Select category</option>
-                  {categories.map((c) => (
-                    <option key={c.id} value={c.id}>
-                      {c.name}
-                    </option>
-                  ))}
-                </select>
+                <label className={labelClass}>Categories (Select Multiple)</label>
+                <div className="space-y-2 max-h-64 overflow-y-auto p-4 bg-white border border-ink/[0.08] rounded-2xl">
+                  {categories.map((category) => {
+                    const isSelected = selectedCategories.includes(category.id);
+                    const isPrimary = categoryId === category.id;
+                    
+                    return (
+                      <label 
+                        key={category.id} 
+                        className="flex items-center gap-3 cursor-pointer hover:bg-ink/[0.02] p-3 rounded-xl transition-colors group"
+                      >
+                        <input
+                          type="checkbox"
+                          checked={isSelected}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              const newSelected = [...selectedCategories, category.id];
+                              setSelectedCategories(newSelected);
+                              // Set as primary if it's the first one
+                              if (!categoryId) {
+                                setCategoryId(category.id);
+                              }
+                            } else {
+                              const newSelected = selectedCategories.filter(id => id !== category.id);
+                              setSelectedCategories(newSelected);
+                              // If removing primary, set new primary
+                              if (categoryId === category.id && newSelected.length > 0) {
+                                setCategoryId(newSelected[0]);
+                              } else if (newSelected.length === 0) {
+                                setCategoryId('');
+                              }
+                            }
+                          }}
+                          className="w-4 h-4 text-accent border-ink/20 rounded focus:ring-accent focus:ring-2"
+                        />
+                        <div className="flex-1 flex items-center justify-between">
+                          <span className="text-sm font-medium text-ink group-hover:text-accent transition-colors">
+                            {category.name}
+                          </span>
+                          {isPrimary && (
+                            <span className="px-2 py-0.5 text-[10px] font-bold text-accent bg-accent/10 rounded-full">
+                              PRIMARY
+                            </span>
+                          )}
+                        </div>
+                      </label>
+                    );
+                  })}
+                </div>
+                <p className="mt-2 text-[12px] text-ink/40">Select one or more categories. The first selected will be primary.</p>
               </div>
+              
+              {selectedCategories.length > 1 && (
+                <div>
+                  <label className={labelClass}>Primary Category</label>
+                  <select
+                    value={categoryId}
+                    onChange={(e) => setCategoryId(e.target.value)}
+                    className={`${inputClass} cursor-pointer`}
+                  >
+                    {categories
+                      .filter(c => selectedCategories.includes(c.id))
+                      .map(c => (
+                        <option key={c.id} value={c.id}>
+                          {c.name}
+                        </option>
+                      ))}
+                  </select>
+                  <p className="mt-2 text-[12px] text-ink/40">Used for URL structure and main categorization</p>
+                </div>
+              )}
+              
               <div>
                 <label className={labelClass}>Author</label>
                 <select

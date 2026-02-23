@@ -69,6 +69,7 @@ function EditPostEditor({ post }: { post: any }) {
   const [excerpt, setExcerpt] = useState(post.excerpt);
   const [contentHtml, setContentHtml] = useState(post.content_html);
   const [categoryId, setCategoryId] = useState(post.category_id);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>(post.category_ids || [post.category_id]);
   const [authorId, setAuthorId] = useState(post.author_id);
   const [tags, setTags] = useState(post.tags.join(', '));
   const [status, setStatus] = useState<PostStatus>(post.status);
@@ -231,6 +232,7 @@ function EditPostEditor({ post }: { post: any }) {
       cover_image: coverImage,
       author_id: authorId,
       category_id: categoryId,
+      category_ids: selectedCategories.length > 0 ? selectedCategories : [categoryId],
       tags: tags.split(',').map((t: string) => t.trim()).filter(Boolean),
       status,
       published_at: publishDate || null,
@@ -442,12 +444,75 @@ function EditPostEditor({ post }: { post: any }) {
             </div>
             <div className="p-5 space-y-3.5">
               <div>
-                <label className="block text-[12px] text-ink/55 mb-1.5 font-semibold">Category</label>
-                <select value={categoryId} onChange={(e) => setCategoryId(e.target.value)} className={`${inputClass} cursor-pointer`}>
-                  <option value="">Select category</option>
-                  {categories.map((c) => (<option key={c.id} value={c.id}>{c.name}</option>))}
-                </select>
+                <label className="block text-[12px] text-ink/55 mb-1.5 font-semibold">Categories (Select Multiple)</label>
+                <div className="space-y-2 max-h-64 overflow-y-auto p-3 bg-white border border-ink/[0.08] rounded-xl">
+                  {categories.map((category) => {
+                    const isSelected = selectedCategories.includes(category.id);
+                    const isPrimary = categoryId === category.id;
+                    
+                    return (
+                      <label 
+                        key={category.id} 
+                        className="flex items-center gap-3 cursor-pointer hover:bg-ink/[0.02] p-2 rounded-lg transition-colors group"
+                      >
+                        <input
+                          type="checkbox"
+                          checked={isSelected}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              const newSelected = [...selectedCategories, category.id];
+                              setSelectedCategories(newSelected);
+                              if (!categoryId) {
+                                setCategoryId(category.id);
+                              }
+                            } else {
+                              const newSelected = selectedCategories.filter(id => id !== category.id);
+                              setSelectedCategories(newSelected);
+                              if (categoryId === category.id && newSelected.length > 0) {
+                                setCategoryId(newSelected[0]);
+                              } else if (newSelected.length === 0) {
+                                setCategoryId('');
+                              }
+                            }
+                          }}
+                          className="w-4 h-4 text-accent border-ink/20 rounded focus:ring-accent focus:ring-2"
+                        />
+                        <div className="flex-1 flex items-center justify-between">
+                          <span className="text-sm font-medium text-ink group-hover:text-accent transition-colors">
+                            {category.name}
+                          </span>
+                          {isPrimary && (
+                            <span className="px-2 py-0.5 text-[10px] font-bold text-accent bg-accent/10 rounded-full">
+                              PRIMARY
+                            </span>
+                          )}
+                        </div>
+                      </label>
+                    );
+                  })}
+                </div>
               </div>
+              
+              {selectedCategories.length > 1 && (
+                <div>
+                  <label className="block text-[12px] text-ink/55 mb-1.5 font-semibold">Primary Category</label>
+                  <select
+                    value={categoryId}
+                    onChange={(e) => setCategoryId(e.target.value)}
+                    className={`${inputClass} cursor-pointer`}
+                  >
+                    {categories
+                      .filter(c => selectedCategories.includes(c.id))
+                      .map(c => (
+                        <option key={c.id} value={c.id}>
+                          {c.name}
+                        </option>
+                      ))}
+                  </select>
+                  <p className="mt-1 text-[11px] text-ink/35">Used for URL structure</p>
+                </div>
+              )}
+              
               <div>
                 <label className="block text-[12px] text-ink/55 mb-1.5 font-semibold">Author</label>
                 <select value={authorId} onChange={(e) => setAuthorId(e.target.value)} className={`${inputClass} cursor-pointer`}>

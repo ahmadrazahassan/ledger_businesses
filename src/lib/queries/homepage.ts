@@ -22,8 +22,26 @@ export async function getFeaturedPosts(): Promise<PostWithRelations[]> {
 
     if (featuredError) throw featuredError;
     
-    // If we have featured posts, return them
+    // If we have featured posts, fetch their categories and return
     if (featuredData && featuredData.length > 0) {
+      // Fetch categories for each post
+      for (const post of featuredData) {
+        const { data: postCategories } = await supabase
+          .from('post_categories')
+          .select(`
+            category_id,
+            is_primary,
+            category:categories(*)
+          `)
+          .eq('post_id', post.id);
+
+        if (postCategories) {
+          post.categories = postCategories.map(pc => ({
+            ...pc.category,
+            is_primary: pc.is_primary,
+          }));
+        }
+      }
       return featuredData;
     }
     
@@ -41,6 +59,28 @@ export async function getFeaturedPosts(): Promise<PostWithRelations[]> {
       .limit(3);
 
     if (fallbackError) throw fallbackError;
+    
+    // Fetch categories for fallback posts
+    if (fallbackData) {
+      for (const post of fallbackData) {
+        const { data: postCategories } = await supabase
+          .from('post_categories')
+          .select(`
+            category_id,
+            is_primary,
+            category:categories(*)
+          `)
+          .eq('post_id', post.id);
+
+        if (postCategories) {
+          post.categories = postCategories.map(pc => ({
+            ...pc.category,
+            is_primary: pc.is_primary,
+          }));
+        }
+      }
+    }
+    
     return fallbackData || [];
   } catch (error) {
     console.error('Error fetching featured posts:', error);
