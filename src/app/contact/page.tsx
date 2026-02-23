@@ -190,7 +190,7 @@ export default function ContactPage() {
             <h2 className="text-3xl md:text-4xl font-heading font-bold text-ink mb-8">Connect With Us</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <a
-                href="https://www.instagram.com/fiza_rana_42?igsh=MW54NGt2YjRzNG85dA=="
+                href="https://www.instagram.com/fiza_rana_42"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-6 rounded-2xl bg-white border border-ink/[0.06] hover:border-accent/20 hover:shadow-card transition-all group"

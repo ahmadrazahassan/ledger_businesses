@@ -67,7 +67,7 @@ export function Footer() {
               {/* Social row */}
               <div className="flex items-center gap-4">
                 <a 
-                  href="https://www.instagram.com/fiza_rana_42?igsh=MW54NGt2YjRzNG85dA==" 
+                  href="https://www.instagram.com/fiza_rana_42" 
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-[12px] text-white/40 hover:text-accent transition-colors font-medium"
