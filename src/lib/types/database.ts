@@ -62,7 +62,7 @@ export interface Post {
   content_text: string;
   cover_image: string;
   author_id: string;
-  category_id: string;
+  category_id: string; // Primary category (kept for backward compatibility)
   tags: string[];
   status: PostStatus;
   published_at: string | null;
@@ -78,9 +78,22 @@ export interface Post {
   canonical_url: string | null;
 }
 
+export interface PostCategory {
+  id: string;
+  post_id: string;
+  category_id: string;
+  is_primary: boolean;
+  created_at: string;
+}
+
+export interface CategoryWithPrimary extends Category {
+  is_primary?: boolean;
+}
+
 export interface PostWithRelations extends Post {
   author: Author;
-  category: Category;
+  category: Category; // Primary category
+  categories?: CategoryWithPrimary[]; // All categories
 }
 
 export interface PostTranslation {
@@ -145,7 +158,8 @@ export interface PostFormData {
   content_text: string;
   cover_image: string;
   author_id: string;
-  category_id: string;
+  category_id: string; // Primary category
+  category_ids?: string[]; // All selected categories
   tags: string[];
   status: PostStatus;
   published_at: string | null;

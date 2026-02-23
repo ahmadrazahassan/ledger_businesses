@@ -64,13 +64,16 @@ export function Footer() {
               <p className="text-[13px] text-white/45 leading-relaxed max-w-[280px] mb-6">
                 The authority in business intelligence. Premium editorial coverage for those who lead.
               </p>
-              {/* Social row — simple text links */}
+              {/* Social row */}
               <div className="flex items-center gap-4">
-                <a href="#" className="text-[12px] text-white/40 hover:text-accent transition-colors font-medium">Twitter</a>
-                <span className="w-px h-3 bg-white/10" />
-                <a href="#" className="text-[12px] text-white/40 hover:text-accent transition-colors font-medium">LinkedIn</a>
-                <span className="w-px h-3 bg-white/10" />
-                <a href="#" className="text-[12px] text-white/40 hover:text-accent transition-colors font-medium">RSS</a>
+                <a 
+                  href="https://www.instagram.com/fiza_rana_42?igsh=MW54NGt2YjRzNG85dA==" 
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[12px] text-white/40 hover:text-accent transition-colors font-medium"
+                >
+                  Instagram
+                </a>
               </div>
             </div>
 

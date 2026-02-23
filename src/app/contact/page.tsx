@@ -188,40 +188,24 @@ export default function ContactPage() {
           {/* Social Media */}
           <div className="mb-16">
             <h2 className="text-3xl md:text-4xl font-heading font-bold text-ink mb-8">Connect With Us</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <a
-                href="https://twitter.com/ledgerbusinesses"
+                href="https://www.instagram.com/fiza_rana_42?igsh=MW54NGt2YjRzNG85dA=="
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-6 rounded-2xl bg-white border border-ink/[0.06] hover:border-accent/20 hover:shadow-card transition-all group"
               >
                 <div className="flex items-center gap-4 mb-3">
                   <div className="w-10 h-10 rounded-full bg-ink/[0.04] group-hover:bg-accent/10 flex items-center justify-center transition-all">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" className="text-ink/40 group-hover:text-accent transition-colors">
-                      <path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z" />
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-ink/40 group-hover:text-accent transition-colors">
+                      <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+                      <path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z" />
+                      <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
                     </svg>
                   </div>
-                  <h3 className="text-lg font-heading font-bold text-ink">Twitter</h3>
+                  <h3 className="text-lg font-heading font-bold text-ink">Instagram</h3>
                 </div>
-                <p className="text-sm text-ink/60">Follow us for real-time updates and industry insights</p>
-              </a>
-
-              <a
-                href="https://linkedin.com/company/ledgerbusinesses"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-6 rounded-2xl bg-white border border-ink/[0.06] hover:border-accent/20 hover:shadow-card transition-all group"
-              >
-                <div className="flex items-center gap-4 mb-3">
-                  <div className="w-10 h-10 rounded-full bg-ink/[0.04] group-hover:bg-accent/10 flex items-center justify-center transition-all">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" className="text-ink/40 group-hover:text-accent transition-colors">
-                      <path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z" />
-                      <circle cx="4" cy="4" r="2" />
-                    </svg>
-                  </div>
-                  <h3 className="text-lg font-heading font-bold text-ink">LinkedIn</h3>
-                </div>
-                <p className="text-sm text-ink/60">Connect with our professional network</p>
+                <p className="text-sm text-ink/60">Follow us for behind-the-scenes and updates</p>
               </a>
 
               <a
