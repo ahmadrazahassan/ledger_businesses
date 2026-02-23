@@ -30,6 +30,25 @@ const placementLabel: Record<BannerPlacement, string> = {
   sidebar: 'Sidebar',
 };
 
+// Professional banner size specifications
+const bannerSpecs: Record<BannerPlacement, { size: string; dimensions: string; description: string }> = {
+  leaderboard: {
+    size: '728 × 90px',
+    dimensions: 'Desktop: 728×90px, Mobile: 320×50px',
+    description: 'Top banner across full width, high visibility placement'
+  },
+  'inline-card': {
+    size: '300 × 250px',
+    dimensions: 'Standard: 300×250px (Medium Rectangle)',
+    description: 'Embedded within content, native ad appearance'
+  },
+  sidebar: {
+    size: '300 × 600px',
+    dimensions: 'Standard: 300×600px (Half Page)',
+    description: 'Vertical sidebar placement, persistent visibility'
+  },
+};
+
 const inputClass =
   'w-full bg-[#f8f9fb] border border-ink/[0.08] rounded-xl px-4 py-3 text-[14px] text-ink placeholder:text-ink/30 focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/15 focus:bg-white transition-all duration-200';
 
@@ -131,7 +150,7 @@ export default function AdminBannersPage() {
   return (
     <div>
       {/* Header */}
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex items-center justify-between mb-6">
         <div>
           <div className="flex items-center gap-2 mb-1">
             <span className="w-1.5 h-1.5 rounded-full bg-accent" />
@@ -149,6 +168,35 @@ export default function AdminBannersPage() {
         </button>
       </div>
 
+      {/* Banner Size Guide */}
+      <div className="mb-8 p-6 rounded-2xl bg-white border border-ink/[0.06]">
+        <div className="flex items-center gap-2 mb-4">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-accent">
+            <circle cx="12" cy="12" r="10" />
+            <line x1="12" y1="16" x2="12" y2="12" />
+            <line x1="12" y1="8" x2="12.01" y2="8" />
+          </svg>
+          <h3 className="text-[14px] font-bold text-ink">Standard Banner Sizes</h3>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {(['leaderboard', 'inline-card', 'sidebar'] as BannerPlacement[]).map((placement) => {
+            const spec = bannerSpecs[placement];
+            return (
+              <div key={placement} className="p-4 rounded-xl bg-ink/[0.02] border border-ink/[0.06]">
+                <div className="flex items-center justify-between mb-2">
+                  <span className={`px-2 py-1 text-[10px] font-bold rounded-full ${placementPill[placement]}`}>
+                    {placementLabel[placement]}
+                  </span>
+                  <span className="text-[11px] font-mono font-bold text-accent">{spec.size}</span>
+                </div>
+                <p className="text-[11px] text-ink/50 leading-relaxed">{spec.description}</p>
+                <p className="text-[10px] text-ink/35 mt-2 font-medium">{spec.dimensions}</p>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
       {/* Modal */}
       {showForm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
@@ -164,19 +212,48 @@ export default function AdminBannersPage() {
             </div>
 
             <div className="px-6 pt-5 pb-2 space-y-4 max-h-[65vh] overflow-y-auto">
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-[11px] font-bold text-ink/45 uppercase tracking-[0.08em] mb-1.5">Placement</label>
-                  <select value={form.placement_key} onChange={(e) => patch({ placement_key: e.target.value as BannerPlacement })} className={`${inputClass} cursor-pointer`}>
-                    <option value="leaderboard">Leaderboard</option>
-                    <option value="inline-card">Inline Card</option>
-                    <option value="sidebar">Sidebar</option>
-                  </select>
+              {/* Placement Selection with Specs */}
+              <div>
+                <label className="block text-[11px] font-bold text-ink/45 uppercase tracking-[0.08em] mb-2">Banner Placement</label>
+                <div className="space-y-2">
+                  {(['leaderboard', 'inline-card', 'sidebar'] as BannerPlacement[]).map((placement) => {
+                    const spec = bannerSpecs[placement];
+                    const isSelected = form.placement_key === placement;
+                    return (
+                      <label
+                        key={placement}
+                        className={`flex items-start gap-3 p-4 rounded-xl border-2 cursor-pointer transition-all ${
+                          isSelected
+                            ? 'border-accent bg-accent/5'
+                            : 'border-ink/[0.08] hover:border-ink/15 bg-white'
+                        }`}
+                      >
+                        <input
+                          type="radio"
+                          name="placement"
+                          value={placement}
+                          checked={isSelected}
+                          onChange={(e) => patch({ placement_key: e.target.value as BannerPlacement })}
+                          className="mt-1 w-4 h-4 text-accent border-ink/20 focus:ring-accent"
+                        />
+                        <div className="flex-1">
+                          <div className="flex items-center justify-between mb-1">
+                            <span className="text-[13px] font-bold text-ink">{placementLabel[placement]}</span>
+                            <span className="text-[11px] font-mono font-semibold text-accent">{spec.size}</span>
+                          </div>
+                          <p className="text-[11px] text-ink/50 leading-relaxed mb-1">{spec.description}</p>
+                          <p className="text-[10px] text-ink/35 font-medium">{spec.dimensions}</p>
+                        </div>
+                      </label>
+                    );
+                  })}
                 </div>
-                <div>
-                  <label className="block text-[11px] font-bold text-ink/45 uppercase tracking-[0.08em] mb-1.5">Style Variant</label>
-                  <input type="text" value={form.style_variant} onChange={(e) => patch({ style_variant: e.target.value })} placeholder="default" className={inputClass} />
-                </div>
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-bold text-ink/45 uppercase tracking-[0.08em] mb-1.5">Style Variant</label>
+                <input type="text" value={form.style_variant} onChange={(e) => patch({ style_variant: e.target.value })} placeholder="default" className={inputClass} />
+                <p className="mt-1 text-[10px] text-ink/35">Optional: custom, dark, minimal, etc.</p>
               </div>
 
               <div>

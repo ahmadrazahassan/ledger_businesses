@@ -6,7 +6,6 @@ import { PostCardHero } from '@/components/posts/post-card-hero';
 import { SponsorLeaderboard } from '@/components/sponsors/sponsor-leaderboard';
 import { SponsorMidBanner } from '@/components/sponsors/sponsor-mid-banner';
 import { SponsorSidebar } from '@/components/sponsors/sponsor-sidebar';
-import { PartnerStrip } from '@/components/partner-strip';
 import { TopicGrid } from '@/components/topic-grid';
 import { LatestArticles } from '@/components/latest-articles';
 import { TrendingList } from '@/components/trending-list';
@@ -84,9 +83,6 @@ export default async function HomePage() {
 
         {/* Must-Read Banner — shows top 4 posts */}
         {trending.length > 0 && <SponsorLeaderboard posts={trending} />}
-
-        {/* Partner Strip */}
-        <PartnerStrip />
 
         {/* Topics — editorial index style */}
         <SectionWrapper id="topics">
