@@ -41,6 +41,11 @@ export const metadata: Metadata = {
     "GPTs",
   ],
   authors: [{ name: "Ledger Businesses" }],
+  verification: {
+    other: {
+      'impact-site-verification': '98c9150f-50e0-4ff7-9133-8b9f238be19b',
+    },
+  },
   openGraph: {
     type: "website",
     locale: "en_US",
