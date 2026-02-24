@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "update-views": "node scripts/update-post-views.mjs",
+    "boost-views": "node scripts/boost-low-view-posts.mjs",
     "migrate:multi-category": "node scripts/run-multi-category-migration.mjs"
   },
   "dependencies": {
