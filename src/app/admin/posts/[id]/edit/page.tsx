@@ -84,6 +84,7 @@ function EditPostEditor({ post }: { post: any }) {
   const [ogImage, setOgImage] = useState(post.og_image);
   const [activeTab, setActiveTab] = useState<EditorTab>('write');
   const [coverImage, setCoverImage] = useState(post.cover_image);
+  const [coverImageUrlInput, setCoverImageUrlInput] = useState('');
   const [coverDragOver, setCoverDragOver] = useState(false);
   const [featuredRank, setFeaturedRank] = useState<string>(
     post.featured_rank != null ? String(post.featured_rank) : ''
@@ -259,6 +260,39 @@ function EditPostEditor({ post }: { post: any }) {
       setCoverImage(url);
     }
   }, []);
+
+  const applyCoverImageUrl = useCallback(() => {
+    const value = coverImageUrlInput.trim();
+    if (!value) {
+      showToast({
+        variant: 'error',
+        title: 'Image URL is required',
+        description: 'Paste a valid image URL to continue.',
+      });
+      return;
+    }
+
+    const normalized = /^https?:\/\//i.test(value) ? value : `https://${value}`;
+    try {
+      const parsed = new URL(normalized);
+      if (!['http:', 'https:'].includes(parsed.protocol)) {
+        throw new Error('invalid-protocol');
+      }
+      setCoverImage(normalized);
+      setCoverImageUrlInput('');
+      showToast({
+        variant: 'success',
+        title: 'Cover image updated',
+        description: 'Cover image has been set from URL.',
+      });
+    } catch {
+      showToast({
+        variant: 'error',
+        title: 'Invalid image URL',
+        description: 'Use a full public image URL starting with http or https.',
+      });
+    }
+  }, [coverImageUrlInput, showToast]);
 
   const handleSave = async () => {
     if (!title.trim()) {
@@ -605,25 +639,60 @@ function EditPostEditor({ post }: { post: any }) {
             <div className="p-5">
               <input ref={coverInputRef} type="file" accept="image/*" className="hidden" onChange={handleCoverUpload} />
               {coverImage ? (
-                <div className="relative group rounded-xl overflow-hidden">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={coverImage} alt="Cover" className="w-full h-36 object-cover" />
-                  <button type="button" onClick={() => setCoverImage('')} className="absolute top-2 right-2 px-3 py-1 bg-white/95 text-ink text-[11px] font-semibold rounded-lg opacity-0 group-hover:opacity-100 transition-opacity shadow-sm">
-                    Remove
-                  </button>
+                <div className="space-y-3">
+                  <div className="relative group rounded-xl overflow-hidden">
+                    <img src={coverImage} alt="Cover" className="w-full h-36 object-cover" />
+                    <button type="button" onClick={() => setCoverImage('')} className="absolute top-2 right-2 px-3 py-1 bg-white/95 text-ink text-[11px] font-semibold rounded-lg opacity-0 group-hover:opacity-100 transition-opacity shadow-sm">
+                      Remove
+                    </button>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      value={coverImageUrlInput}
+                      onChange={(e) => setCoverImageUrlInput(e.target.value)}
+                      placeholder="https://example.com/cover.jpg"
+                      className="flex-1 px-3.5 py-2.5 bg-white border border-ink/[0.08] rounded-full text-[12px] text-ink placeholder:text-ink/30 focus:outline-none focus:border-ink/20 focus:ring-4 focus:ring-ink/[0.03] transition-all"
+                    />
+                    <button
+                      type="button"
+                      onClick={applyCoverImageUrl}
+                      className="px-4 py-2.5 rounded-full bg-white border border-ink/[0.1] text-[12px] font-semibold text-ink/65 hover:text-ink hover:border-ink/20 transition-all"
+                    >
+                      Use URL
+                    </button>
+                  </div>
                 </div>
               ) : (
-                <div
-                  onClick={() => coverInputRef.current?.click()}
-                  onDragOver={(e) => { e.preventDefault(); setCoverDragOver(true); }}
-                  onDragLeave={() => setCoverDragOver(false)}
-                  onDrop={handleCoverDrop}
-                  className={`w-full h-28 rounded-xl border-2 border-dashed flex items-center justify-center cursor-pointer transition-all duration-200 ${coverDragOver ? 'border-accent/40 bg-accent/[0.02]' : 'border-ink/[0.08] hover:border-accent/30'
-                    }`}
-                >
-                  <div className="text-center">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="text-ink/20 mx-auto mb-1.5"><rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="8.5" cy="8.5" r="1.5" /><path d="M21 15l-5-5L5 21" /></svg>
-                    <span className="text-[12px] text-ink/35 font-medium">Drop image or click</span>
+                <div className="space-y-3">
+                  <div
+                    onClick={() => coverInputRef.current?.click()}
+                    onDragOver={(e) => { e.preventDefault(); setCoverDragOver(true); }}
+                    onDragLeave={() => setCoverDragOver(false)}
+                    onDrop={handleCoverDrop}
+                    className={`w-full h-28 rounded-xl border-2 border-dashed flex items-center justify-center cursor-pointer transition-all duration-200 ${coverDragOver ? 'border-accent/40 bg-accent/[0.02]' : 'border-ink/[0.08] hover:border-accent/30'
+                      }`}
+                  >
+                    <div className="text-center">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="text-ink/20 mx-auto mb-1.5"><rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="8.5" cy="8.5" r="1.5" /><path d="M21 15l-5-5L5 21" /></svg>
+                      <span className="text-[12px] text-ink/35 font-medium">Drop image or click</span>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      value={coverImageUrlInput}
+                      onChange={(e) => setCoverImageUrlInput(e.target.value)}
+                      placeholder="https://example.com/cover.jpg"
+                      className="flex-1 px-3.5 py-2.5 bg-white border border-ink/[0.08] rounded-full text-[12px] text-ink placeholder:text-ink/30 focus:outline-none focus:border-ink/20 focus:ring-4 focus:ring-ink/[0.03] transition-all"
+                    />
+                    <button
+                      type="button"
+                      onClick={applyCoverImageUrl}
+                      className="px-4 py-2.5 rounded-full bg-white border border-ink/[0.1] text-[12px] font-semibold text-ink/65 hover:text-ink hover:border-ink/20 transition-all"
+                    >
+                      Use URL
+                    </button>
                   </div>
                 </div>
               )}
