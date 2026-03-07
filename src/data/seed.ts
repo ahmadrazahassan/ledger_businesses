@@ -37,14 +37,12 @@ const inlineAuthor: Author = {
 };
 
 export const categories: Category[] = [
-  { id: 'c1', name: 'Business', slug: 'business', description: 'Strategy, operations, and leadership insights for modern enterprises.', color: '#2563eb', icon: null, sort_order: 1, post_count: 24, is_active: true, created_at: '2024-01-01T00:00:00Z', updated_at: '2024-01-01T00:00:00Z' },
-  { id: 'c2', name: 'AI', slug: 'ai', description: 'Artificial intelligence developments, infrastructure, and enterprise adoption.', color: '#7c3aed', icon: null, sort_order: 2, post_count: 31, is_active: true, created_at: '2024-01-01T00:00:00Z', updated_at: '2024-01-01T00:00:00Z' },
-  { id: 'c3', name: 'Startups', slug: 'startups', description: 'Founding stories, growth tactics, and the startup lifecycle.', color: '#059669', icon: null, sort_order: 3, post_count: 18, is_active: true, created_at: '2024-01-01T00:00:00Z', updated_at: '2024-01-01T00:00:00Z' },
-  { id: 'c4', name: 'B2B', slug: 'b2b', description: 'Business-to-business sales, marketing, and go-to-market strategy.', color: '#dc2626', icon: null, sort_order: 4, post_count: 15, is_active: true, created_at: '2024-01-01T00:00:00Z', updated_at: '2024-01-01T00:00:00Z' },
-  { id: 'c5', name: 'Software', slug: 'software', description: 'Engineering practices, developer tools, and platform evolution.', color: '#0891b2', icon: null, sort_order: 5, post_count: 22, is_active: true, created_at: '2024-01-01T00:00:00Z', updated_at: '2024-01-01T00:00:00Z' },
-  { id: 'c6', name: 'GPTs', slug: 'gpts', description: 'Large language models, custom agents, and applied generative AI.', color: '#ea580c', icon: null, sort_order: 6, post_count: 12, is_active: true, created_at: '2024-01-01T00:00:00Z', updated_at: '2024-01-01T00:00:00Z' },
-  { id: 'c7', name: 'Case Studies', slug: 'case-studies', description: 'In-depth examinations of real business transformations.', color: '#ca8a04', icon: null, sort_order: 7, post_count: 9, is_active: true, created_at: '2024-01-01T00:00:00Z', updated_at: '2024-01-01T00:00:00Z' },
-  { id: 'c8', name: 'Funding', slug: 'funding', description: 'Venture capital rounds, IPO analysis, and capital allocation trends.', color: '#be185d', icon: null, sort_order: 8, post_count: 14, is_active: true, created_at: '2024-01-01T00:00:00Z', updated_at: '2024-01-01T00:00:00Z' },
+  { id: 'c1', name: 'Accounting & Bookkeeping', slug: 'accounting-bookkeeping', description: 'Accounting & Bookkeeping related articles', color: '#2563eb', icon: null, sort_order: 1, post_count: 0, is_active: true, created_at: '2024-01-01T00:00:00Z', updated_at: '2024-01-01T00:00:00Z' },
+  { id: 'c2', name: 'Invoicing', slug: 'invoicing', description: 'Invoicing related articles', color: '#7c3aed', icon: null, sort_order: 2, post_count: 0, is_active: true, created_at: '2024-01-01T00:00:00Z', updated_at: '2024-01-01T00:00:00Z' },
+  { id: 'c3', name: 'Payroll', slug: 'payroll', description: 'Payroll related articles', color: '#059669', icon: null, sort_order: 3, post_count: 0, is_active: true, created_at: '2024-01-01T00:00:00Z', updated_at: '2024-01-01T00:00:00Z' },
+  { id: 'c4', name: 'HR', slug: 'hr', description: 'HR related articles', color: '#dc2626', icon: null, sort_order: 4, post_count: 0, is_active: true, created_at: '2024-01-01T00:00:00Z', updated_at: '2024-01-01T00:00:00Z' },
+  { id: 'c5', name: 'Reporting & Business Insights', slug: 'reporting-business-insights', description: 'Reporting & Business Insights related articles', color: '#0891b2', icon: null, sort_order: 5, post_count: 0, is_active: true, created_at: '2024-01-01T00:00:00Z', updated_at: '2024-01-01T00:00:00Z' },
+  { id: 'c6', name: 'VAT & Tax Compliance', slug: 'vat-tax-compliance', description: 'VAT & Tax Compliance related articles', color: '#ea580c', icon: null, sort_order: 6, post_count: 0, is_active: true, created_at: '2024-01-01T00:00:00Z', updated_at: '2024-01-01T00:00:00Z' },
 ];
 
 // Helper to get inline category by id

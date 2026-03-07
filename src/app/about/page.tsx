@@ -5,7 +5,7 @@ import { SectionWrapper } from '@/components/layout/section-wrapper';
 
 export const metadata: Metadata = {
   title: 'About Us',
-  description: 'Ledger Businesses is the authority in business intelligence, delivering premium editorial coverage for decision-makers who lead.',
+  description: 'Ledger Businesses is the premier resource for accounting, finance, and business operations professionals.',
 };
 
 export default function AboutPage() {
@@ -20,10 +20,10 @@ export default function AboutPage() {
               About Us
             </span>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-ink leading-[1.1] tracking-tight mb-6">
-              The Authority in Business Intelligence
+              Empowering Financial Excellence
             </h1>
             <p className="text-xl md:text-2xl text-ink/60 leading-relaxed max-w-3xl">
-              We deliver premium editorial coverage for decision-makers who refuse to compromise on quality, depth, and insight.
+              Ledger Businesses is the definitive guide for modern accounting, payroll, and HR professionals navigating the digital economy.
             </p>
           </div>
 
@@ -31,7 +31,7 @@ export default function AboutPage() {
           <div className="mb-16 p-8 md:p-12 rounded-3xl bg-ink text-white">
             <h2 className="text-2xl md:text-3xl font-heading font-bold mb-4">Our Mission</h2>
             <p className="text-lg text-white/70 leading-relaxed">
-              In an era of clickbait and superficial analysis, Ledger Businesses stands apart. We exist to serve leaders who demand more than headlines—they need context, nuance, and actionable intelligence. Our editorial team combines decades of business experience with rigorous research to deliver insights that matter.
+              We exist to bridge the gap between traditional financial practices and modern technological solutions. Our mission is to equip business owners, accountants, and HR leaders with the actionable intelligence they need to streamline operations, ensure compliance, and drive sustainable growth.
             </p>
           </div>
 
@@ -40,27 +40,27 @@ export default function AboutPage() {
             <h2 className="text-3xl md:text-4xl font-heading font-bold text-ink mb-8">What We Cover</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="p-6 rounded-2xl bg-white border border-ink/[0.06]">
-                <h3 className="text-xl font-heading font-bold text-ink mb-3">Business Strategy</h3>
+                <h3 className="text-xl font-heading font-bold text-ink mb-3">Accounting & Bookkeeping</h3>
                 <p className="text-ink/60 leading-relaxed">
-                  From operational efficiency to market expansion, we analyze the strategies that separate industry leaders from followers. Our coverage goes beyond surface-level trends to examine the fundamental principles driving business success.
+                  Deep dives into cloud accounting, financial reporting standards, and best practices for maintaining pristine books. We help you choose the right tools and methodologies for your business size and sector.
                 </p>
               </div>
               <div className="p-6 rounded-2xl bg-white border border-ink/[0.06]">
-                <h3 className="text-xl font-heading font-bold text-ink mb-3">Artificial Intelligence</h3>
+                <h3 className="text-xl font-heading font-bold text-ink mb-3">Payroll & HR</h3>
                 <p className="text-ink/60 leading-relaxed">
-                  AI is reshaping every industry. We cut through the hype to deliver practical insights on implementation, ROI, and competitive advantage. Our analysis helps you understand not just what AI can do, but what it should do for your business.
+                  Navigating the complexities of workforce management, from PAYE and pension compliance to HR automation. We provide clear guidance on keeping your team paid and your business compliant.
                 </p>
               </div>
               <div className="p-6 rounded-2xl bg-white border border-ink/[0.06]">
-                <h3 className="text-xl font-heading font-bold text-ink mb-3">Startup Ecosystem</h3>
+                <h3 className="text-xl font-heading font-bold text-ink mb-3">Tax Compliance</h3>
                 <p className="text-ink/60 leading-relaxed">
-                  We track the companies and founders building tomorrow's economy. Our startup coverage focuses on sustainable growth, unit economics, and the hard truths about building enduring businesses in competitive markets.
+                  Essential updates on VAT, Corporation Tax, and Making Tax Digital (MTD). Our expert analysis ensures you stay ahead of regulatory changes and avoid costly penalties.
                 </p>
               </div>
               <div className="p-6 rounded-2xl bg-white border border-ink/[0.06]">
-                <h3 className="text-xl font-heading font-bold text-ink mb-3">Enterprise Software</h3>
+                <h3 className="text-xl font-heading font-bold text-ink mb-3">Business Technology</h3>
                 <p className="text-ink/60 leading-relaxed">
-                  Software is eating the world, but not all software is created equal. We evaluate enterprise solutions through the lens of business value, examining adoption patterns, integration challenges, and long-term strategic fit.
+                  Reviews and implementation guides for the software that powers modern business. From ERP systems to automated invoicing, we help you build a tech stack that works.
                 </p>
               </div>
             </div>
@@ -68,17 +68,17 @@ export default function AboutPage() {
 
           {/* Our Approach */}
           <div className="mb-16">
-            <h2 className="text-3xl md:text-4xl font-heading font-bold text-ink mb-8">Our Editorial Approach</h2>
+            <h2 className="text-3xl md:text-4xl font-heading font-bold text-ink mb-8">Our Editorial Standards</h2>
             <div className="prose prose-lg max-w-none">
               <div className="space-y-6 text-ink/70 leading-relaxed">
                 <p>
-                  Every article published on Ledger Businesses undergoes rigorous editorial review. We don't chase traffic with sensational headlines or publish content for the sake of volume. Instead, we focus on depth, accuracy, and relevance to our audience of business leaders and decision-makers.
+                  Accuracy and utility are at the core of everything we publish. Ledger Businesses is committed to providing content that is not only factually correct but also practically useful. We understand that our readers rely on our insights to make critical financial decisions.
                 </p>
                 <p>
-                  Our editorial team includes former executives, industry analysts, and journalists with deep domain expertise. We leverage primary research, expert interviews, and data analysis to provide insights you won't find elsewhere. When we cover a topic, we aim to be the definitive source.
+                  Our editorial team consists of experienced financial writers and industry analysts who understand the nuances of the UK business landscape. We rigorously fact-check our articles against official government guidance (HMRC) and industry standards to ensure reliability.
                 </p>
                 <p>
-                  We maintain strict editorial independence. Our coverage is never influenced by advertisers, sponsors, or commercial relationships. When we recommend a solution or highlight a company, it's based solely on editorial merit and relevance to our readers.
+                  <b>Editorial Independence:</b> While we may partner with leading software providers to bring you in-depth reviews and offers, our editorial opinions remain our own. We recommend solutions based on their ability to solve real business problems, not just commercial incentives.
                 </p>
               </div>
             </div>
@@ -86,62 +86,19 @@ export default function AboutPage() {
 
           {/* Who Reads Us */}
           <div className="mb-16 p-8 md:p-12 rounded-3xl bg-accent/[0.06] border border-accent/10">
-            <h2 className="text-3xl md:text-4xl font-heading font-bold text-ink mb-6">Who Reads Ledger Businesses</h2>
+            <h2 className="text-3xl md:text-4xl font-heading font-bold text-ink mb-6">Our Audience</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div>
-                <div className="text-4xl font-heading font-bold text-accent mb-2">50K+</div>
-                <p className="text-ink/60">Monthly readers across enterprise, startup, and investment communities</p>
+                <div className="text-4xl font-heading font-bold text-accent mb-2">SMEs</div>
+                <p className="text-ink/60">Small and medium-sized enterprises looking to scale efficiently.</p>
               </div>
               <div>
-                <div className="text-4xl font-heading font-bold text-accent mb-2">C-Suite</div>
-                <p className="text-ink/60">CEOs, CFOs, and senior executives who make strategic decisions</p>
+                <div className="text-4xl font-heading font-bold text-accent mb-2">Finance Pros</div>
+                <p className="text-ink/60">Accountants and bookkeepers seeking the latest industry tools.</p>
               </div>
               <div>
-                <div className="text-4xl font-heading font-bold text-accent mb-2">Global</div>
-                <p className="text-ink/60">Readers in 120+ countries seeking authoritative business intelligence</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Values */}
-          <div className="mb-16">
-            <h2 className="text-3xl md:text-4xl font-heading font-bold text-ink mb-8">Our Values</h2>
-            <div className="space-y-6">
-              <div className="flex gap-4">
-                <div className="w-2 h-2 rounded-full bg-accent mt-2 shrink-0" />
-                <div>
-                  <h3 className="text-xl font-heading font-bold text-ink mb-2">Quality Over Quantity</h3>
-                  <p className="text-ink/60 leading-relaxed">
-                    We publish when we have something meaningful to say, not to meet arbitrary content quotas. Every article must meet our standards for depth, accuracy, and insight.
-                  </p>
-                </div>
-              </div>
-              <div className="flex gap-4">
-                <div className="w-2 h-2 rounded-full bg-accent mt-2 shrink-0" />
-                <div>
-                  <h3 className="text-xl font-heading font-bold text-ink mb-2">Editorial Independence</h3>
-                  <p className="text-ink/60 leading-relaxed">
-                    Our coverage is never influenced by commercial relationships. We maintain a strict separation between editorial and business operations to ensure unbiased analysis.
-                  </p>
-                </div>
-              </div>
-              <div className="flex gap-4">
-                <div className="w-2 h-2 rounded-full bg-accent mt-2 shrink-0" />
-                <div>
-                  <h3 className="text-xl font-heading font-bold text-ink mb-2">Respect for Readers</h3>
-                  <p className="text-ink/60 leading-relaxed">
-                    We respect your time and intelligence. No clickbait, no fluff, no misleading headlines. Just substantive analysis delivered with clarity and precision.
-                  </p>
-                </div>
-              </div>
-              <div className="flex gap-4">
-                <div className="w-2 h-2 rounded-full bg-accent mt-2 shrink-0" />
-                <div>
-                  <h3 className="text-xl font-heading font-bold text-ink mb-2">Continuous Improvement</h3>
-                  <p className="text-ink/60 leading-relaxed">
-                    The business landscape evolves constantly, and so do we. We invest in our team, our processes, and our platform to deliver increasingly valuable insights to our readers.
-                  </p>
-                </div>
+                <div className="text-4xl font-heading font-bold text-accent mb-2">Decision Makers</div>
+                <p className="text-ink/60">Founders and Directors responsible for financial strategy.</p>
               </div>
             </div>
           </div>

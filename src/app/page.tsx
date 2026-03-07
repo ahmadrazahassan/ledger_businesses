@@ -11,6 +11,7 @@ import { LatestArticles } from '@/components/latest-articles';
 import { TrendingList } from '@/components/trending-list';
 import { DeepDiveModule } from '@/components/deep-dive-module';
 import { NewsletterCard } from '@/components/newsletter-card';
+import { CategorySpotlight } from '@/components/category-spotlight';
 import { IconArrowRight } from '@/components/icons';
 import {
   getFeaturedPosts,
@@ -18,19 +19,27 @@ import {
   getTrendingPosts,
   getEditorPicks,
   getActiveCategories,
+  getSecondaryHeroPosts,
+  getCategoryPosts,
 } from '@/lib/queries/homepage';
 
 export default async function HomePage() {
-  const [featured, latest, trending, editorPicks, categories] = await Promise.all([
+  const [featured, latest, trending, editorPicks, categories, secondaryHero, accountingPosts, payrollPosts] = await Promise.all([
     getFeaturedPosts(),
     getLatestPosts(),
     getTrendingPosts(),
     getEditorPicks(),
     getActiveCategories(),
+    getSecondaryHeroPosts(),
+    getCategoryPosts('accounting-bookkeeping', 4),
+    getCategoryPosts('payroll', 4),
   ]);
 
   const mainFeatured = featured[0];
   const secondaryFeatured = featured.slice(1, 3);
+  
+  const mainSecondaryHero = secondaryHero[0];
+  const sideSecondaryHero = secondaryHero.slice(1, 3);
 
   // Prepare announcement items from trending posts
   const announcementItems = trending.slice(0, 3).map((post, index) => ({
@@ -84,21 +93,18 @@ export default async function HomePage() {
         {/* Must-Read Banner — shows top 4 posts */}
         {trending.length > 0 && <SponsorLeaderboard posts={trending} />}
 
-        {/* Topics — editorial index style */}
-        <SectionWrapper id="topics">
-          <div className="mb-6">
-            <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-ink/40 block mb-1">
-              Browse
-            </span>
-            <h2 className="text-[28px] md:text-[36px] font-heading font-bold text-ink leading-[1.05]">
-              Topics
-            </h2>
-          </div>
-          <TopicGrid categories={categories} />
-        </SectionWrapper>
-
-        {/* Featured Reads Banner — dark, shows 3 posts */}
-        {latest.length >= 6 && <SponsorMidBanner posts={latest.slice(3, 6)} />}
+        {/* Accounting Spotlight */}
+        {accountingPosts.length > 0 && (
+          <SectionWrapper>
+            <CategorySpotlight 
+              title="Accounting & Bookkeeping" 
+              slug="accounting-bookkeeping" 
+              posts={accountingPosts}
+              tagline="Essential"
+              description="Expert guidance on maintaining pristine financial records and navigating cloud accounting."
+            />
+          </SectionWrapper>
+        )}
 
         {/* Latest Articles */}
         {latest.length > 0 && (
@@ -148,10 +154,40 @@ export default async function HomePage() {
           </SectionWrapper>
         )}
 
-        {/* Deep Dive */}
-        <SectionWrapper id="deep-dive" className="py-8 md:py-12">
-          <DeepDiveModule />
-        </SectionWrapper>
+        {/* Secondary Hero Section - Big Article Website Feel */}
+        {secondaryHero.length > 0 && (
+          <SectionWrapper className="pt-6 pb-6">
+            <div className="flex items-center gap-2 mb-4">
+               <span className="w-1.5 h-1.5 rounded-full bg-accent" />
+               <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-ink/40">Focus</span>
+            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+              <div className="lg:col-span-2">
+                {mainSecondaryHero && (
+                  <PostCardHero post={mainSecondaryHero} size="large" />
+                )}
+              </div>
+              <div className="flex flex-col gap-4">
+                {sideSecondaryHero.map((post) => (
+                  <PostCardHero key={post.id} post={post} size="medium" />
+                ))}
+              </div>
+            </div>
+          </SectionWrapper>
+        )}
+
+        {/* Payroll Spotlight */}
+        {payrollPosts.length > 0 && (
+          <SectionWrapper className="pb-12">
+            <CategorySpotlight 
+              title="Payroll & Compliance" 
+              slug="payroll" 
+              posts={payrollPosts}
+              tagline="Strategic"
+              description="Navigating the complexities of workforce management, RTI, and auto-enrolment."
+            />
+          </SectionWrapper>
+        )}
 
         {/* Newsletter */}
         <SectionWrapper id="newsletter" className="py-8 md:py-12">

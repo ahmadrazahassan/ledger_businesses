@@ -11,17 +11,19 @@ const footerNav = {
     { label: 'Search', href: '/search' },
   ],
   topics: [
-    { label: 'Business', href: '/category/business' },
-    { label: 'AI', href: '/category/ai' },
-    { label: 'Startups', href: '/category/startups' },
-    { label: 'Software', href: '/category/software' },
-    { label: 'Funding', href: '/category/funding' },
+    { label: 'Accounting', href: '/category/accounting-bookkeeping' },
+    { label: 'Invoicing', href: '/category/invoicing' },
+    { label: 'Payroll', href: '/category/payroll' },
+    { label: 'HR', href: '/category/hr' },
+    { label: 'Reporting', href: '/category/reporting-business-insights' },
+    { label: 'VAT & Tax', href: '/category/vat-tax-compliance' },
   ],
   company: [
     { label: 'About', href: '/about' },
     { label: 'Contact', href: '/contact' },
     { label: 'Privacy', href: '/privacy' },
     { label: 'Terms', href: '/terms' },
+    { label: 'Affiliate Disclosure', href: '/affiliate-disclosure' },
   ],
 };
 

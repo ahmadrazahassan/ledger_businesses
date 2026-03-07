@@ -1,9 +1,8 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { PostCard } from '@/components/posts/post-card';
+import { PostCardHero } from '@/components/posts/post-card-hero';
 import { PostFilters } from '@/components/posts/post-filters';
-import { SponsorInlineCard } from '@/components/sponsors/sponsor-inline-card';
 import { IconArrowRight } from '@/components/icons';
 import type { PostWithRelations, Category } from '@/lib/types/database';
 
@@ -15,7 +14,7 @@ interface LatestArticlesProps {
 export function LatestArticles({ posts, categories }: LatestArticlesProps) {
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [activeSort, setActiveSort] = useState('latest');
-  const [showCount, setShowCount] = useState(8);
+  const [showCount, setShowCount] = useState(12);
 
   const filtered = useMemo(() => {
     let result = [...posts];
@@ -43,13 +42,10 @@ export function LatestArticles({ posts, categories }: LatestArticlesProps) {
         onSortChange={setActiveSort}
       />
 
-      <div>
-        {visible.map((post, index) => (
-          <div key={post.id}>
-            <PostCard post={post} />
-            {(index + 1) % 4 === 0 && index < visible.length - 1 && (
-              <SponsorInlineCard />
-            )}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+        {visible.map((post) => (
+          <div key={post.id} className="h-full">
+            <PostCardHero post={post} size="grid" />
           </div>
         ))}
       </div>
@@ -62,14 +58,14 @@ export function LatestArticles({ posts, categories }: LatestArticlesProps) {
       )}
 
       {hasMore && (
-        <div className="pt-8 text-center">
+        <div className="pt-12 text-center">
           <button
-            onClick={() => setShowCount((c) => c + 6)}
-            className="inline-flex items-center gap-2 pl-6 pr-4 py-2.5 bg-accent text-white text-[13px] font-bold rounded-full hover:bg-accent/85 transition-all"
+            onClick={() => setShowCount((c) => c + 12)}
+            className="inline-flex items-center gap-2 pl-8 pr-6 py-3.5 bg-accent text-white text-[14px] font-bold rounded-full hover:bg-accent/85 transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5"
           >
-            Load more
-            <span className="w-5 h-5 rounded-full bg-ink/10 flex items-center justify-center">
-              <IconArrowRight size={11} />
+            Load more articles
+            <span className="w-6 h-6 rounded-full bg-ink/10 flex items-center justify-center">
+              <IconArrowRight size={12} />
             </span>
           </button>
         </div>

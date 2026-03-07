@@ -101,7 +101,7 @@ export async function getLatestPosts(): Promise<PostWithRelations[]> {
       `)
       .eq('status', 'published')
       .order('published_at', { ascending: false })
-      .limit(20);
+      .limit(100);
 
     if (error) throw error;
     return data || [];
@@ -124,7 +124,7 @@ export async function getTrendingPosts(): Promise<PostWithRelations[]> {
       `)
       .eq('status', 'published')
       .order('view_count', { ascending: false })
-      .limit(10);
+      .limit(8);
 
     if (error) throw error;
     return data || [];
@@ -138,7 +138,8 @@ export async function getEditorPicks(): Promise<PostWithRelations[]> {
   try {
     const supabase = await createClient();
     
-    // Get posts with highest engagement (views + likes)
+    // Get posts with high engagement but skip the very top ones to avoid overlap with Trending
+    // Using offset to skip potential overlap with Trending
     const { data, error } = await supabase
       .from('posts')
       .select(`
@@ -148,12 +149,72 @@ export async function getEditorPicks(): Promise<PostWithRelations[]> {
       `)
       .eq('status', 'published')
       .order('view_count', { ascending: false })
-      .limit(8);
+      .range(8, 15); // Skip first 8 (Trending)
 
     if (error) throw error;
     return data || [];
   } catch (error) {
     console.error('Error fetching editor picks:', error);
+    return [];
+  }
+}
+
+export async function getSecondaryHeroPosts(): Promise<PostWithRelations[]> {
+  try {
+    const supabase = await createClient();
+    
+    // Get distinct posts for the second hero section
+    // Using published_at to get recent but not necessarily "latest" if we want variety
+    // Or we could use a different sort like random if supported, but let's stick to consistent sorting
+    // We'll skip the first few to avoid overlap with the main hero
+    const { data, error } = await supabase
+      .from('posts')
+      .select(`
+        *,
+        author:authors(*),
+        category:categories(*)
+      `)
+      .eq('status', 'published')
+      .order('published_at', { ascending: false })
+      .range(3, 5); // Skip top 3 (Main Hero) and take next 3
+
+    if (error) throw error;
+    return data || [];
+  } catch (error) {
+    console.error('Error fetching secondary hero posts:', error);
+    return [];
+  }
+}
+
+export async function getCategoryPosts(slug: string, limit = 4): Promise<PostWithRelations[]> {
+  try {
+    const supabase = await createClient();
+    
+    // First get category ID
+    const { data: category } = await supabase
+      .from('categories')
+      .select('id')
+      .eq('slug', slug)
+      .single();
+
+    if (!category) return [];
+
+    const { data, error } = await supabase
+      .from('posts')
+      .select(`
+        *,
+        author:authors(*),
+        category:categories(*)
+      `)
+      .eq('status', 'published')
+      .eq('category_id', category.id)
+      .order('published_at', { ascending: false })
+      .limit(limit);
+
+    if (error) throw error;
+    return data || [];
+  } catch (error) {
+    console.error(`Error fetching posts for category ${slug}:`, error);
     return [];
   }
 }

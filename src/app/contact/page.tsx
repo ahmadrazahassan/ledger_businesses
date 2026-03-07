@@ -67,7 +67,7 @@ export default function ContactPage() {
               </div>
               <h2 className="text-2xl font-heading font-bold text-ink mb-3">Advertising & Partnerships</h2>
               <p className="text-ink/60 leading-relaxed mb-6">
-                Interested in reaching 50,000+ business decision-makers? Let's discuss premium advertising placements and partnership opportunities.
+                Interested in reaching business decision-makers? Let's discuss premium advertising placements and partnership opportunities.
               </p>
               <a
                 href="mailto:advertise@ledgerbusinesses.com"
@@ -104,29 +104,19 @@ export default function ContactPage() {
               </a>
             </div>
 
-            {/* Technical Support */}
+            {/* Business Address */}
             <div className="p-8 rounded-3xl bg-white border border-ink/[0.06] hover:border-ink/10 hover:shadow-card transition-all">
               <div className="w-12 h-12 rounded-2xl bg-accent/10 flex items-center justify-center mb-6">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-accent">
-                  <circle cx="12" cy="12" r="10" />
-                  <line x1="12" y1="16" x2="12" y2="12" />
-                  <line x1="12" y1="8" x2="12.01" y2="8" />
+                  <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+                  <polyline points="9 22 9 12 15 12 15 22" />
                 </svg>
               </div>
-              <h2 className="text-2xl font-heading font-bold text-ink mb-3">Technical Support</h2>
+              <h2 className="text-2xl font-heading font-bold text-ink mb-3">Office</h2>
               <p className="text-ink/60 leading-relaxed mb-6">
-                Experiencing technical issues with our website or newsletter? Our support team will help resolve any problems you're encountering.
+                London, United Kingdom<br />
+                (Visits by appointment only)
               </p>
-              <a
-                href="mailto:support@ledgerbusinesses.com"
-                className="inline-flex items-center gap-2 text-accent font-semibold hover:gap-3 transition-all"
-              >
-                support@ledgerbusinesses.com
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <line x1="7" y1="17" x2="17" y2="7" />
-                  <polyline points="7 7 17 7 17 17" />
-                </svg>
-              </a>
             </div>
           </div>
 

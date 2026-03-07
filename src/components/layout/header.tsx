@@ -7,12 +7,12 @@ import { LogoSymbol } from '@/components/brand/logo-symbol';
 import { IconSearch, IconClose, IconArrowRight } from '@/components/icons';
 
 const navLinks = [
-  { label: 'Business', href: '/category/business' },
-  { label: 'AI', href: '/category/ai' },
-  { label: 'Startups', href: '/category/startups' },
-  { label: 'B2B', href: '/category/b2b' },
-  { label: 'Software', href: '/category/software' },
-  { label: 'Funding', href: '/category/funding' },
+  { label: 'Accounting & Bookkeeping', href: '/category/accounting-bookkeeping' },
+  { label: 'Invoicing', href: '/category/invoicing' },
+  { label: 'Payroll', href: '/category/payroll' },
+  { label: 'HR', href: '/category/hr' },
+  { label: 'Reporting', href: '/category/reporting-business-insights' },
+  { label: 'VAT & Tax', href: '/category/vat-tax-compliance' },
 ];
 
 export function Header() {
