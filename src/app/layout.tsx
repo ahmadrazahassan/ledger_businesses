@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { DM_Sans, DM_Mono, Inter } from "next/font/google";
-import Script from "next/script";
 import { getSiteUrl, toAbsoluteUrl } from "@/lib/site";
 import "./globals.css";
 
@@ -117,14 +116,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${dmSans.variable} ${dmMono.variable} ${inter.variable} font-body`}>
-        <Script
-          id="adsense-script"
+      <head>
+        <script
           async
-          strategy="beforeInteractive"
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7090293429266591"
           crossOrigin="anonymous"
         />
+      </head>
+      <body className={`${dmSans.variable} ${dmMono.variable} ${inter.variable} font-body`}>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationStructuredData) }}
