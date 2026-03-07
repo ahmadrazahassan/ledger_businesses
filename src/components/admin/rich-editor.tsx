@@ -144,7 +144,17 @@ export function RichEditor({
   );
 
   const handlePaste = useCallback(
-    (e: React.ClipboardEvent<HTMLDivElement>) => {
+    async (e: React.ClipboardEvent<HTMLDivElement>) => {
+      const clipboardFiles = e.clipboardData?.files;
+      if (clipboardFiles && clipboardFiles.length > 0) {
+        const imageFile = Array.from(clipboardFiles).find((file) => file.type.startsWith('image/'));
+        if (imageFile) {
+          e.preventDefault();
+          await insertImage(imageFile);
+          return;
+        }
+      }
+
       const items = e.clipboardData?.items;
       if (!items) return;
 
@@ -152,12 +162,23 @@ export function RichEditor({
         if (items[i].type.startsWith('image/')) {
           e.preventDefault();
           const file = items[i].getAsFile();
-          if (file) insertImage(file);
+          if (file) await insertImage(file);
+          return;
+        }
+      }
+
+      const html = e.clipboardData?.getData('text/html');
+      if (html) {
+        const doc = new DOMParser().parseFromString(html, 'text/html');
+        const pastedImage = doc.querySelector('img');
+        if (pastedImage?.src) {
+          e.preventDefault();
+          insertImageAtCursor(pastedImage.src, pastedImage.alt || 'Pasted image');
           return;
         }
       }
     },
-    [insertImage]
+    [insertImage, insertImageAtCursor]
   );
 
   const handleDrop = useCallback(

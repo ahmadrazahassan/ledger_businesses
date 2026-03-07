@@ -4,6 +4,7 @@ import { useState, useRef, useCallback, useEffect, use } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { slugify, formatDate } from '@/lib/utils';
+import { uploadImageWithCompression } from '@/lib/upload';
 import { getPost, getAuthors, getCategories, updatePost, deletePost } from '../../actions';
 import type { PostStatus } from '@/lib/types/database';
 
@@ -127,9 +128,6 @@ function EditPostEditor({ post }: { post: any }) {
     if (!editor) return;
     editor.focus();
     const sel = window.getSelection();
-    if (!sel || sel.rangeCount === 0) return;
-    const range = sel.getRangeAt(0);
-    range.deleteContents();
     const img = document.createElement('img');
     img.src = src;
     img.className = 'max-w-full rounded-xl my-3';
@@ -137,6 +135,13 @@ function EditPostEditor({ post }: { post: any }) {
     const wrapper = document.createElement('div');
     wrapper.className = 'my-2';
     wrapper.appendChild(img);
+    if (!sel || sel.rangeCount === 0) {
+      editor.appendChild(wrapper);
+      syncEditorContent();
+      return;
+    }
+    const range = sel.getRangeAt(0);
+    range.deleteContents();
     range.insertNode(wrapper);
     const newRange = document.createRange();
     newRange.setStartAfter(wrapper);
@@ -146,31 +151,56 @@ function EditPostEditor({ post }: { post: any }) {
     syncEditorContent();
   }, [syncEditorContent]);
 
-  const processImageFile = useCallback((file: File) => {
-    const url = URL.createObjectURL(file);
-    insertImageAtCursor(url);
+  const processImageFile = useCallback(async (file: File) => {
+    const result = await uploadImageWithCompression(file, 'covers', 'posts');
+    if (!result.success || !result.url) {
+      alert(result.error || 'Failed to upload image');
+      return;
+    }
+    insertImageAtCursor(result.url);
   }, [insertImageAtCursor]);
 
-  const handlePaste = useCallback((e: React.ClipboardEvent<HTMLDivElement>) => {
+  const handlePaste = useCallback(async (e: React.ClipboardEvent<HTMLDivElement>) => {
+    const clipboardFiles = e.clipboardData?.files;
+    if (clipboardFiles && clipboardFiles.length > 0) {
+      const imageFile = Array.from(clipboardFiles).find((file) => file.type.startsWith('image/'));
+      if (imageFile) {
+        e.preventDefault();
+        await processImageFile(imageFile);
+        return;
+      }
+    }
+
     const items = e.clipboardData?.items;
     if (!items) return;
     for (let i = 0; i < items.length; i++) {
       if (items[i].type.startsWith('image/')) {
         e.preventDefault();
         const file = items[i].getAsFile();
-        if (file) processImageFile(file);
+        if (file) await processImageFile(file);
         return;
       }
     }
-  }, [processImageFile]);
 
-  const handleDrop = useCallback((e: React.DragEvent<HTMLDivElement>) => {
+    const html = e.clipboardData?.getData('text/html');
+    if (html) {
+      const doc = new DOMParser().parseFromString(html, 'text/html');
+      const pastedImage = doc.querySelector('img');
+      if (pastedImage?.src) {
+        e.preventDefault();
+        insertImageAtCursor(pastedImage.src);
+        return;
+      }
+    }
+  }, [processImageFile, insertImageAtCursor]);
+
+  const handleDrop = useCallback(async (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     setIsDragging(false);
     const files = e.dataTransfer?.files;
     if (!files) return;
     for (let i = 0; i < files.length; i++) {
-      if (files[i].type.startsWith('image/')) processImageFile(files[i]);
+      if (files[i].type.startsWith('image/')) await processImageFile(files[i]);
     }
   }, [processImageFile]);
 
@@ -184,7 +214,7 @@ function EditPostEditor({ post }: { post: any }) {
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file && file.type.startsWith('image/')) processImageFile(file);
+    if (file && file.type.startsWith('image/')) void processImageFile(file);
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
