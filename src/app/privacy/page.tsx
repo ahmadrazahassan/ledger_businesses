@@ -6,6 +6,9 @@ import { SectionWrapper } from '@/components/layout/section-wrapper';
 export const metadata: Metadata = {
   title: 'Privacy Policy',
   description: 'Learn how Ledger Businesses collects, uses, and protects your personal information.',
+  alternates: {
+    canonical: '/privacy',
+  },
 };
 
 export default function PrivacyPage() {

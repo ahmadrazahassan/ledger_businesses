@@ -6,6 +6,9 @@ import { SectionWrapper } from '@/components/layout/section-wrapper';
 export const metadata: Metadata = {
   title: 'Terms of Service',
   description: 'Terms and conditions for using Ledger Businesses website and services.',
+  alternates: {
+    canonical: '/terms',
+  },
 };
 
 export default function TermsPage() {

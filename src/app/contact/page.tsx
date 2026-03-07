@@ -6,6 +6,9 @@ import { SectionWrapper } from '@/components/layout/section-wrapper';
 export const metadata: Metadata = {
   title: 'Contact Us',
   description: 'Get in touch with the Ledger Businesses team for inquiries, partnerships, or editorial submissions.',
+  alternates: {
+    canonical: '/contact',
+  },
 };
 
 export default function ContactPage() {

@@ -1,16 +1,22 @@
 import type { MetadataRoute } from 'next';
+import { getSiteUrl } from '@/lib/site';
 
 export default function robots(): MetadataRoute.Robots {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://ledgerbusinesses.com';
+  const baseUrl = getSiteUrl();
 
   return {
     rules: [
       {
         userAgent: '*',
+        allow: ['/', '/api/og'],
+        disallow: ['/admin/', '/auth/', '/api/'],
+      },
+      {
+        userAgent: 'Googlebot-Image',
         allow: '/',
-        disallow: ['/admin/', '/api/'],
       },
     ],
+    host: baseUrl,
     sitemap: `${baseUrl}/sitemap.xml`,
   };
 }

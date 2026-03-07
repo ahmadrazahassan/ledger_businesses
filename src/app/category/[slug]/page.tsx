@@ -7,6 +7,8 @@ import { SectionWrapper } from '@/components/layout/section-wrapper';
 import { PostCard } from '@/components/posts/post-card';
 import { IconChevronRight } from '@/components/icons';
 import { createClient } from '@/lib/supabase/server';
+import { createAdminClient } from '@/lib/supabase/admin';
+import { toAbsoluteUrl } from '@/lib/site';
 
 interface CategoryPageProps {
   params: Promise<{ slug: string }>;
@@ -44,17 +46,42 @@ async function getCategoryPosts(categoryId: string) {
   return data || [];
 }
 
+export async function generateStaticParams() {
+  const supabase = createAdminClient();
+  const { data } = await supabase
+    .from('categories')
+    .select('slug')
+    .eq('is_active', true);
+
+  const categories = (data || []) as Array<{ slug: string }>;
+  return categories.map((category) => ({ slug: category.slug }));
+}
+
 export async function generateMetadata({ params }: CategoryPageProps): Promise<Metadata> {
   const { slug } = await params;
   const category = await getCategory(slug);
   if (!category) return { title: 'Category Not Found' };
+  const canonicalUrl = `/category/${category.slug}`;
+  const title = `${category.name} — Ledger Businesses`;
 
   return {
-    title: `${category.name} — Ledger Businesses`,
+    title,
     description: category.description,
+    alternates: {
+      canonical: canonicalUrl,
+    },
     openGraph: {
-      title: `${category.name} — Ledger Businesses`,
+      title,
       description: category.description,
+      type: 'website',
+      url: canonicalUrl,
+      images: [{ url: '/og-default.png' }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description: category.description,
+      images: ['/og-default.png'],
     },
   };
 }
@@ -68,9 +95,31 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
   }
 
   const categoryPosts = await getCategoryPosts(category.id);
+  const categoryUrl = toAbsoluteUrl(`/category/${category.slug}`);
+  const itemListStructuredData = {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: `${category.name} Articles`,
+    description: category.description,
+    url: categoryUrl,
+    mainEntity: {
+      '@type': 'ItemList',
+      numberOfItems: categoryPosts.length,
+      itemListElement: categoryPosts.slice(0, 20).map((post, index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        url: toAbsoluteUrl(`/articles/${post.slug}`),
+        name: post.title,
+      })),
+    },
+  };
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListStructuredData) }}
+      />
       <Header />
       <main>
         <SectionWrapper className="pt-10 md:pt-16">

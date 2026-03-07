@@ -11,6 +11,13 @@ import { createClient } from '@/lib/supabase/server';
 export const metadata: Metadata = {
   title: 'Search',
   description: 'Search articles on Ledger Businesses.',
+  alternates: {
+    canonical: '/search',
+  },
+  robots: {
+    index: false,
+    follow: true,
+  },
 };
 
 interface SearchPageProps {

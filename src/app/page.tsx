@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import { AnnouncementStrip } from '@/components/layout/announcement-strip';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
@@ -22,6 +23,15 @@ import {
   getSecondaryHeroPosts,
   getCategoryPosts,
 } from '@/lib/queries/homepage';
+
+export const metadata: Metadata = {
+  alternates: {
+    canonical: '/',
+  },
+  openGraph: {
+    url: '/',
+  },
+};
 
 export default async function HomePage() {
   const [featured, latest, trending, editorPicks, categories, secondaryHero, accountingPosts, payrollPosts] = await Promise.all([

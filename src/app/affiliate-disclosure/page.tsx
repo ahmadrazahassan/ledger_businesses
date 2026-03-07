@@ -6,6 +6,9 @@ import { SectionWrapper } from '@/components/layout/section-wrapper';
 export const metadata: Metadata = {
   title: 'Affiliate Disclosure',
   description: 'Learn about Ledger Businesses affiliate relationships and how we maintain editorial independence.',
+  alternates: {
+    canonical: '/affiliate-disclosure',
+  },
 };
 
 export default function AffiliateDisclosurePage() {

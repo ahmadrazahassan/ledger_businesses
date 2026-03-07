@@ -7,6 +7,9 @@ import { SectionWrapper } from '@/components/layout/section-wrapper';
 export const metadata: Metadata = {
   title: 'About Us',
   description: 'Ledger Businesses is the premier resource for accounting, finance, and business operations professionals.',
+  alternates: {
+    canonical: '/about',
+  },
 };
 
 export default function AboutPage() {

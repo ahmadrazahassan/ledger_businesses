@@ -8,6 +8,8 @@ import { NewsletterCard } from '@/components/newsletter-card';
 import { IconClock, IconCalendar, IconChevronRight, IconEye } from '@/components/icons';
 import { formatDate } from '@/lib/utils';
 import { createClient } from '@/lib/supabase/server';
+import { createAdminClient } from '@/lib/supabase/admin';
+import { toAbsoluteUrl } from '@/lib/site';
 
 interface ArticlePageProps {
   params: Promise<{ slug: string }>;
@@ -50,26 +52,49 @@ async function getRelatedPosts(categoryId: string, currentSlug: string) {
   return data || [];
 }
 
+export async function generateStaticParams() {
+  const supabase = createAdminClient();
+  const { data } = await supabase
+    .from('posts')
+    .select('slug')
+    .eq('status', 'published');
+
+  const posts = (data || []) as Array<{ slug: string }>;
+  return posts.map((post) => ({ slug: post.slug }));
+}
+
 export async function generateMetadata({ params }: ArticlePageProps): Promise<Metadata> {
   const { slug } = await params;
   const post = await getPost(slug);
   if (!post) return { title: 'Article Not Found' };
+  const canonicalUrl = `/articles/${post.slug}`;
+  const seoTitle = post.seo_title || post.title;
+  const seoDescription = post.seo_description || post.excerpt;
+  const ogImage = post.og_image || post.cover_image || '/og-default.png';
 
   return {
-    title: post.seo_title || post.title,
-    description: post.seo_description || post.excerpt,
+    title: seoTitle,
+    description: seoDescription,
+    alternates: {
+      canonical: canonicalUrl,
+    },
     openGraph: {
-      title: post.seo_title || post.title,
-      description: post.seo_description || post.excerpt,
+      title: seoTitle,
+      description: seoDescription,
       type: 'article',
+      url: canonicalUrl,
       publishedTime: post.published_at || undefined,
+      modifiedTime: post.updated_at || undefined,
       authors: [post.author.name],
-      images: post.og_image ? [{ url: post.og_image }] : undefined,
+      section: post.category?.name || undefined,
+      tags: post.tags || [],
+      images: [{ url: ogImage }],
     },
     twitter: {
       card: 'summary_large_image',
-      title: post.seo_title || post.title,
-      description: post.seo_description || post.excerpt,
+      title: seoTitle,
+      description: seoDescription,
+      images: [ogImage],
     },
   };
 }
@@ -83,9 +108,68 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   }
 
   const related = await getRelatedPosts(post.category_id, post.slug);
+  const articleUrl = toAbsoluteUrl(`/articles/${post.slug}`);
+  const articleImage = post.og_image || post.cover_image || toAbsoluteUrl('/og-default.png');
+  const articleStructuredData = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: post.seo_title || post.title,
+    description: post.seo_description || post.excerpt,
+    image: [articleImage],
+    datePublished: post.published_at || post.created_at,
+    dateModified: post.updated_at || post.published_at || post.created_at,
+    author: {
+      '@type': 'Person',
+      name: post.author.name,
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'Ledger Businesses',
+      logo: {
+        '@type': 'ImageObject',
+        url: toAbsoluteUrl('/favicon.svg'),
+      },
+    },
+    mainEntityOfPage: articleUrl,
+    articleSection: post.category.name,
+    keywords: (post.tags || []).join(', '),
+  };
+
+  const breadcrumbStructuredData = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Home',
+        item: toAbsoluteUrl('/'),
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: post.category.name,
+        item: toAbsoluteUrl(`/category/${post.category.slug}`),
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: post.title,
+        item: articleUrl,
+      },
+    ],
+  };
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleStructuredData) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbStructuredData) }}
+      />
       <Header />
       <main>
         <article>
