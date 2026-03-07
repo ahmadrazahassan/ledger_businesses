@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { SectionWrapper } from '@/components/layout/section-wrapper';
@@ -13,108 +14,103 @@ export default function AboutPage() {
     <>
       <Header />
       <main>
-        <SectionWrapper narrow className="pt-16 md:pt-24 pb-16">
-          {/* Header */}
-          <div className="mb-16">
-            <span className="inline-block px-3 py-1 bg-accent/15 text-accent text-xs font-bold rounded-full mb-6">
-              About Us
+        <SectionWrapper narrow className="pt-14 md:pt-20 pb-20 md:pb-24">
+          <div className="mb-16 md:mb-20">
+            <span className="inline-flex items-center px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-ink/50 border border-ink/10 rounded-full mb-7">
+              About Ledger Businesses
             </span>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-ink leading-[1.1] tracking-tight mb-6">
-              Empowering Financial Excellence
+            <h1 className="text-[40px] md:text-[60px] font-heading font-bold text-ink leading-[0.98] tracking-[-0.03em] max-w-4xl mb-7">
+              Financial clarity for teams that build serious companies.
             </h1>
-            <p className="text-xl md:text-2xl text-ink/60 leading-relaxed max-w-3xl">
-              Ledger Businesses is the definitive guide for modern accounting, payroll, and HR professionals navigating the digital economy.
+            <p className="text-[18px] md:text-[21px] text-ink/60 leading-relaxed max-w-3xl">
+              We publish practical intelligence on accounting, payroll, tax compliance, and operations. Every brief is designed for leaders who need decisions, not noise.
             </p>
           </div>
 
-          {/* Mission Statement */}
-          <div className="mb-16 p-8 md:p-12 rounded-3xl bg-ink text-white">
-            <h2 className="text-2xl md:text-3xl font-heading font-bold mb-4">Our Mission</h2>
-            <p className="text-lg text-white/70 leading-relaxed">
-              We exist to bridge the gap between traditional financial practices and modern technological solutions. Our mission is to equip business owners, accountants, and HR leaders with the actionable intelligence they need to streamline operations, ensure compliance, and drive sustainable growth.
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-16 md:mb-20">
+            <div className="rounded-2xl border border-ink/10 bg-white p-6">
+              <p className="text-[10px] uppercase tracking-[0.14em] text-ink/45 mb-2">Focus</p>
+              <p className="text-[22px] font-heading font-bold text-ink">UK SMEs</p>
+            </div>
+            <div className="rounded-2xl border border-ink/10 bg-white p-6">
+              <p className="text-[10px] uppercase tracking-[0.14em] text-ink/45 mb-2">Coverage</p>
+              <p className="text-[22px] font-heading font-bold text-ink">Accounting + Payroll</p>
+            </div>
+            <div className="rounded-2xl border border-ink/10 bg-white p-6">
+              <p className="text-[10px] uppercase tracking-[0.14em] text-ink/45 mb-2">Standard</p>
+              <p className="text-[22px] font-heading font-bold text-ink">Editorial First</p>
+            </div>
+          </div>
+
+          <div className="border-y border-ink/10 py-14 md:py-16 mb-16 md:mb-20">
+            <h2 className="text-[30px] md:text-[40px] font-heading font-bold text-ink leading-[1.05] mb-6">
+              Our mission
+            </h2>
+            <p className="text-[17px] md:text-[19px] text-ink/65 leading-relaxed max-w-3xl">
+              We help operators run better businesses by turning complex finance and compliance topics into clear execution frameworks. Our work is built for founders, finance leads, and advisors who value precision and measurable outcomes.
             </p>
           </div>
 
-          {/* What We Cover */}
-          <div className="mb-16">
-            <h2 className="text-3xl md:text-4xl font-heading font-bold text-ink mb-8">What We Cover</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="p-6 rounded-2xl bg-white border border-ink/[0.06]">
-                <h3 className="text-xl font-heading font-bold text-ink mb-3">Accounting & Bookkeeping</h3>
-                <p className="text-ink/60 leading-relaxed">
-                  Deep dives into cloud accounting, financial reporting standards, and best practices for maintaining pristine books. We help you choose the right tools and methodologies for your business size and sector.
-                </p>
+          <div className="mb-16 md:mb-20">
+            <h2 className="text-[30px] md:text-[40px] font-heading font-bold text-ink leading-[1.05] mb-7">
+              What we cover
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="rounded-2xl border border-ink/10 p-7 bg-white">
+                <h3 className="text-[22px] font-heading font-bold text-ink mb-3">Accounting & Bookkeeping</h3>
+                <p className="text-[15px] text-ink/60 leading-relaxed">Cloud accounting operations, month-end workflows, and reporting standards that scale with growth.</p>
               </div>
-              <div className="p-6 rounded-2xl bg-white border border-ink/[0.06]">
-                <h3 className="text-xl font-heading font-bold text-ink mb-3">Payroll & HR</h3>
-                <p className="text-ink/60 leading-relaxed">
-                  Navigating the complexities of workforce management, from PAYE and pension compliance to HR automation. We provide clear guidance on keeping your team paid and your business compliant.
-                </p>
+              <div className="rounded-2xl border border-ink/10 p-7 bg-white">
+                <h3 className="text-[22px] font-heading font-bold text-ink mb-3">Payroll & HR</h3>
+                <p className="text-[15px] text-ink/60 leading-relaxed">Payroll accuracy, RTI readiness, and practical people-ops systems for UK teams.</p>
               </div>
-              <div className="p-6 rounded-2xl bg-white border border-ink/[0.06]">
-                <h3 className="text-xl font-heading font-bold text-ink mb-3">Tax Compliance</h3>
-                <p className="text-ink/60 leading-relaxed">
-                  Essential updates on VAT, Corporation Tax, and Making Tax Digital (MTD). Our expert analysis ensures you stay ahead of regulatory changes and avoid costly penalties.
-                </p>
+              <div className="rounded-2xl border border-ink/10 p-7 bg-white">
+                <h3 className="text-[22px] font-heading font-bold text-ink mb-3">Tax Compliance</h3>
+                <p className="text-[15px] text-ink/60 leading-relaxed">MTD, VAT, and core compliance controls explained with implementation detail, not theory.</p>
               </div>
-              <div className="p-6 rounded-2xl bg-white border border-ink/[0.06]">
-                <h3 className="text-xl font-heading font-bold text-ink mb-3">Business Technology</h3>
-                <p className="text-ink/60 leading-relaxed">
-                  Reviews and implementation guides for the software that powers modern business. From ERP systems to automated invoicing, we help you build a tech stack that works.
-                </p>
+              <div className="rounded-2xl border border-ink/10 p-7 bg-white">
+                <h3 className="text-[22px] font-heading font-bold text-ink mb-3">Business Systems</h3>
+                <p className="text-[15px] text-ink/60 leading-relaxed">Process design, operating cadence, and software workflows that improve decision velocity.</p>
               </div>
             </div>
           </div>
 
-          {/* Our Approach */}
-          <div className="mb-16">
-            <h2 className="text-3xl md:text-4xl font-heading font-bold text-ink mb-8">Our Editorial Standards</h2>
-            <div className="prose prose-lg max-w-none">
-              <div className="space-y-6 text-ink/70 leading-relaxed">
-                <p>
-                  Accuracy and utility are at the core of everything we publish. Ledger Businesses is committed to providing content that is not only factually correct but also practically useful. We understand that our readers rely on our insights to make critical financial decisions.
-                </p>
-                <p>
-                  Our editorial team consists of experienced financial writers and industry analysts who understand the nuances of the UK business landscape. We rigorously fact-check our articles against official government guidance (HMRC) and industry standards to ensure reliability.
-                </p>
-                <p>
-                  <b>Editorial Independence:</b> While we may partner with leading software providers to bring you in-depth reviews and offers, our editorial opinions remain our own. We recommend solutions based on their ability to solve real business problems, not just commercial incentives.
-                </p>
+          <div className="mb-16 md:mb-20">
+            <h2 className="text-[30px] md:text-[40px] font-heading font-bold text-ink leading-[1.05] mb-7">
+              Editorial principles
+            </h2>
+            <div className="space-y-4">
+              <div className="rounded-2xl border border-ink/10 p-6 bg-white">
+                <p className="text-[11px] uppercase tracking-[0.12em] text-ink/45 mb-2">01</p>
+                <h3 className="text-[20px] font-heading font-bold text-ink mb-2">Accuracy before speed</h3>
+                <p className="text-[15px] text-ink/60 leading-relaxed">We verify facts against official guidance and industry sources before publication.</p>
+              </div>
+              <div className="rounded-2xl border border-ink/10 p-6 bg-white">
+                <p className="text-[11px] uppercase tracking-[0.12em] text-ink/45 mb-2">02</p>
+                <h3 className="text-[20px] font-heading font-bold text-ink mb-2">Operational relevance</h3>
+                <p className="text-[15px] text-ink/60 leading-relaxed">Every article must help a reader implement a better process, not just understand a concept.</p>
+              </div>
+              <div className="rounded-2xl border border-ink/10 p-6 bg-white">
+                <p className="text-[11px] uppercase tracking-[0.12em] text-ink/45 mb-2">03</p>
+                <h3 className="text-[20px] font-heading font-bold text-ink mb-2">Editorial independence</h3>
+                <p className="text-[15px] text-ink/60 leading-relaxed">Commercial relationships never define our recommendations. Utility and evidence do.</p>
               </div>
             </div>
           </div>
 
-          {/* Who Reads Us */}
-          <div className="mb-16 p-8 md:p-12 rounded-3xl bg-accent/[0.06] border border-accent/10">
-            <h2 className="text-3xl md:text-4xl font-heading font-bold text-ink mb-6">Our Audience</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div>
-                <div className="text-4xl font-heading font-bold text-accent mb-2">SMEs</div>
-                <p className="text-ink/60">Small and medium-sized enterprises looking to scale efficiently.</p>
-              </div>
-              <div>
-                <div className="text-4xl font-heading font-bold text-accent mb-2">Finance Pros</div>
-                <p className="text-ink/60">Accountants and bookkeepers seeking the latest industry tools.</p>
-              </div>
-              <div>
-                <div className="text-4xl font-heading font-bold text-accent mb-2">Decision Makers</div>
-                <p className="text-ink/60">Founders and Directors responsible for financial strategy.</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Contact CTA */}
-          <div className="p-8 md:p-12 rounded-3xl bg-ink text-white text-center">
-            <h2 className="text-2xl md:text-3xl font-heading font-bold mb-4">Get in Touch</h2>
-            <p className="text-lg text-white/70 mb-6 max-w-2xl mx-auto">
-              Have a story tip, partnership inquiry, or feedback? We'd love to hear from you.
+          <div className="rounded-3xl border border-ink/10 p-8 md:p-10 bg-white">
+            <h2 className="text-[30px] md:text-[38px] font-heading font-bold text-ink leading-[1.05] mb-4">
+              Work with us
+            </h2>
+            <p className="text-[16px] md:text-[18px] text-ink/60 leading-relaxed max-w-2xl mb-7">
+              For editorial collaboration, partnerships, or media requests, our team can help.
             </p>
-            <a
+            <Link
               href="/contact"
-              className="inline-flex items-center gap-2 px-8 py-4 bg-accent text-white text-sm font-bold rounded-full hover:brightness-110 transition-all"
+              className="inline-flex items-center justify-center px-7 py-3 text-[13px] font-semibold rounded-full border border-ink/15 text-ink hover:border-ink/30 transition-colors"
             >
-              Contact Us
-            </a>
+              Contact the team
+            </Link>
           </div>
         </SectionWrapper>
       </main>

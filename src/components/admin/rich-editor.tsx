@@ -21,77 +21,115 @@ export function RichEditor({
   const [activeTab, setActiveTab] = useState<EditorTab>('write');
   const [isDragging, setIsDragging] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [showImageUrlInput, setShowImageUrlInput] = useState(false);
+  const [imageUrl, setImageUrl] = useState('');
+  const [fontFamily, setFontFamily] = useState('Inter, sans-serif');
+  const [fontSize, setFontSize] = useState('4');
+  const [blockType, setBlockType] = useState('p');
   const editorRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const selectionRef = useRef<Range | null>(null);
 
-  // Sync content from parent to editor when switching tabs or initial load
+  useEffect(() => {
+    document.execCommand('styleWithCSS', false, 'true');
+  }, []);
+
   useEffect(() => {
     if (activeTab === 'write' && editorRef.current) {
-      // Only update if content is different to avoid cursor issues
       if (editorRef.current.innerHTML !== value) {
         editorRef.current.innerHTML = value;
       }
     }
   }, [activeTab, value]);
 
-  // Sync editor content to parent
   const syncContent = useCallback(() => {
     if (editorRef.current) {
       const html = editorRef.current.innerHTML;
-      // Only update if content actually changed
       if (html !== value) {
         onChange(html);
       }
     }
   }, [onChange, value]);
 
-  // Upload image and insert into editor
+  const saveSelection = useCallback(() => {
+    const selection = window.getSelection();
+    if (!selection || selection.rangeCount === 0) return;
+    selectionRef.current = selection.getRangeAt(0).cloneRange();
+  }, []);
+
+  const restoreSelection = useCallback(() => {
+    const selection = window.getSelection();
+    if (!selection || !selectionRef.current) return;
+    selection.removeAllRanges();
+    selection.addRange(selectionRef.current);
+  }, []);
+
+  const focusAndRestoreSelection = useCallback(() => {
+    if (!editorRef.current) return;
+    editorRef.current.focus();
+    restoreSelection();
+  }, [restoreSelection]);
+
+  const runCommand = useCallback(
+    (command: string, commandValue?: string) => {
+      focusAndRestoreSelection();
+      document.execCommand(command, false, commandValue);
+      saveSelection();
+      syncContent();
+    },
+    [focusAndRestoreSelection, saveSelection, syncContent]
+  );
+
+  const insertImageAtCursor = useCallback(
+    (url: string, alt = 'Image') => {
+      if (!editorRef.current || !url.trim()) return;
+
+      focusAndRestoreSelection();
+      const selection = window.getSelection();
+      if (!selection || selection.rangeCount === 0) {
+        const wrapper = document.createElement('figure');
+        wrapper.className = 'my-6';
+        const img = document.createElement('img');
+        img.src = url.trim();
+        img.alt = alt;
+        img.className = 'max-w-full h-auto rounded-2xl';
+        wrapper.appendChild(img);
+        editorRef.current.appendChild(wrapper);
+        syncContent();
+        return;
+      }
+
+      const range = selection.getRangeAt(0);
+      range.deleteContents();
+
+      const wrapper = document.createElement('figure');
+      wrapper.className = 'my-6';
+      const img = document.createElement('img');
+      img.src = url.trim();
+      img.alt = alt;
+      img.className = 'max-w-full h-auto rounded-2xl';
+      wrapper.appendChild(img);
+      range.insertNode(wrapper);
+
+      const newRange = document.createRange();
+      newRange.setStartAfter(wrapper);
+      newRange.collapse(true);
+      selection.removeAllRanges();
+      selection.addRange(newRange);
+      saveSelection();
+      syncContent();
+    },
+    [focusAndRestoreSelection, saveSelection, syncContent]
+  );
+
   const insertImage = useCallback(
     async (file: File) => {
-      if (!editorRef.current) return;
-
       setUploading(true);
       try {
         const result = await uploadImageWithCompression(file, 'covers', 'posts');
 
         if (result.success && result.url) {
-          // Focus editor
-          editorRef.current.focus();
-
-          // Get selection
-          const sel = window.getSelection();
-          if (!sel || sel.rangeCount === 0) {
-            // If no selection, append to end
-            const img = document.createElement('img');
-            img.src = result.url;
-            img.className = 'max-w-full h-auto rounded-2xl my-4';
-            img.alt = 'Uploaded image';
-            editorRef.current.appendChild(img);
-          } else {
-            // Insert at cursor position
-            const range = sel.getRangeAt(0);
-            range.deleteContents();
-
-            const img = document.createElement('img');
-            img.src = result.url;
-            img.className = 'max-w-full h-auto rounded-2xl my-4';
-            img.alt = 'Uploaded image';
-
-            const wrapper = document.createElement('div');
-            wrapper.className = 'my-4';
-            wrapper.appendChild(img);
-
-            range.insertNode(wrapper);
-
-            // Move cursor after image
-            const newRange = document.createRange();
-            newRange.setStartAfter(wrapper);
-            newRange.collapse(true);
-            sel.removeAllRanges();
-            sel.addRange(newRange);
-          }
-
-          syncContent();
+          insertImageAtCursor(result.url, 'Uploaded image');
         } else {
           alert(result.error || 'Upload failed');
         }
@@ -102,10 +140,9 @@ export function RichEditor({
         setUploading(false);
       }
     },
-    [syncContent]
+    [insertImageAtCursor]
   );
 
-  // Handle paste with images
   const handlePaste = useCallback(
     (e: React.ClipboardEvent<HTMLDivElement>) => {
       const items = e.clipboardData?.items;
@@ -123,7 +160,6 @@ export function RichEditor({
     [insertImage]
   );
 
-  // Handle drag and drop
   const handleDrop = useCallback(
     (e: React.DragEvent<HTMLDivElement>) => {
       e.preventDefault();
@@ -135,7 +171,7 @@ export function RichEditor({
       for (let i = 0; i < files.length; i++) {
         if (files[i].type.startsWith('image/')) {
           insertImage(files[i]);
-          break; // Only insert first image
+          break;
         }
       }
     },
@@ -149,7 +185,6 @@ export function RichEditor({
 
   const handleDragLeave = useCallback(() => setIsDragging(false), []);
 
-  // Handle file input
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file && file.type.startsWith('image/')) {
@@ -158,9 +193,33 @@ export function RichEditor({
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
+  const handleImageUrlInsert = () => {
+    if (!imageUrl.trim()) return;
+    insertImageAtCursor(imageUrl.trim(), 'Inserted image');
+    setImageUrl('');
+    setShowImageUrlInput(false);
+  };
+
+  const applyBlockType = (value: string) => {
+    setBlockType(value);
+    runCommand('formatBlock', value);
+  };
+
+  const applyFontFamily = (value: string) => {
+    setFontFamily(value);
+    runCommand('fontName', value);
+  };
+
+  const applyFontSize = (value: string) => {
+    setFontSize(value);
+    runCommand('fontSize', value);
+  };
+
+  const dockButtonClass =
+    'flex flex-col items-center justify-center gap-1 h-[42px] px-2 text-[10px] font-medium text-ink/65 border border-ink/[0.08] rounded-xl bg-white hover:border-ink/20 hover:text-ink transition-all';
+
   return (
-    <div className={className}>
-      {/* Tabs */}
+    <div className={`pb-36 ${className}`}>
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-1.5 p-1.5 bg-ink/[0.04] rounded-2xl border border-ink/[0.06]">
           {(['write', 'html', 'preview'] as EditorTab[]).map((tab) => (
@@ -180,37 +239,7 @@ export function RichEditor({
         </div>
 
         {activeTab === 'write' && (
-          <button
-            type="button"
-            onClick={() => fileInputRef.current?.click()}
-            disabled={uploading}
-            className="flex items-center gap-2 px-4 py-2 text-[13px] font-semibold text-ink/60 bg-white border border-ink/[0.08] rounded-full hover:border-ink/15 hover:text-ink transition-all duration-200 disabled:opacity-50"
-          >
-            {uploading ? (
-              <>
-                <div className="w-3.5 h-3.5 border-2 border-ink/20 border-t-ink rounded-full animate-spin" />
-                Uploading...
-              </>
-            ) : (
-              <>
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
-                  <circle cx="8.5" cy="8.5" r="1.5" />
-                  <polyline points="21 15 16 10 5 21" />
-                </svg>
-                Insert Image
-              </>
-            )}
-          </button>
+          <p className="text-[12px] text-ink/45">Use the bottom dock for formatting controls</p>
         )}
       </div>
 
@@ -222,13 +251,15 @@ export function RichEditor({
         className="hidden"
       />
 
-      {/* Write Tab - ContentEditable */}
       {activeTab === 'write' && (
         <div
           ref={editorRef}
           contentEditable
           suppressContentEditableWarning
           onInput={syncContent}
+          onBlur={saveSelection}
+          onMouseUp={saveSelection}
+          onKeyUp={saveSelection}
           onPaste={handlePaste}
           onDrop={handleDrop}
           onDragOver={handleDragOver}
@@ -244,7 +275,6 @@ export function RichEditor({
         />
       )}
 
-      {/* HTML Tab - Textarea */}
       {activeTab === 'html' && (
         <textarea
           value={value}
@@ -256,7 +286,6 @@ export function RichEditor({
         />
       )}
 
-      {/* Preview Tab - Isolated Styles */}
       {activeTab === 'preview' && (
         <div className="w-full min-h-[400px] px-6 py-5 bg-white border border-ink/[0.08] rounded-2xl overflow-auto">
           {value ? (
@@ -271,12 +300,148 @@ export function RichEditor({
       )}
 
       {activeTab === 'write' && (
-        <p className="mt-3 text-[12px] text-ink/40">
-          Paste, drag, or click "Insert Image" to add images to your content
-        </p>
+        <div className="fixed left-1/2 -translate-x-1/2 bottom-4 z-50 w-[min(1120px,calc(100vw-24px))] rounded-2xl border border-ink/[0.12] bg-white/95 backdrop-blur px-3 py-3 shadow-xl">
+          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 xl:grid-cols-14 gap-2">
+            <select
+              value={blockType}
+              onChange={(e) => applyBlockType(e.target.value)}
+              onMouseDown={(e) => e.preventDefault()}
+              className="h-[42px] w-full px-3 text-[12px] font-semibold text-ink bg-white border border-ink/[0.1] rounded-xl focus:outline-none"
+            >
+              <option value="p">Paragraph</option>
+              <option value="h2">Heading 2</option>
+              <option value="h3">Heading 3</option>
+              <option value="h4">Heading 4</option>
+              <option value="blockquote">Quote</option>
+            </select>
+
+            <select
+              value={fontFamily}
+              onChange={(e) => applyFontFamily(e.target.value)}
+              onMouseDown={(e) => e.preventDefault()}
+              className="h-[42px] w-full px-3 text-[12px] font-semibold text-ink bg-white border border-ink/[0.1] rounded-xl focus:outline-none"
+            >
+              <option value="Inter, sans-serif">Sans</option>
+              <option value="Georgia, serif">Serif</option>
+              <option value="ui-monospace, SFMono-Regular, Menlo, monospace">Mono</option>
+            </select>
+
+            <select
+              value={fontSize}
+              onChange={(e) => applyFontSize(e.target.value)}
+              onMouseDown={(e) => e.preventDefault()}
+              className="h-[42px] w-full px-3 text-[12px] font-semibold text-ink bg-white border border-ink/[0.1] rounded-xl focus:outline-none"
+            >
+              <option value="2">XS</option>
+              <option value="3">SM</option>
+              <option value="4">Base</option>
+              <option value="5">LG</option>
+              <option value="6">XL</option>
+              <option value="7">2XL</option>
+            </select>
+
+            <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => runCommand('bold')} className={dockButtonClass}>
+              <span className="text-[14px] font-bold">B</span>
+              <span>Bold</span>
+            </button>
+
+            <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => runCommand('italic')} className={dockButtonClass}>
+              <span className="text-[14px] italic">I</span>
+              <span>Italic</span>
+            </button>
+
+            <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => runCommand('underline')} className={dockButtonClass}>
+              <span className="text-[14px] underline">U</span>
+              <span>Underline</span>
+            </button>
+
+            <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => runCommand('insertUnorderedList')} className={dockButtonClass}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="8" y1="6" x2="21" y2="6" /><line x1="8" y1="12" x2="21" y2="12" /><line x1="8" y1="18" x2="21" y2="18" /><circle cx="4" cy="6" r="1.5" /><circle cx="4" cy="12" r="1.5" /><circle cx="4" cy="18" r="1.5" /></svg>
+              <span>Bullets</span>
+            </button>
+
+            <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => runCommand('insertOrderedList')} className={dockButtonClass}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="10" y1="6" x2="21" y2="6" /><line x1="10" y1="12" x2="21" y2="12" /><line x1="10" y1="18" x2="21" y2="18" /><path d="M4 6h1v4" /><path d="M4 10h2" /><path d="M4 16c0-1 1-2 2-2s2 1 2 2-1 2-2 2H4l4-4" /></svg>
+              <span>Numbered</span>
+            </button>
+
+            <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => runCommand('hiliteColor', '#FFF59D')} className={dockButtonClass}>
+              <span className="px-1 rounded bg-yellow-200 text-[12px]">A</span>
+              <span>Highlight</span>
+            </button>
+
+            <button
+              type="button"
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={() => {
+                const enteredUrl = window.prompt('Enter link URL');
+                if (!enteredUrl) return;
+                const safeUrl = /^https?:\/\//i.test(enteredUrl) ? enteredUrl : `https://${enteredUrl}`;
+                runCommand('createLink', safeUrl);
+              }}
+              className={dockButtonClass}
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M10 13a5 5 0 0 0 7.54.54l2.92-2.92a5 5 0 0 0-7.07-7.07L11.72 5" /><path d="M14 11a5 5 0 0 0-7.54-.54L3.54 13.38a5 5 0 0 0 7.07 7.07L12.28 19" /></svg>
+              <span>Link</span>
+            </button>
+
+            <button
+              type="button"
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={() => runCommand('unlink')}
+              className={dockButtonClass}
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17 7l-10 10" /><path d="M7 7h5" /><path d="M12 12v5" /></svg>
+              <span>Unlink</span>
+            </button>
+
+            <button
+              type="button"
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={() => fileInputRef.current?.click()}
+              disabled={uploading}
+              className={`${dockButtonClass} disabled:opacity-50`}
+            >
+              {uploading ? <div className="w-3.5 h-3.5 border-2 border-ink/20 border-t-ink rounded-full animate-spin" /> : <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="8.5" cy="8.5" r="1.5" /><polyline points="21 15 16 10 5 21" /></svg>}
+              <span>Upload</span>
+            </button>
+
+            <button
+              type="button"
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={() => setShowImageUrlInput((prev) => !prev)}
+              className={dockButtonClass}
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M10 13a5 5 0 0 0 7.54.54l2.92-2.92a5 5 0 0 0-7.07-7.07L11.72 5" /><path d="M14 11a5 5 0 0 0-7.54-.54L3.54 13.38a5 5 0 0 0 7.07 7.07L12.28 19" /></svg>
+              <span>Image URL</span>
+            </button>
+
+            <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => runCommand('removeFormat')} className={dockButtonClass}>
+              <span className="text-[13px]">Tx</span>
+              <span>Clear</span>
+            </button>
+          </div>
+
+          {showImageUrlInput && (
+            <div className="mt-3 pt-3 border-t border-ink/[0.08] flex flex-col sm:flex-row gap-2">
+              <input
+                value={imageUrl}
+                onChange={(e) => setImageUrl(e.target.value)}
+                placeholder="https://example.com/image.jpg"
+                className="flex-1 h-[40px] px-3 text-[13px] text-ink bg-white border border-ink/[0.1] rounded-xl focus:outline-none focus:border-ink/25"
+              />
+              <button
+                type="button"
+                onClick={handleImageUrlInsert}
+                className="h-[40px] px-4 text-[12px] font-semibold text-white bg-ink rounded-xl hover:opacity-90 transition-opacity"
+              >
+                Insert Image
+              </button>
+            </div>
+          )}
+        </div>
       )}
 
-      {/* Scoped styles for preview only */}
       <style jsx>{`
         [contenteditable]:empty:before {
           content: attr(data-placeholder);
@@ -284,7 +449,6 @@ export function RichEditor({
           pointer-events: none;
         }
 
-        /* Preview content styles - isolated to preview tab only */
         .preview-content {
           font-family: inherit;
           line-height: 1.7;
@@ -310,6 +474,11 @@ export function RichEditor({
 
         .preview-content p {
           margin-bottom: 1em;
+        }
+
+        .preview-content mark {
+          background: #fff59d;
+          padding: 0 0.2em;
         }
 
         .preview-content a {
