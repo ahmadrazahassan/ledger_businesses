@@ -3,9 +3,11 @@
 import { useState, useCallback } from 'react';
 import Link from 'next/link';
 import { slugify } from '@/lib/utils';
+import { useToast } from '@/components/ui/toast';
 import type { BulkImportRow, BulkImportResult } from '@/lib/types/database';
 
 export default function BulkImportPage() {
+  const { showToast } = useToast();
   const [file, setFile] = useState<File | null>(null);
   const [results, setResults] = useState<BulkImportResult[]>([]);
   const [step, setStep] = useState<'upload' | 'review' | 'done'>('upload');
@@ -42,12 +44,28 @@ export default function BulkImportPage() {
       });
       setResults(validated);
       setStep('review');
+      showToast({
+        variant: 'success',
+        title: 'File parsed',
+        description: `${validated.length} rows are ready for review.`,
+      });
     } catch {
-      alert('Invalid JSON file. Please upload a valid JSON array.');
+      showToast({
+        variant: 'error',
+        title: 'Invalid JSON file',
+        description: 'Upload a valid JSON array to continue.',
+      });
     }
-  }, [file]);
+  }, [file, showToast]);
 
-  const handleImport = () => setStep('done');
+  const handleImport = () => {
+    setStep('done');
+    showToast({
+      variant: 'success',
+      title: 'Import complete',
+      description: `${validCount} posts imported successfully.`,
+    });
+  };
 
   const validCount = results.filter((r) => r.status === 'valid').length;
   const duplicateCount = results.filter((r) => r.status === 'duplicate').length;

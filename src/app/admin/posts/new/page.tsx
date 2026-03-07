@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { slugify } from '@/lib/utils';
 import { ImageUpload } from '@/components/admin/image-upload';
 import { RichEditor } from '@/components/admin/rich-editor';
+import { useToast } from '@/components/ui/toast';
 import { createPost, getAuthors, getCategories } from '../actions';
 import type { PostStatus } from '@/lib/types/database';
 
@@ -42,8 +43,8 @@ function buildProfessionalSummary(title: string, fullText: string) {
 
 export default function NewPostPage() {
   const router = useRouter();
+  const { showToast } = useToast();
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   
   // Form state
   const [title, setTitle] = useState('');
@@ -71,18 +72,26 @@ export default function NewPostPage() {
   // Load categories and authors
   useEffect(() => {
     async function loadData() {
-      const [categoriesData, authorsData] = await Promise.all([
-        getCategories(),
-        getAuthors(),
-      ]);
-      setCategories(categoriesData);
-      setAuthors(authorsData);
-      if (authorsData.length > 0) {
-        setAuthorId(authorsData[0].id);
+      try {
+        const [categoriesData, authorsData] = await Promise.all([
+          getCategories(),
+          getAuthors(),
+        ]);
+        setCategories(categoriesData);
+        setAuthors(authorsData);
+        if (authorsData.length > 0) {
+          setAuthorId(authorsData[0].id);
+        }
+      } catch {
+        showToast({
+          variant: 'error',
+          title: 'Failed to load form data',
+          description: 'Unable to load authors or categories.',
+        });
       }
     }
     loadData();
-  }, []);
+  }, [showToast]);
 
   const handleTitleChange = (value: string) => {
     setTitleEdited(true);
@@ -114,28 +123,37 @@ export default function NewPostPage() {
   }, [contentHtml, titleEdited, excerptEdited, title, excerpt, slugManual]);
 
   const handleSave = async () => {
-    setError(null);
     setLoading(true);
 
     try {
-      // Validation
       if (!title.trim()) {
-        setError('Title is required');
+        showToast({
+          variant: 'error',
+          title: 'Title is required',
+          description: 'Add a clear headline before publishing.',
+        });
         setLoading(false);
         return;
       }
       if (!categoryId) {
-        setError('Please select a category');
+        showToast({
+          variant: 'error',
+          title: 'Category is required',
+          description: 'Select at least one category to continue.',
+        });
         setLoading(false);
         return;
       }
       if (!contentHtml.trim()) {
-        setError('Content is required');
+        showToast({
+          variant: 'error',
+          title: 'Content is required',
+          description: 'Write or paste article content before publishing.',
+        });
         setLoading(false);
         return;
       }
 
-      // Prepare data
       const postData = {
         title: title.trim(),
         slug: slug.trim() || slugify(title),
@@ -158,13 +176,26 @@ export default function NewPostPage() {
       const result = await createPost(postData);
 
       if (result.success) {
+        showToast({
+          variant: 'success',
+          title: 'Post published',
+          description: 'Your post has been created successfully.',
+        });
         router.push('/admin/posts');
         router.refresh();
       } else {
-        setError(result.error || 'Failed to create post');
+        showToast({
+          variant: 'error',
+          title: 'Failed to create post',
+          description: result.error || 'Please try again.',
+        });
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
+      showToast({
+        variant: 'error',
+        title: 'Unexpected error',
+        description: err instanceof Error ? err.message : 'An error occurred while creating the post.',
+      });
     } finally {
       setLoading(false);
     }
@@ -216,13 +247,6 @@ export default function NewPostPage() {
           </button>
         </div>
       </div>
-
-      {/* Error Message */}
-      {error && (
-        <div className="p-4 rounded-2xl bg-red-50 border border-red-200 text-red-600 text-[14px] font-medium">
-          {error}
-        </div>
-      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Main Content Area */}

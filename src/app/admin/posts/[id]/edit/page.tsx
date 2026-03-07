@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { slugify, formatDate } from '@/lib/utils';
 import { uploadImageWithCompression } from '@/lib/upload';
+import { useToast } from '@/components/ui/toast';
 import { getPost, getAuthors, getCategories, updatePost, deletePost } from '../../actions';
 import type { PostStatus } from '@/lib/types/database';
 
@@ -61,6 +62,7 @@ export default function EditPostPage({ params }: EditPostPageProps) {
 
 function EditPostEditor({ post }: { post: any }) {
   const router = useRouter();
+  const { showToast } = useToast();
   const [authors, setAuthors] = useState<any[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
   const [saving, setSaving] = useState(false);
@@ -98,12 +100,20 @@ function EditPostEditor({ post }: { post: any }) {
   }, []);
 
   const loadData = async () => {
-    const [authorsData, categoriesData] = await Promise.all([
-      getAuthors(),
-      getCategories(),
-    ]);
-    setAuthors(authorsData);
-    setCategories(categoriesData);
+    try {
+      const [authorsData, categoriesData] = await Promise.all([
+        getAuthors(),
+        getCategories(),
+      ]);
+      setAuthors(authorsData);
+      setCategories(categoriesData);
+    } catch {
+      showToast({
+        variant: 'error',
+        title: 'Failed to load form data',
+        description: 'Unable to load authors or categories.',
+      });
+    }
   };
 
   useEffect(() => {
@@ -154,11 +164,15 @@ function EditPostEditor({ post }: { post: any }) {
   const processImageFile = useCallback(async (file: File) => {
     const result = await uploadImageWithCompression(file, 'covers', 'posts');
     if (!result.success || !result.url) {
-      alert(result.error || 'Failed to upload image');
+      showToast({
+        variant: 'error',
+        title: 'Image upload failed',
+        description: result.error || 'Please try another image file.',
+      });
       return;
     }
     insertImageAtCursor(result.url);
-  }, [insertImageAtCursor]);
+  }, [insertImageAtCursor, showToast]);
 
   const handlePaste = useCallback(async (e: React.ClipboardEvent<HTMLDivElement>) => {
     const clipboardFiles = e.clipboardData?.files;
@@ -248,7 +262,11 @@ function EditPostEditor({ post }: { post: any }) {
 
   const handleSave = async () => {
     if (!title.trim()) {
-      alert('Please enter a title');
+      showToast({
+        variant: 'error',
+        title: 'Title is required',
+        description: 'Add a title before updating this post.',
+      });
       return;
     }
 
@@ -275,10 +293,18 @@ function EditPostEditor({ post }: { post: any }) {
     setSaving(false);
 
     if (result.success) {
-      alert('Post updated successfully!');
+      showToast({
+        variant: 'success',
+        title: 'Post updated',
+        description: 'Changes have been saved successfully.',
+      });
       router.push('/admin/posts');
     } else {
-      alert(`Error: ${result.error}`);
+      showToast({
+        variant: 'error',
+        title: 'Update failed',
+        description: result.error || 'Unable to update this post.',
+      });
     }
   };
 
@@ -286,11 +312,26 @@ function EditPostEditor({ post }: { post: any }) {
     if (confirm('Are you sure you want to delete this post? This action cannot be undone.')) {
       const result = await deletePost(post.id);
       if (result.success) {
+        showToast({
+          variant: 'success',
+          title: 'Post deleted',
+          description: 'The post has been removed successfully.',
+        });
         router.push('/admin/posts');
       } else {
-        alert(`Error: ${result.error}`);
+        showToast({
+          variant: 'error',
+          title: 'Delete failed',
+          description: result.error || 'Unable to delete this post.',
+        });
       }
+      return;
     }
+    showToast({
+      variant: 'info',
+      title: 'Delete cancelled',
+      description: 'No changes were made.',
+    });
   };
 
   const inputClass = 'w-full px-4 py-3 bg-[#f8f9fb] border border-ink/[0.08] rounded-xl text-[14px] text-ink placeholder:text-ink/30 focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/15 focus:bg-white transition-all duration-200';

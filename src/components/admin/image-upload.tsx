@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useRef, useCallback } from 'react';
-import { uploadImageWithCompression, deleteImage } from '@/lib/upload';
+import { uploadImageWithCompression } from '@/lib/upload';
+import { useToast } from '@/components/ui/toast';
 
 interface ImageUploadProps {
   value?: string;
@@ -24,45 +25,62 @@ export function ImageUpload({
   maxSizeMB = 20,
   className = '',
 }: ImageUploadProps) {
+  const { showToast } = useToast();
   const [uploading, setUploading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [dragOver, setDragOver] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleUpload = useCallback(
     async (file: File) => {
-      setError(null);
       setUploading(true);
 
       try {
-        // Validate file type
         if (!file.type.startsWith('image/')) {
-          setError('Please upload an image file');
+          showToast({
+            variant: 'error',
+            title: 'Invalid file',
+            description: 'Please upload an image file.',
+          });
           return;
         }
 
-        // Validate file size
         const maxSize = maxSizeMB * 1024 * 1024;
         if (file.size > maxSize) {
-          setError(`File size must be less than ${maxSizeMB}MB`);
+          showToast({
+            variant: 'error',
+            title: 'File too large',
+            description: `File size must be less than ${maxSizeMB}MB.`,
+          });
           return;
         }
 
-        // Upload with compression
         const result = await uploadImageWithCompression(file, bucket, folder);
 
         if (result.success && result.url) {
           onChange(result.url);
+          showToast({
+            variant: 'success',
+            title: 'Image uploaded',
+            description: 'The image was uploaded successfully.',
+          });
         } else {
-          setError(result.error || 'Upload failed');
+          showToast({
+            variant: 'error',
+            title: 'Upload failed',
+            description: result.error || 'Please try again.',
+          });
         }
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Upload failed');
+        showToast({
+          variant: 'error',
+          title: 'Upload failed',
+          description: err instanceof Error ? err.message : 'An unexpected upload error occurred.',
+        });
       } finally {
         setUploading(false);
       }
     },
-    [bucket, folder, maxSizeMB, onChange]
+    [bucket, folder, maxSizeMB, onChange, showToast]
   );
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -182,9 +200,6 @@ export function ImageUpload({
         </div>
       )}
 
-      {error && (
-        <p className="mt-2 text-[13px] text-red-500 font-medium">{error}</p>
-      )}
     </div>
   );
 }

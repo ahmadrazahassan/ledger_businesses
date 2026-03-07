@@ -3,9 +3,11 @@
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { formatDate } from '@/lib/utils';
+import { useToast } from '@/components/ui/toast';
 import { getPosts, deletePost } from './actions';
 
 export default function AdminPostsPage() {
+  const { showToast } = useToast();
   const [posts, setPosts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -33,10 +35,25 @@ export default function AdminPostsPage() {
       const result = await deletePost(id);
       if (result.success) {
         await loadPosts();
+        showToast({
+          variant: 'success',
+          title: 'Post deleted',
+          description: 'The post has been removed successfully.',
+        });
       } else {
-        alert(`Error: ${result.error}`);
+        showToast({
+          variant: 'error',
+          title: 'Delete failed',
+          description: result.error || 'Unable to delete this post.',
+        });
       }
+      return;
     }
+    showToast({
+      variant: 'info',
+      title: 'Delete cancelled',
+      description: 'No changes were made.',
+    });
   };
 
   if (loading) {

@@ -2,6 +2,7 @@
 
 import { useState, useRef, useCallback, useEffect } from 'react';
 import { uploadImageWithCompression } from '@/lib/upload';
+import { useToast } from '@/components/ui/toast';
 
 interface RichEditorProps {
   value: string;
@@ -18,6 +19,7 @@ export function RichEditor({
   placeholder = 'Write your content here...',
   className = '',
 }: RichEditorProps) {
+  const { showToast } = useToast();
   const [activeTab, setActiveTab] = useState<EditorTab>('write');
   const [isDragging, setIsDragging] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -129,16 +131,24 @@ export function RichEditor({
         if (result.success && result.url) {
           insertImageAtCursor(result.url, 'Uploaded image');
         } else {
-          alert(result.error || 'Upload failed');
+          showToast({
+            variant: 'error',
+            title: 'Image upload failed',
+            description: result.error || 'Please try another image file.',
+          });
         }
       } catch (error) {
         console.error('Image upload error:', error);
-        alert('Failed to upload image');
+        showToast({
+          variant: 'error',
+          title: 'Image upload failed',
+          description: 'An unexpected upload error occurred.',
+        });
       } finally {
         setUploading(false);
       }
     },
-    [insertImageAtCursor]
+    [insertImageAtCursor, showToast]
   );
 
   const handlePaste = useCallback(

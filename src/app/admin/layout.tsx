@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { LogoFull } from '@/components/brand/logo-full';
 import { useState } from 'react';
+import { ToastProvider } from '@/components/ui/toast';
 
 const adminNav = [
   { label: 'Dashboard', href: '/admin' },
@@ -22,19 +23,20 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-cream">
-      {/* ── Framer-Inspired Header ── */}
-      <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-ink/[0.06]">
-        <div className="max-w-[1600px] mx-auto px-6 lg:px-12">
-          <div className="flex items-center justify-between h-[72px]">
-            {/* Logo */}
-            <Link href="/admin" className="flex items-center gap-3 group">
-              <LogoFull />
-              <div className="hidden sm:flex items-center gap-2.5">
-                <div className="w-px h-4 bg-ink/10" />
-                <span className="text-[11px] font-bold text-ink/35 uppercase tracking-[0.15em]">Admin</span>
-              </div>
-            </Link>
+    <ToastProvider>
+      <div className="min-h-screen bg-cream">
+        {/* ── Framer-Inspired Header ── */}
+        <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-ink/[0.06]">
+          <div className="max-w-[1600px] mx-auto px-6 lg:px-12">
+            <div className="flex items-center justify-between h-[72px]">
+              {/* Logo */}
+              <Link href="/admin" className="flex items-center gap-3 group">
+                <LogoFull />
+                <div className="hidden sm:flex items-center gap-2.5">
+                  <div className="w-px h-4 bg-ink/10" />
+                  <span className="text-[11px] font-bold text-ink/35 uppercase tracking-[0.15em]">Admin</span>
+                </div>
+              </Link>
 
             {/* Center Navigation - Framer Style */}
             <nav className="hidden lg:flex items-center gap-2 bg-ink/[0.03] p-1.5 rounded-full border border-ink/[0.06]">
@@ -144,12 +146,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             </div>
           )}
         </div>
-      </header>
+        </header>
 
-      {/* ── Main Content ── */}
-      <main className="max-w-[1600px] mx-auto px-6 lg:px-12 py-12">
-        {children}
-      </main>
-    </div>
+        {/* ── Main Content ── */}
+        <main className="max-w-[1600px] mx-auto px-6 lg:px-12 py-12">
+          {children}
+        </main>
+      </div>
+    </ToastProvider>
   );
 }
