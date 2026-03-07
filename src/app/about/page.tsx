@@ -66,7 +66,7 @@ export default function AboutPage() {
                     With a strong foundation in financial operations and business management, Fiza has spent years researching and writing about the systems that help companies stay compliant, efficient, and growth-ready. Her editorial approach is rooted in accuracy, clarity, and practical application — every guide, framework, and article published on Ledger Businesses is fact-checked against official HMRC guidance, industry standards, and current regulatory requirements.
                   </p>
                   <p>
-                    Fiza oversees all editorial content, ensuring that Ledger Businesses delivers only thoroughly researched, unbiased, and actionable intelligence. The platform operates with full editorial independence — content recommendations are never influenced by affiliate partnerships or commercial arrangements.
+                    Fiza oversees all editorial content, ensuring that Ledger Businesses delivers only thoroughly researched, unbiased, and actionable intelligence.
                   </p>
                   <p>
                     Her mission is to make professional-grade financial knowledge freely accessible to founders, finance leads, and business operators who need real answers — not theory.
