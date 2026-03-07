@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import { IconArrowUpRight } from '@/components/icons';
 import { LogoFull } from '@/components/brand/logo-full';
 
 const footerNav = {
@@ -32,27 +31,6 @@ export function Footer() {
     <footer className="px-4 md:px-8 pb-4 md:pb-8">
       {/* Main footer card — rounded */}
       <div className="mx-auto max-w-[1400px] bg-ink text-white rounded-[28px] md:rounded-[36px] overflow-hidden">
-
-        {/* CTA Banner — green strip */}
-        <div className="bg-accent px-8 md:px-14 py-8 md:py-10">
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
-            <div>
-              <h3 className="text-xl md:text-2xl font-heading font-bold text-white leading-tight mb-1">
-                Want to reach 50K+ decision-makers?
-              </h3>
-              <p className="text-[14px] text-white/60">
-                Premium placements for enterprise brands. No programmatic ads.
-              </p>
-            </div>
-            <a
-              href="mailto:fiza@ledgerthebusinesses.com"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-ink text-accent text-[13px] font-semibold rounded-full hover:bg-ink/90 transition-all shrink-0"
-            >
-              Advertise with us
-              <IconArrowUpRight size={13} />
-            </a>
-          </div>
-        </div>
 
         {/* Footer content */}
         <div className="px-8 md:px-14 pt-14 pb-8">
