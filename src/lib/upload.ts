@@ -32,13 +32,6 @@ export async function uploadImage(
       return { success: false, error: 'File must be an image' };
     }
 
-    // Validate file size (5MB for covers/banners, 2MB for avatars)
-    const maxSize = bucket === 'avatars' ? 2 * 1024 * 1024 : 5 * 1024 * 1024;
-    if (file.size > maxSize) {
-      const maxMB = bucket === 'avatars' ? 2 : 5;
-      return { success: false, error: `File size must be less than ${maxMB}MB` };
-    }
-
     // Generate unique filename
     const timestamp = Date.now();
     const randomString = Math.random().toString(36).substring(2, 15);

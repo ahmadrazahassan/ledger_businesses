@@ -462,7 +462,6 @@ export default function NewPostPage() {
                 folder="posts"
                 label="Upload Cover Image"
                 aspectRatio="16/9"
-                maxSizeMB={5}
               />
             </div>
           </div>

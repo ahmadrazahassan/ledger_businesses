@@ -10,7 +10,6 @@ interface ImageUploadProps {
   folder?: string;
   label?: string;
   aspectRatio?: string;
-  maxSizeMB?: number;
   className?: string;
 }
 
@@ -21,7 +20,6 @@ export function ImageUpload({
   folder,
   label = 'Upload Image',
   aspectRatio = '16/9',
-  maxSizeMB = 5,
   className = '',
 }: ImageUploadProps) {
   const [uploading, setUploading] = useState(false);
@@ -41,13 +39,6 @@ export function ImageUpload({
           return;
         }
 
-        // Validate file size
-        const maxSize = maxSizeMB * 1024 * 1024;
-        if (file.size > maxSize) {
-          setError(`File size must be less than ${maxSizeMB}MB`);
-          return;
-        }
-
         // Upload with compression
         const result = await uploadImageWithCompression(file, bucket, folder);
 
@@ -62,7 +53,7 @@ export function ImageUpload({
         setUploading(false);
       }
     },
-    [bucket, folder, maxSizeMB, onChange]
+    [bucket, folder, onChange]
   );
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -173,9 +164,7 @@ export function ImageUpload({
                 <p className="text-[12px] text-ink/40">
                   Drop image here or click to browse
                 </p>
-                <p className="text-[11px] text-ink/30 mt-2">
-                  Max {maxSizeMB}MB · JPG, PNG, WebP
-                </p>
+                <p className="text-[11px] text-ink/30 mt-2">JPG, PNG, WebP</p>
               </>
             )}
           </div>

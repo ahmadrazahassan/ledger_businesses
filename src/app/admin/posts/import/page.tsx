@@ -3,31 +3,131 @@
 import { useState, useCallback } from 'react';
 import Link from 'next/link';
 import { slugify } from '@/lib/utils';
-import type { BulkImportRow, BulkImportResult } from '@/lib/types/database';
+import type { BulkImportRow, BulkImportResult, PostStatus } from '@/lib/types/database';
+
+function isJsonFile(file: File) {
+  return file.name.toLowerCase().endsWith('.json') || file.type.includes('json');
+}
+
+function isHtmlFile(file: File) {
+  const name = file.name.toLowerCase();
+  return name.endsWith('.html') || name.endsWith('.htm') || file.type.includes('html');
+}
+
+function isSupportedFile(file: File) {
+  return isJsonFile(file) || isHtmlFile(file);
+}
+
+function normalizeStatus(value: unknown): PostStatus {
+  if (value === 'published' || value === 'scheduled' || value === 'archived' || value === 'draft') {
+    return value;
+  }
+  return 'draft';
+}
+
+function plainTextFromHtml(html: string) {
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+  return (doc.body.textContent || '').replace(/\s+/g, ' ').trim();
+}
+
+function buildExcerpt(text: string) {
+  const sentence = text.split(/(?<=[.!?])\s+/).filter(Boolean).slice(0, 2).join(' ');
+  const candidate = sentence || text;
+  if (!candidate) return '';
+  return candidate.length > 180 ? `${candidate.slice(0, 177).trimEnd()}…` : candidate;
+}
 
 export default function BulkImportPage() {
-  const [file, setFile] = useState<File | null>(null);
+  const [files, setFiles] = useState<File[]>([]);
   const [results, setResults] = useState<BulkImportResult[]>([]);
   const [step, setStep] = useState<'upload' | 'review' | 'done'>('upload');
   const [isDragging, setIsDragging] = useState(false);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selected = e.target.files?.[0];
-    if (selected) setFile(selected);
+    const selected = Array.from(e.target.files || []).filter(isSupportedFile);
+    if (selected.length > 0) setFiles(selected);
   };
 
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
-    const dropped = e.dataTransfer.files[0];
-    if (dropped && dropped.name.endsWith('.json')) setFile(dropped);
+    const dropped = Array.from(e.dataTransfer.files || []).filter(isSupportedFile);
+    if (dropped.length > 0) setFiles(dropped);
+  }, []);
+
+  const handlePaste = useCallback((e: React.ClipboardEvent<HTMLDivElement>) => {
+    const pastedFiles = Array.from(e.clipboardData.files || []).filter(isSupportedFile);
+    if (pastedFiles.length > 0) {
+      e.preventDefault();
+      setFiles(pastedFiles);
+      return;
+    }
+
+    const pastedHtml = e.clipboardData.getData('text/html');
+    if (pastedHtml.trim()) {
+      e.preventDefault();
+      const virtualFile = new File([pastedHtml], `pasted-${Date.now()}.html`, { type: 'text/html' });
+      setFiles([virtualFile]);
+    }
   }, []);
 
   const handleParse = useCallback(async () => {
-    if (!file) return;
+    if (files.length === 0) return;
     try {
-      const text = await file.text();
-      const rows: BulkImportRow[] = JSON.parse(text);
+      const rows: BulkImportRow[] = [];
+
+      for (const file of files) {
+        if (isJsonFile(file)) {
+          const text = await file.text();
+          const parsed = JSON.parse(text);
+          const parsedRows = Array.isArray(parsed) ? parsed : [parsed];
+
+          for (const entry of parsedRows) {
+            if (!entry || typeof entry !== 'object') continue;
+            const row = entry as Record<string, unknown>;
+            const contentHtml = typeof row.content_html === 'string' ? row.content_html : '';
+            const textContent = plainTextFromHtml(contentHtml);
+            rows.push({
+              title: typeof row.title === 'string' ? row.title.trim() : '',
+              slug: typeof row.slug === 'string' ? row.slug.trim() : undefined,
+              excerpt: typeof row.excerpt === 'string' ? row.excerpt : buildExcerpt(textContent),
+              content_html: contentHtml,
+              category_slug: typeof row.category_slug === 'string' && row.category_slug ? row.category_slug : 'general',
+              tags: Array.isArray(row.tags) ? row.tags.map((tag) => String(tag)) : [],
+              status: normalizeStatus(row.status),
+              published_at: typeof row.published_at === 'string' ? row.published_at : undefined,
+              cover_image: typeof row.cover_image === 'string' ? row.cover_image : undefined,
+              seo_title: typeof row.seo_title === 'string' ? row.seo_title : undefined,
+              seo_description: typeof row.seo_description === 'string' ? row.seo_description : undefined,
+            });
+          }
+          continue;
+        }
+
+        if (isHtmlFile(file)) {
+          const html = await file.text();
+          const doc = new DOMParser().parseFromString(html, 'text/html');
+          const contentHtml = doc.body?.innerHTML?.trim() || html;
+          const textContent = plainTextFromHtml(contentHtml);
+          const fallbackTitle = file.name.replace(/\.[^/.]+$/, '').replace(/[-_]+/g, ' ').trim();
+          const title =
+            doc.querySelector('h1')?.textContent?.replace(/\s+/g, ' ').trim() ||
+            doc.querySelector('title')?.textContent?.replace(/\s+/g, ' ').trim() ||
+            fallbackTitle ||
+            'Imported HTML Post';
+
+          rows.push({
+            title,
+            slug: slugify(title),
+            excerpt: buildExcerpt(textContent),
+            content_html: contentHtml,
+            category_slug: 'general',
+            tags: [],
+            status: 'draft',
+          });
+        }
+      }
+
       const seen = new Set<string>();
       const validated: BulkImportResult[] = rows.map((row) => {
         const rowSlug = row.slug || slugify(row.title);
@@ -43,9 +143,9 @@ export default function BulkImportPage() {
       setResults(validated);
       setStep('review');
     } catch {
-      alert('Invalid JSON file. Please upload a valid JSON array.');
+      alert('Invalid file format. Upload valid JSON and/or HTML files.');
     }
-  }, [file]);
+  }, [files]);
 
   const handleImport = () => setStep('done');
 
@@ -65,7 +165,7 @@ export default function BulkImportPage() {
         <h1 className="text-[28px] md:text-[34px] font-heading font-bold text-ink tracking-tight">
           Bulk Import
         </h1>
-        <p className="text-[14px] text-ink/50 mt-1">Upload a JSON file to import multiple posts at once.</p>
+        <p className="text-[14px] text-ink/50 mt-1">Upload JSON or one/many HTML files to import posts quickly.</p>
       </div>
 
       {/* ── Upload Step ── */}
@@ -76,6 +176,8 @@ export default function BulkImportPage() {
             onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
             onDragLeave={() => setIsDragging(false)}
             onDrop={handleDrop}
+            onPaste={handlePaste}
+            tabIndex={0}
             className={`rounded-2xl border-2 border-dashed px-8 py-14 text-center transition-all duration-200 ${isDragging ? 'border-accent/40 bg-accent/[0.02]' : 'border-ink/[0.08] bg-white'
               }`}
           >
@@ -86,22 +188,28 @@ export default function BulkImportPage() {
                 <line x1="12" y1="3" x2="12" y2="15" />
               </svg>
             </div>
-            <p className="text-[15px] font-semibold text-ink mb-1">Drop your JSON file here</p>
-            <p className="text-[13px] text-ink/40 mb-5 font-medium">or click to browse from your computer</p>
+            <p className="text-[15px] font-semibold text-ink mb-1">Drop JSON or HTML files here</p>
+            <p className="text-[13px] text-ink/40 mb-5 font-medium">Supports one or many .json / .html / .htm files (drop or paste)</p>
 
             <label className="inline-flex items-center px-5 py-2.5 rounded-full bg-ink/[0.05] text-[12px] font-semibold text-ink cursor-pointer hover:bg-ink/[0.08] border border-ink/10 transition-all">
-              Choose File
-              <input type="file" accept=".json" onChange={handleFileChange} className="hidden" />
+              Choose Files
+              <input type="file" multiple accept=".json,.html,.htm,text/html,application/json" onChange={handleFileChange} className="hidden" />
             </label>
 
-            {file && (
-              <p className="text-[13px] text-ink/50 mt-4 font-medium">
-                Selected: <span className="font-semibold text-ink">{file.name}</span>
-              </p>
+            {files.length > 0 && (
+              <div className="text-[13px] text-ink/50 mt-4 font-medium">
+                <p>
+                  Selected: <span className="font-semibold text-ink">{files.length}</span> file{files.length > 1 ? 's' : ''}
+                </p>
+                <p className="mt-1 text-[12px] text-ink/40 break-words">
+                  {files.slice(0, 4).map((item) => item.name).join(', ')}
+                  {files.length > 4 ? ` +${files.length - 4} more` : ''}
+                </p>
+              </div>
             )}
           </div>
 
-          {file && (
+          {files.length > 0 && (
             <div className="flex items-center justify-end mt-4">
               <button onClick={handleParse} className="px-6 py-2.5 rounded-full bg-accent text-white text-[12px] font-bold hover:brightness-110 shadow-sm transition-all">
                 Parse &amp; Review
@@ -109,12 +217,13 @@ export default function BulkImportPage() {
             </div>
           )}
 
-          {/* JSON Format Example */}
+          {/* Format Example */}
           <div className="mt-8 rounded-2xl border border-ink/[0.06] bg-white overflow-hidden">
             <div className="px-5 py-3.5 border-b border-ink/[0.05]">
-              <p className="text-[11px] font-bold text-ink/45 uppercase tracking-[0.08em]">Expected JSON Format</p>
+              <p className="text-[11px] font-bold text-ink/45 uppercase tracking-[0.08em]">Accepted Formats</p>
             </div>
-            <pre className="px-5 py-4 text-[12px] leading-relaxed text-ink/55 font-mono overflow-x-auto">{`[
+            <pre className="px-5 py-4 text-[12px] leading-relaxed text-ink/55 font-mono overflow-x-auto">{`JSON:
+[
   {
     "title": "Article Title",
     "excerpt": "Brief summary...",
@@ -123,7 +232,13 @@ export default function BulkImportPage() {
     "tags": ["AI", "Enterprise"],
     "status": "draft"
   }
-]`}</pre>
+]
+
+HTML:
+- Upload one or many .html files
+- <h1> or <title> is used for title
+- Body HTML becomes content_html
+- Summary is generated automatically`}</pre>
           </div>
         </div>
       )}
@@ -190,7 +305,7 @@ export default function BulkImportPage() {
           {/* Actions */}
           <div className="flex items-center gap-2">
             <button
-              onClick={() => { setStep('upload'); setResults([]); setFile(null); }}
+              onClick={() => { setStep('upload'); setResults([]); setFiles([]); }}
               className="px-5 py-2.5 text-[12px] font-semibold text-ink/50 hover:text-ink/70 rounded-full transition-all"
             >
               Cancel
