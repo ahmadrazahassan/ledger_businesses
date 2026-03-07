@@ -23,8 +23,6 @@ export function RichEditor({
   const [uploading, setUploading] = useState(false);
   const [showImageUrlInput, setShowImageUrlInput] = useState(false);
   const [imageUrl, setImageUrl] = useState('');
-  const [fontFamily, setFontFamily] = useState('Inter, sans-serif');
-  const [fontSize, setFontSize] = useState('4');
   const [blockType, setBlockType] = useState('p');
   const editorRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -226,21 +224,11 @@ export function RichEditor({
     runCommand('formatBlock', value);
   };
 
-  const applyFontFamily = (value: string) => {
-    setFontFamily(value);
-    runCommand('fontName', value);
-  };
-
-  const applyFontSize = (value: string) => {
-    setFontSize(value);
-    runCommand('fontSize', value);
-  };
-
   const dockButtonClass =
     'flex flex-col items-center justify-center gap-1 h-[42px] px-2 text-[10px] font-medium text-ink/65 border border-ink/[0.08] rounded-xl bg-white hover:border-ink/20 hover:text-ink transition-all';
 
   return (
-    <div className={`pb-36 ${className}`}>
+    <div className={className}>
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-1.5 p-1.5 bg-ink/[0.04] rounded-2xl border border-ink/[0.06]">
           {(['write', 'html', 'preview'] as EditorTab[]).map((tab) => (
@@ -260,73 +248,17 @@ export function RichEditor({
         </div>
 
         {activeTab === 'write' && (
-          <p className="text-[12px] text-ink/45">Use the bottom dock for formatting controls</p>
+          <p className="text-[12px] text-ink/45">Formatting controls are available below the tabs</p>
         )}
       </div>
 
-      <input
-        ref={fileInputRef}
-        type="file"
-        accept="image/*"
-        onChange={handleFileSelect}
-        className="hidden"
-      />
-
       {activeTab === 'write' && (
-        <div
-          ref={editorRef}
-          contentEditable
-          suppressContentEditableWarning
-          onInput={syncContent}
-          onBlur={saveSelection}
-          onMouseUp={saveSelection}
-          onKeyUp={saveSelection}
-          onPaste={handlePaste}
-          onDrop={handleDrop}
-          onDragOver={handleDragOver}
-          onDragLeave={handleDragLeave}
-          className={`w-full min-h-[400px] px-6 py-5 bg-white border rounded-2xl text-[15px] text-ink leading-relaxed focus:outline-none focus:border-ink/20 focus:ring-4 focus:ring-ink/[0.03] transition-all overflow-auto ${
-            isDragging ? 'border-accent border-2 bg-accent/[0.02]' : 'border-ink/[0.08]'
-          }`}
-          data-placeholder={placeholder}
-          style={{
-            minHeight: '400px',
-            fontFamily: 'inherit',
-          }}
-        />
-      )}
-
-      {activeTab === 'html' && (
-        <textarea
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          placeholder="<p>Paste or write HTML here...</p>"
-          rows={20}
-          className="w-full px-6 py-5 bg-white border border-ink/[0.08] rounded-2xl text-[14px] text-ink font-mono leading-relaxed resize-y focus:outline-none focus:border-ink/20 focus:ring-4 focus:ring-ink/[0.03] transition-all"
-          style={{ minHeight: '400px' }}
-        />
-      )}
-
-      {activeTab === 'preview' && (
-        <div className="w-full min-h-[400px] px-6 py-5 bg-white border border-ink/[0.08] rounded-2xl overflow-auto">
-          {value ? (
-            <div
-              className="preview-content"
-              dangerouslySetInnerHTML={{ __html: value }}
-            />
-          ) : (
-            <p className="text-[14px] text-ink/30 font-medium">No content to preview</p>
-          )}
-        </div>
-      )}
-
-      {activeTab === 'write' && (
-        <div className="fixed left-1/2 -translate-x-1/2 bottom-4 z-50 w-[min(1120px,calc(100vw-24px))] rounded-2xl border border-ink/[0.12] bg-white/95 backdrop-blur px-3 py-3 shadow-xl">
-          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 xl:grid-cols-14 gap-2">
+        <div className="mb-4 rounded-2xl border border-ink/[0.12] bg-white px-3 py-3 shadow-sm">
+          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-2">
             <select
               value={blockType}
               onChange={(e) => applyBlockType(e.target.value)}
-              onMouseDown={(e) => e.preventDefault()}
+              onMouseDown={() => saveSelection()}
               className="h-[42px] w-full px-3 text-[12px] font-semibold text-ink bg-white border border-ink/[0.1] rounded-xl focus:outline-none"
             >
               <option value="p">Paragraph</option>
@@ -334,31 +266,6 @@ export function RichEditor({
               <option value="h3">Heading 3</option>
               <option value="h4">Heading 4</option>
               <option value="blockquote">Quote</option>
-            </select>
-
-            <select
-              value={fontFamily}
-              onChange={(e) => applyFontFamily(e.target.value)}
-              onMouseDown={(e) => e.preventDefault()}
-              className="h-[42px] w-full px-3 text-[12px] font-semibold text-ink bg-white border border-ink/[0.1] rounded-xl focus:outline-none"
-            >
-              <option value="Inter, sans-serif">Sans</option>
-              <option value="Georgia, serif">Serif</option>
-              <option value="ui-monospace, SFMono-Regular, Menlo, monospace">Mono</option>
-            </select>
-
-            <select
-              value={fontSize}
-              onChange={(e) => applyFontSize(e.target.value)}
-              onMouseDown={(e) => e.preventDefault()}
-              className="h-[42px] w-full px-3 text-[12px] font-semibold text-ink bg-white border border-ink/[0.1] rounded-xl focus:outline-none"
-            >
-              <option value="2">XS</option>
-              <option value="3">SM</option>
-              <option value="4">Base</option>
-              <option value="5">LG</option>
-              <option value="6">XL</option>
-              <option value="7">2XL</option>
             </select>
 
             <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => runCommand('bold')} className={dockButtonClass}>
@@ -459,6 +366,62 @@ export function RichEditor({
                 Insert Image
               </button>
             </div>
+          )}
+        </div>
+      )}
+
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        onChange={handleFileSelect}
+        className="hidden"
+      />
+
+      {activeTab === 'write' && (
+        <div
+          ref={editorRef}
+          contentEditable
+          suppressContentEditableWarning
+          onInput={syncContent}
+          onBlur={saveSelection}
+          onMouseUp={saveSelection}
+          onKeyUp={saveSelection}
+          onPaste={handlePaste}
+          onDrop={handleDrop}
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          className={`w-full min-h-[400px] px-6 py-5 bg-white border rounded-2xl text-[15px] text-ink leading-relaxed focus:outline-none focus:border-ink/20 focus:ring-4 focus:ring-ink/[0.03] transition-all overflow-auto ${
+            isDragging ? 'border-accent border-2 bg-accent/[0.02]' : 'border-ink/[0.08]'
+          }`}
+          data-placeholder={placeholder}
+          style={{
+            minHeight: '400px',
+            fontFamily: 'inherit',
+          }}
+        />
+      )}
+
+      {activeTab === 'html' && (
+        <textarea
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder="<p>Paste or write HTML here...</p>"
+          rows={20}
+          className="w-full px-6 py-5 bg-white border border-ink/[0.08] rounded-2xl text-[14px] text-ink font-mono leading-relaxed resize-y focus:outline-none focus:border-ink/20 focus:ring-4 focus:ring-ink/[0.03] transition-all"
+          style={{ minHeight: '400px' }}
+        />
+      )}
+
+      {activeTab === 'preview' && (
+        <div className="w-full min-h-[400px] px-6 py-5 bg-white border border-ink/[0.08] rounded-2xl overflow-auto">
+          {value ? (
+            <div
+              className="preview-content"
+              dangerouslySetInnerHTML={{ __html: value }}
+            />
+          ) : (
+            <p className="text-[14px] text-ink/30 font-medium">No content to preview</p>
           )}
         </div>
       )}

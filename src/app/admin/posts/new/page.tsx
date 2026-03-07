@@ -9,6 +9,37 @@ import { RichEditor } from '@/components/admin/rich-editor';
 import { createPost, getAuthors, getCategories } from '../actions';
 import type { PostStatus } from '@/lib/types/database';
 
+function extractTextFromHtml(html: string) {
+  if (!html.trim()) return '';
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+  return (doc.body.textContent || '').replace(/\s+/g, ' ').trim();
+}
+
+function buildProfessionalTitle(html: string, fallbackText: string) {
+  if (!html.trim() && !fallbackText.trim()) return '';
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+  const heading = doc.querySelector('h1, h2, h3')?.textContent?.replace(/\s+/g, ' ').trim() || '';
+  if (heading) {
+    return heading.length > 90 ? `${heading.slice(0, 87).trimEnd()}…` : heading;
+  }
+
+  const firstSentence = fallbackText.split(/(?<=[.!?])\s+/)[0] || '';
+  const candidate = firstSentence || fallbackText;
+  if (!candidate) return '';
+  return candidate.length > 90 ? `${candidate.slice(0, 87).trimEnd()}…` : candidate;
+}
+
+function buildProfessionalSummary(title: string, fullText: string) {
+  if (!fullText.trim()) return '';
+  const withoutTitle = title ? fullText.replace(title, '').trim() : fullText;
+  const text = withoutTitle || fullText;
+  const sentences = text.split(/(?<=[.!?])\s+/).filter(Boolean);
+  const summary = sentences.slice(0, 2).join(' ');
+  const candidate = summary || sentences[0] || text;
+  if (!candidate) return '';
+  return candidate.length > 220 ? `${candidate.slice(0, 217).trimEnd()}…` : candidate;
+}
+
 export default function NewPostPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -20,6 +51,8 @@ export default function NewPostPage() {
   const [slugManual, setSlugManual] = useState(false);
   const [excerpt, setExcerpt] = useState('');
   const [contentHtml, setContentHtml] = useState('');
+  const [titleEdited, setTitleEdited] = useState(false);
+  const [excerptEdited, setExcerptEdited] = useState(false);
   const [coverImage, setCoverImage] = useState('');
   const [categoryId, setCategoryId] = useState('');
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
@@ -52,9 +85,33 @@ export default function NewPostPage() {
   }, []);
 
   const handleTitleChange = (value: string) => {
+    setTitleEdited(true);
     setTitle(value);
     if (!slugManual) setSlug(slugify(value));
   };
+
+  useEffect(() => {
+    if (!contentHtml.trim()) return;
+
+    const plainText = extractTextFromHtml(contentHtml);
+    if (!plainText) return;
+
+    if (!titleEdited && !title.trim()) {
+      const generatedTitle = buildProfessionalTitle(contentHtml, plainText);
+      if (generatedTitle) {
+        setTitle(generatedTitle);
+        if (!slugManual) setSlug(slugify(generatedTitle));
+      }
+    }
+
+    if (!excerptEdited && !excerpt.trim()) {
+      const titleForSummary = title.trim() || buildProfessionalTitle(contentHtml, plainText);
+      const generatedSummary = buildProfessionalSummary(titleForSummary, plainText);
+      if (generatedSummary) {
+        setExcerpt(generatedSummary);
+      }
+    }
+  }, [contentHtml, titleEdited, excerptEdited, title, excerpt, slugManual]);
 
   const handleSave = async () => {
     setError(null);
@@ -217,7 +274,10 @@ export default function NewPostPage() {
               <label className={labelClass}>Excerpt</label>
               <textarea
                 value={excerpt}
-                onChange={(e) => setExcerpt(e.target.value)}
+                onChange={(e) => {
+                  setExcerptEdited(true);
+                  setExcerpt(e.target.value);
+                }}
                 placeholder="Brief summary of the article..."
                 rows={3}
                 className={`${inputClass} resize-none`}
