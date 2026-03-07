@@ -1,247 +1,263 @@
-import type { Metadata } from 'next';
+'use client';
+
+import { useState } from 'react';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { SectionWrapper } from '@/components/layout/section-wrapper';
 
-export const metadata: Metadata = {
-  title: 'Contact Us',
-  description: 'Get in touch with the Ledger Businesses team for inquiries, partnerships, or editorial submissions.',
-  alternates: {
-    canonical: '/contact',
-  },
-};
-
 export default function ContactPage() {
+  const [formState, setFormState] = useState({
+    name: '',
+    email: '',
+    subject: '',
+    message: '',
+  });
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const mailtoLink = `mailto:fiza@ledgerthebusinesses.com?subject=${encodeURIComponent(formState.subject)}&body=${encodeURIComponent(`From: ${formState.name} (${formState.email})\n\n${formState.message}`)}`;
+    window.location.href = mailtoLink;
+    setSubmitted(true);
+  };
+
   return (
     <>
       <Header />
       <main>
-        <SectionWrapper narrow className="pt-16 md:pt-24 pb-16">
-          {/* Header */}
-          <div className="mb-16">
-            <span className="inline-block px-3 py-1 bg-accent/15 text-accent text-xs font-bold rounded-full mb-6">
-              Get in Touch
-            </span>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-ink leading-[1.1] tracking-tight mb-6">
-              Contact Us
+        <SectionWrapper narrow className="pt-16 md:pt-24 pb-20 md:pb-28">
+          {/* Hero Section */}
+          <div className="mb-14 md:mb-20">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-2 h-2 rounded-full bg-accent animate-pulse" />
+              <span className="text-[13px] font-semibold text-accent uppercase tracking-[0.12em]">
+                Available to connect
+              </span>
+            </div>
+            <h1 className="text-[44px] md:text-[72px] lg:text-[84px] font-heading font-bold text-ink leading-[0.95] tracking-[-0.04em] mb-6">
+              Let&apos;s start a<br />
+              <span className="text-ink/30">conversation.</span>
             </h1>
-            <p className="text-xl md:text-2xl text-ink/60 leading-relaxed max-w-3xl">
-              Whether you have a story tip, partnership inquiry, or feedback, we're here to listen. Reach out to the right team below.
+            <p className="text-[18px] md:text-[22px] text-ink/50 leading-relaxed max-w-2xl">
+              Whether it&apos;s a story tip, partnership inquiry, or just feedback — I&apos;d love to hear from you.
             </p>
           </div>
 
-          {/* Contact Cards Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-16">
-            {/* Editorial */}
-            <div className="p-8 rounded-3xl bg-white border border-ink/[0.06] hover:border-ink/10 hover:shadow-card transition-all">
-              <div className="w-12 h-12 rounded-2xl bg-accent/10 flex items-center justify-center mb-6">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-accent">
-                  <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
-                  <polyline points="14 2 14 8 20 8" />
-                  <line x1="16" y1="13" x2="8" y2="13" />
-                  <line x1="16" y1="17" x2="8" y2="17" />
-                  <polyline points="10 9 9 9 8 9" />
-                </svg>
-              </div>
-              <h2 className="text-2xl font-heading font-bold text-ink mb-3">Editorial Team</h2>
-              <p className="text-ink/60 leading-relaxed mb-6">
-                Have a story tip, press release, or editorial inquiry? Our newsroom is always looking for compelling business stories that matter.
-              </p>
-              <a
-                href="mailto:editorial@ledgerbusinesses.com"
-                className="inline-flex items-center gap-2 text-accent font-semibold hover:gap-3 transition-all"
-              >
-                editorial@ledgerbusinesses.com
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <line x1="7" y1="17" x2="17" y2="7" />
-                  <polyline points="7 7 17 7 17 17" />
-                </svg>
-              </a>
-            </div>
+          {/* Two Column Layout */}
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-10 lg:gap-14">
 
-            {/* Advertising */}
-            <div className="p-8 rounded-3xl bg-white border border-ink/[0.06] hover:border-ink/10 hover:shadow-card transition-all">
-              <div className="w-12 h-12 rounded-2xl bg-accent/10 flex items-center justify-center mb-6">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-accent">
-                  <rect x="3" y="3" width="18" height="18" rx="2" />
-                  <line x1="3" y1="9" x2="21" y2="9" />
-                  <line x1="9" y1="21" x2="9" y2="9" />
-                </svg>
-              </div>
-              <h2 className="text-2xl font-heading font-bold text-ink mb-3">Advertising & Partnerships</h2>
-              <p className="text-ink/60 leading-relaxed mb-6">
-                Interested in reaching business decision-makers? Let's discuss premium advertising placements and partnership opportunities.
-              </p>
-              <a
-                href="mailto:advertise@ledgerbusinesses.com"
-                className="inline-flex items-center gap-2 text-accent font-semibold hover:gap-3 transition-all"
-              >
-                advertise@ledgerbusinesses.com
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <line x1="7" y1="17" x2="17" y2="7" />
-                  <polyline points="7 7 17 7 17 17" />
-                </svg>
-              </a>
-            </div>
-
-            {/* General Inquiries */}
-            <div className="p-8 rounded-3xl bg-white border border-ink/[0.06] hover:border-ink/10 hover:shadow-card transition-all">
-              <div className="w-12 h-12 rounded-2xl bg-accent/10 flex items-center justify-center mb-6">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-accent">
-                  <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
-                </svg>
-              </div>
-              <h2 className="text-2xl font-heading font-bold text-ink mb-3">General Inquiries</h2>
-              <p className="text-ink/60 leading-relaxed mb-6">
-                Questions about our content, subscriptions, or general feedback? We're here to help and always appreciate hearing from our readers.
-              </p>
-              <a
-                href="mailto:hello@ledgerbusinesses.com"
-                className="inline-flex items-center gap-2 text-accent font-semibold hover:gap-3 transition-all"
-              >
-                hello@ledgerbusinesses.com
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <line x1="7" y1="17" x2="17" y2="7" />
-                  <polyline points="7 7 17 7 17 17" />
-                </svg>
-              </a>
-            </div>
-
-            {/* Business Address */}
-            <div className="p-8 rounded-3xl bg-white border border-ink/[0.06] hover:border-ink/10 hover:shadow-card transition-all">
-              <div className="w-12 h-12 rounded-2xl bg-accent/10 flex items-center justify-center mb-6">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-accent">
-                  <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
-                  <polyline points="9 22 9 12 15 12 15 22" />
-                </svg>
-              </div>
-              <h2 className="text-2xl font-heading font-bold text-ink mb-3">Office</h2>
-              <p className="text-ink/60 leading-relaxed mb-6">
-                London, United Kingdom<br />
-                (Visits by appointment only)
-              </p>
-            </div>
-          </div>
-
-          {/* Response Time */}
-          <div className="mb-16 p-8 rounded-3xl bg-accent/[0.06] border border-accent/10">
-            <div className="flex items-start gap-4">
-              <div className="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center shrink-0 mt-1">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-accent">
-                  <circle cx="12" cy="12" r="10" />
-                  <polyline points="12 6 12 12 16 14" />
-                </svg>
-              </div>
-              <div>
-                <h3 className="text-xl font-heading font-bold text-ink mb-2">Response Time</h3>
-                <p className="text-ink/70 leading-relaxed">
-                  We aim to respond to all inquiries within 48 business hours. For urgent editorial matters or time-sensitive opportunities, please indicate "URGENT" in your subject line. We read every message and appreciate your patience as we work to provide thoughtful, comprehensive responses.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Press Kit */}
-          <div className="mb-16">
-            <h2 className="text-3xl md:text-4xl font-heading font-bold text-ink mb-8">Press & Media</h2>
-            <div className="p-8 rounded-3xl bg-white border border-ink/[0.06]">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div>
-                  <h3 className="text-xl font-heading font-bold text-ink mb-4">Media Kit</h3>
-                  <p className="text-ink/60 leading-relaxed mb-6">
-                    Need our logo, brand assets, or company information for a story? Download our comprehensive media kit with everything you need.
-                  </p>
-                  <a
-                    href="mailto:press@ledgerbusinesses.com?subject=Media%20Kit%20Request"
-                    className="inline-flex items-center gap-2 px-6 py-3 bg-ink text-white text-sm font-bold rounded-full hover:bg-ink/90 transition-all"
-                  >
-                    Request Media Kit
-                  </a>
-                </div>
-                <div>
-                  <h3 className="text-xl font-heading font-bold text-ink mb-4">Press Inquiries</h3>
-                  <p className="text-ink/60 leading-relaxed mb-6">
-                    Journalists and media professionals can reach our press team for interviews, comments, or background information on business trends.
-                  </p>
-                  <a
-                    href="mailto:press@ledgerbusinesses.com"
-                    className="inline-flex items-center gap-2 text-accent font-semibold hover:gap-3 transition-all"
-                  >
-                    press@ledgerbusinesses.com
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <line x1="7" y1="17" x2="17" y2="7" />
-                      <polyline points="7 7 17 7 17 17" />
+            {/* Left — Contact Info */}
+            <div className="lg:col-span-2 space-y-6">
+              {/* Email Card */}
+              <div className="group">
+                <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-ink/30 mb-3">Email</p>
+                <a
+                  href="mailto:fiza@ledgerthebusinesses.com"
+                  className="flex items-center gap-3.5 px-4 py-4 rounded-2xl border border-ink/[0.06] bg-white hover:border-accent/20 hover:shadow-lg hover:shadow-accent/[0.04] transition-all duration-300"
+                >
+                  <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center shrink-0">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-accent">
+                      <rect x="2" y="4" width="20" height="16" rx="2" />
+                      <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
                     </svg>
-                  </a>
-                </div>
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-[13px] font-semibold text-ink group-hover:text-accent transition-colors break-all">fiza@ledgerthebusinesses.com</p>
+                    <p className="text-[12px] text-ink/40 mt-0.5">For all inquiries</p>
+                  </div>
+                </a>
               </div>
-            </div>
-          </div>
 
-          {/* Social Media */}
-          <div className="mb-16">
-            <h2 className="text-3xl md:text-4xl font-heading font-bold text-ink mb-8">Connect With Us</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <a
-                href="https://www.instagram.com/fiza_rana_42"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-6 rounded-2xl bg-white border border-ink/[0.06] hover:border-accent/20 hover:shadow-card transition-all group"
-              >
-                <div className="flex items-center gap-4 mb-3">
-                  <div className="w-10 h-10 rounded-full bg-ink/[0.04] group-hover:bg-accent/10 flex items-center justify-center transition-all">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-ink/40 group-hover:text-accent transition-colors">
+              {/* Social */}
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-ink/30 mb-3">Social</p>
+                <a
+                  href="https://www.instagram.com/fiza_rana_42"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-3.5 px-4 py-4 rounded-2xl border border-ink/[0.06] bg-white hover:border-accent/20 hover:shadow-lg hover:shadow-accent/[0.04] transition-all duration-300 group"
+                >
+                  <div className="w-10 h-10 rounded-lg bg-ink/[0.04] group-hover:bg-accent/10 flex items-center justify-center shrink-0 transition-all">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-ink/40 group-hover:text-accent transition-colors">
                       <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
                       <path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z" />
                       <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
                     </svg>
                   </div>
-                  <h3 className="text-lg font-heading font-bold text-ink">Instagram</h3>
-                </div>
-                <p className="text-sm text-ink/60">Follow us for behind-the-scenes and updates</p>
-              </a>
+                  <div>
+                    <p className="text-[14px] font-semibold text-ink group-hover:text-accent transition-colors">Instagram</p>
+                    <p className="text-[12px] text-ink/40 mt-0.5">@fiza_rana_42</p>
+                  </div>
+                </a>
+              </div>
 
-              <a
-                href="/rss"
-                className="p-6 rounded-2xl bg-white border border-ink/[0.06] hover:border-accent/20 hover:shadow-card transition-all group"
-              >
-                <div className="flex items-center gap-4 mb-3">
-                  <div className="w-10 h-10 rounded-full bg-ink/[0.04] group-hover:bg-accent/10 flex items-center justify-center transition-all">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" className="text-ink/40 group-hover:text-accent transition-colors">
-                      <path d="M4 11a9 9 0 019 9" />
-                      <path d="M4 4a16 16 0 0116 16" />
-                      <circle cx="5" cy="19" r="1" />
+              {/* Response Time */}
+              <div className="px-4 py-4 rounded-2xl bg-gradient-to-br from-accent/[0.06] to-accent/[0.02] border border-accent/10">
+                <div className="flex items-center gap-2.5 mb-2">
+                  <div className="w-7 h-7 rounded-full bg-accent/15 flex items-center justify-center">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-accent">
+                      <circle cx="12" cy="12" r="10" />
+                      <polyline points="12 6 12 12 16 14" />
                     </svg>
                   </div>
-                  <h3 className="text-lg font-heading font-bold text-ink">RSS Feed</h3>
+                  <p className="text-[13px] font-bold text-ink">Response Time</p>
                 </div>
-                <p className="text-sm text-ink/60">Subscribe to our content feed</p>
-              </a>
-            </div>
-          </div>
+                <p className="text-[13px] text-ink/55 leading-relaxed">
+                  I aim to respond within 48 hours. For urgent matters, add &quot;URGENT&quot; in the subject line.
+                </p>
+              </div>
 
-          {/* Office Info */}
-          <div className="p-8 md:p-12 rounded-3xl bg-ink text-white">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+              {/* Quick Links */}
               <div>
-                <h2 className="text-2xl md:text-3xl font-heading font-bold mb-6">Our Commitment</h2>
-                <p className="text-white/70 leading-relaxed mb-6">
-                  Every message we receive is read by a real person on our team. We value your time and input, whether you're sharing a story tip, providing feedback, or exploring a partnership opportunity.
-                </p>
-                <p className="text-white/70 leading-relaxed">
-                  Ledger Businesses is built on the principle that quality journalism requires quality relationships. We're committed to responsive, thoughtful communication with our readers, partners, and the broader business community.
-                </p>
-              </div>
-              <div>
-                <h3 className="text-xl font-heading font-bold mb-6">Quick Links</h3>
-                <div className="space-y-3">
-                  <a href="/about" className="block text-white/70 hover:text-accent transition-colors">About Us</a>
-                  <a href="/privacy" className="block text-white/70 hover:text-accent transition-colors">Privacy Policy</a>
-                  <a href="/terms" className="block text-white/70 hover:text-accent transition-colors">Terms of Service</a>
-                  <a href="/affiliate-disclosure" className="block text-white/70 hover:text-accent transition-colors">Affiliate Disclosure</a>
-                  <a href="/#newsletter" className="block text-white/70 hover:text-accent transition-colors">Newsletter Signup</a>
+                <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-ink/30 mb-3">Quick Links</p>
+                <div className="space-y-2">
+                  {[
+                    { label: 'About Us', href: '/about' },
+                    { label: 'Privacy Policy', href: '/privacy' },
+                    { label: 'Terms of Service', href: '/terms' },
+                    { label: 'Affiliate Disclosure', href: '/affiliate-disclosure' },
+                    { label: 'Newsletter Signup', href: '/#newsletter' },
+                  ].map((link) => (
+                    <a
+                      key={link.label}
+                      href={link.href}
+                      className="flex items-center justify-between p-3 rounded-xl text-[14px] text-ink/60 hover:text-ink hover:bg-ink/[0.03] transition-all"
+                    >
+                      {link.label}
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-ink/20">
+                        <polyline points="9 18 15 12 9 6" />
+                      </svg>
+                    </a>
+                  ))}
                 </div>
               </div>
+            </div>
+
+            {/* Right — Contact Form */}
+            <div className="lg:col-span-3">
+              {submitted ? (
+                <div className="h-full flex items-center justify-center p-12 rounded-3xl border border-accent/15 bg-accent/[0.04]">
+                  <div className="text-center">
+                    <div className="w-16 h-16 rounded-full bg-accent/15 flex items-center justify-center mx-auto mb-6">
+                      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-accent">
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
+                    </div>
+                    <h3 className="text-2xl font-heading font-bold text-ink mb-3">Message Sent!</h3>
+                    <p className="text-ink/50 leading-relaxed max-w-sm mx-auto">
+                      Your email client should have opened. If not, you can reach me directly at{' '}
+                      <a href="mailto:fiza@ledgerthebusinesses.com" className="text-accent font-medium">
+                        fiza@ledgerthebusinesses.com
+                      </a>
+                    </p>
+                    <button
+                      onClick={() => {
+                        setSubmitted(false);
+                        setFormState({ name: '', email: '', subject: '', message: '' });
+                      }}
+                      className="mt-8 px-6 py-2.5 rounded-full text-[13px] font-semibold border border-ink/10 text-ink/60 hover:border-ink/20 hover:text-ink transition-all"
+                    >
+                      Send another message
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  <div className="p-8 md:p-10 rounded-3xl border border-ink/[0.06] bg-white">
+                    <h2 className="text-[26px] md:text-[32px] font-heading font-bold text-ink mb-2">
+                      Send a message
+                    </h2>
+                    <p className="text-[15px] text-ink/45 mb-10">
+                      Fill out the form below and I&apos;ll get back to you shortly.
+                    </p>
+
+                    <div className="space-y-5">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div>
+                          <label htmlFor="contact-name" className="block text-[11px] font-bold uppercase tracking-[0.12em] text-ink/40 mb-2.5">
+                            Your Name
+                          </label>
+                          <input
+                            id="contact-name"
+                            type="text"
+                            value={formState.name}
+                            onChange={(e) => setFormState({ ...formState, name: e.target.value })}
+                            required
+                            placeholder="John Doe"
+                            className="w-full px-4 py-3.5 rounded-xl border border-ink/[0.08] bg-slate-50/50 text-[15px] text-ink placeholder:text-ink/25 focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent/30 transition-all"
+                          />
+                        </div>
+                        <div>
+                          <label htmlFor="contact-email" className="block text-[11px] font-bold uppercase tracking-[0.12em] text-ink/40 mb-2.5">
+                            Email Address
+                          </label>
+                          <input
+                            id="contact-email"
+                            type="email"
+                            value={formState.email}
+                            onChange={(e) => setFormState({ ...formState, email: e.target.value })}
+                            required
+                            placeholder="john@company.com"
+                            className="w-full px-4 py-3.5 rounded-xl border border-ink/[0.08] bg-slate-50/50 text-[15px] text-ink placeholder:text-ink/25 focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent/30 transition-all"
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label htmlFor="contact-subject" className="block text-[11px] font-bold uppercase tracking-[0.12em] text-ink/40 mb-2.5">
+                          Subject
+                        </label>
+                        <select
+                          id="contact-subject"
+                          value={formState.subject}
+                          onChange={(e) => setFormState({ ...formState, subject: e.target.value })}
+                          required
+                          className="w-full px-4 py-3.5 rounded-xl border border-ink/[0.08] bg-slate-50/50 text-[15px] text-ink focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent/30 transition-all appearance-none"
+                          style={{
+                            backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E")`,
+                            backgroundRepeat: 'no-repeat',
+                            backgroundPosition: 'right 16px center',
+                          }}
+                        >
+                          <option value="">Select a topic</option>
+                          <option value="Editorial Inquiry">Editorial Inquiry</option>
+                          <option value="Partnership Opportunity">Partnership Opportunity</option>
+                          <option value="Advertising">Advertising</option>
+                          <option value="Media & Press">Media & Press</option>
+                          <option value="General Feedback">General Feedback</option>
+                          <option value="Other">Other</option>
+                        </select>
+                      </div>
+
+                      <div>
+                        <label htmlFor="contact-message" className="block text-[11px] font-bold uppercase tracking-[0.12em] text-ink/40 mb-2.5">
+                          Message
+                        </label>
+                        <textarea
+                          id="contact-message"
+                          value={formState.message}
+                          onChange={(e) => setFormState({ ...formState, message: e.target.value })}
+                          required
+                          rows={5}
+                          placeholder="Tell me what you have in mind..."
+                          className="w-full px-4 py-3.5 rounded-xl border border-ink/[0.08] bg-slate-50/50 text-[15px] text-ink placeholder:text-ink/25 focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent/30 transition-all resize-none"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="w-full py-4 rounded-2xl bg-ink text-white text-[15px] font-bold hover:bg-ink/90 active:scale-[0.995] transition-all duration-200 flex items-center justify-center gap-3"
+                  >
+                    Send Message
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <line x1="5" y1="12" x2="19" y2="12" />
+                      <polyline points="12 5 19 12 12 19" />
+                    </svg>
+                  </button>
+                </form>
+              )}
             </div>
           </div>
         </SectionWrapper>

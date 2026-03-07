@@ -45,7 +45,7 @@ export function Footer() {
               </p>
             </div>
             <a
-              href="mailto:advertise@ledgerbusinesses.com"
+              href="mailto:fiza@ledgerthebusinesses.com"
               className="inline-flex items-center gap-2 px-6 py-3 bg-ink text-accent text-[13px] font-semibold rounded-full hover:bg-ink/90 transition-all shrink-0"
             >
               Advertise with us

@@ -204,7 +204,7 @@ export default function AffiliateDisclosurePage() {
                   </p>
                   <div className="p-6 rounded-2xl bg-white border border-ink/[0.06] mt-4">
                     <p className="font-semibold text-ink mb-2">Ledger Businesses</p>
-                    <p>Email: editorial@ledgerbusinesses.com</p>
+                    <p>Email: fiza@ledgerthebusinesses.com</p>
                     <p>Contact Form: <a href="/contact" className="text-accent hover:underline">ledgerbusinesses.com/contact</a></p>
                   </div>
                   <p className="mt-4">

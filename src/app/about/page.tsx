@@ -6,7 +6,7 @@ import { SectionWrapper } from '@/components/layout/section-wrapper';
 
 export const metadata: Metadata = {
   title: 'About Us',
-  description: 'Ledger Businesses is the premier resource for accounting, finance, and business operations professionals.',
+  description: 'Ledger Businesses is the premier resource for accounting, finance, and business operations professionals. Founded by Fiza.',
   alternates: {
     canonical: '/about',
   },
@@ -45,7 +45,49 @@ export default function AboutPage() {
             </div>
           </div>
 
+          {/* Meet the Founder */}
           <div className="border-y border-ink/10 py-14 md:py-16 mb-16 md:mb-20">
+            <div className="flex flex-col md:flex-row gap-10 md:gap-14 items-start">
+              <div className="shrink-0">
+                <div className="w-28 h-28 md:w-36 md:h-36 rounded-3xl bg-gradient-to-br from-accent/20 to-accent/5 border border-accent/10 flex items-center justify-center">
+                  <span className="text-[48px] md:text-[56px] font-heading font-bold text-accent/60">F</span>
+                </div>
+              </div>
+              <div>
+                <p className="text-[11px] uppercase tracking-[0.14em] text-accent font-semibold mb-3">Founder & Editor-in-Chief</p>
+                <h2 className="text-[30px] md:text-[40px] font-heading font-bold text-ink leading-[1.05] mb-5">
+                  Fiza
+                </h2>
+                <div className="space-y-4 text-[17px] md:text-[19px] text-ink/65 leading-relaxed max-w-3xl">
+                  <p>
+                    Fiza is the founder and editor-in-chief of Ledger Businesses — a specialist editorial platform dedicated to accounting, bookkeeping, invoicing, payroll, HR, financial reporting, and VAT &amp; tax compliance for UK small and medium enterprises.
+                  </p>
+                  <p>
+                    With a strong foundation in financial operations and business management, Fiza has spent years researching and writing about the systems that help companies stay compliant, efficient, and growth-ready. Her editorial approach is rooted in accuracy, clarity, and practical application — every guide, framework, and article published on Ledger Businesses is fact-checked against official HMRC guidance, industry standards, and current regulatory requirements.
+                  </p>
+                  <p>
+                    Fiza oversees all editorial content, ensuring that Ledger Businesses delivers only thoroughly researched, unbiased, and actionable intelligence. The platform operates with full editorial independence — content recommendations are never influenced by affiliate partnerships or commercial arrangements.
+                  </p>
+                  <p>
+                    Her mission is to make professional-grade financial knowledge freely accessible to founders, finance leads, and business operators who need real answers — not theory.
+                  </p>
+                </div>
+                <a
+                  href="mailto:fiza@ledgerthebusinesses.com"
+                  className="inline-flex items-center gap-2 mt-6 text-accent font-semibold text-[15px] hover:gap-3 transition-all"
+                >
+                  fiza@ledgerthebusinesses.com
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="7" y1="17" x2="17" y2="7" />
+                    <polyline points="7 7 17 7 17 17" />
+                  </svg>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          {/* Our Mission */}
+          <div className="mb-16 md:mb-20">
             <h2 className="text-[30px] md:text-[40px] font-heading font-bold text-ink leading-[1.05] mb-6">
               Our mission
             </h2>
@@ -106,13 +148,13 @@ export default function AboutPage() {
               Work with us
             </h2>
             <p className="text-[16px] md:text-[18px] text-ink/60 leading-relaxed max-w-2xl mb-7">
-              For editorial collaboration, partnerships, or media requests, our team can help.
+              For editorial collaboration, partnerships, or media requests — reach out to Fiza directly.
             </p>
             <Link
               href="/contact"
               className="inline-flex items-center justify-center px-7 py-3 text-[13px] font-semibold rounded-full border border-ink/15 text-ink hover:border-ink/30 transition-colors"
             >
-              Contact the team
+              Contact Fiza
             </Link>
           </div>
         </SectionWrapper>

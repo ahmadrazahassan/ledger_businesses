@@ -56,7 +56,7 @@ export function SponsorMidBanner({ posts }: SponsorMidBannerProps) {
               Sponsored by Ledger Businesses Partners
             </span>
             <a
-              href="mailto:advertise@ledgerbusinesses.com"
+              href="mailto:fiza@ledgerthebusinesses.com"
               className="text-[10px] font-semibold text-accent/50 hover:text-accent transition-colors flex items-center gap-1"
             >
               Advertise <IconArrowUpRight size={9} />
