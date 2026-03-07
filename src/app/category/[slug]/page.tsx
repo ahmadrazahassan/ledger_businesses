@@ -102,9 +102,9 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
 
           {/* Posts */}
           {categoryPosts.length > 0 ? (
-            <div>
+            <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 md:gap-7">
               {categoryPosts.map((post) => (
-                <PostCard key={post.id} post={post} />
+                <PostCard key={post.id} post={post} variant="category" />
               ))}
             </div>
           ) : (
