@@ -21,7 +21,7 @@ export function ImageUpload({
   folder,
   label = 'Upload Image',
   aspectRatio = '16/9',
-  maxSizeMB = 5,
+  maxSizeMB = 20,
   className = '',
 }: ImageUploadProps) {
   const [uploading, setUploading] = useState(false);
