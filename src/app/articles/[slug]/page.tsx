@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
@@ -227,11 +228,15 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           {/* Cover image */}
           <SectionWrapper narrow noPadding className="py-10">
             {post.cover_image ? (
-              <div className="w-full aspect-video rounded-2xl overflow-hidden shadow-lg bg-ink/5">
-                <img 
-                  src={post.cover_image} 
+              <div className="relative w-full aspect-video rounded-2xl overflow-hidden shadow-lg bg-ink/5">
+                <Image
+                  src={post.cover_image}
                   alt={post.title}
-                  className="w-full h-full object-contain"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 800px"
+                  quality={95}
+                  priority
+                  className="object-contain"
                 />
               </div>
             ) : (

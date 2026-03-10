@@ -6,9 +6,8 @@ import type { PostWithRelations } from '@/lib/types/database';
 export async function getFeaturedPosts(): Promise<PostWithRelations[]> {
   try {
     const supabase = await createClient();
-    
-    // First try to get posts with featured_rank
-    const { data: featuredData, error: featuredError } = await supabase
+
+    const { data, error } = await supabase
       .from('posts')
       .select(`
         *,
@@ -16,53 +15,13 @@ export async function getFeaturedPosts(): Promise<PostWithRelations[]> {
         category:categories(*)
       `)
       .eq('status', 'published')
-      .not('featured_rank', 'is', null)
-      .order('featured_rank', { ascending: true })
-      .limit(3);
-
-    if (featuredError) throw featuredError;
-    
-    // If we have featured posts, fetch their categories and return
-    if (featuredData && featuredData.length > 0) {
-      // Fetch categories for each post
-      for (const post of featuredData) {
-        const { data: postCategories } = await supabase
-          .from('post_categories')
-          .select(`
-            category_id,
-            is_primary,
-            category:categories(*)
-          `)
-          .eq('post_id', post.id);
-
-        if (postCategories) {
-          post.categories = postCategories.map(pc => ({
-            ...pc.category,
-            is_primary: pc.is_primary,
-          }));
-        }
-      }
-      return featuredData;
-    }
-    
-    // Otherwise, fall back to latest posts with highest views
-    const { data: fallbackData, error: fallbackError } = await supabase
-      .from('posts')
-      .select(`
-        *,
-        author:authors(*),
-        category:categories(*)
-      `)
-      .eq('status', 'published')
-      .order('view_count', { ascending: false })
       .order('published_at', { ascending: false })
       .limit(3);
 
-    if (fallbackError) throw fallbackError;
-    
-    // Fetch categories for fallback posts
-    if (fallbackData) {
-      for (const post of fallbackData) {
+    if (error) throw error;
+
+    if (data) {
+      for (const post of data) {
         const { data: postCategories } = await supabase
           .from('post_categories')
           .select(`
@@ -80,8 +39,8 @@ export async function getFeaturedPosts(): Promise<PostWithRelations[]> {
         }
       }
     }
-    
-    return fallbackData || [];
+
+    return data || [];
   } catch (error) {
     console.error('Error fetching featured posts:', error);
     return [];

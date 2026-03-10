@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { formatDate, formatViews } from '@/lib/utils';
 import { IconArrowRight, IconClock, IconEye } from '@/components/icons';
 import type { PostWithRelations } from '@/lib/types/database';
@@ -6,11 +7,18 @@ import type { PostWithRelations } from '@/lib/types/database';
 interface PostCardHeroProps {
   post: PostWithRelations;
   size?: 'large' | 'medium' | 'grid';
+  priority?: boolean;
 }
 
-export function PostCardHero({ post, size = 'large' }: PostCardHeroProps) {
+export function PostCardHero({ post, size = 'large', priority = false }: PostCardHeroProps) {
   const isLarge = size === 'large';
   const isGrid = size === 'grid';
+
+  const imageSizes = isLarge
+    ? '(max-width: 1024px) 100vw, 66vw'
+    : isGrid
+      ? '(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw'
+      : '(max-width: 1024px) 100vw, 33vw';
 
   return (
     <Link href={`/articles/${post.slug}`} className="group block h-full">
@@ -18,13 +26,16 @@ export function PostCardHero({ post, size = 'large' }: PostCardHeroProps) {
         {/* Cover image */}
         <div className={`relative w-full bg-warm overflow-hidden ${isLarge ? 'h-60 md:h-80' : isGrid ? 'h-52 md:h-64' : 'h-40'}`}>
           {post.cover_image ? (
-            <img 
-              src={post.cover_image} 
+            <Image
+              src={post.cover_image}
               alt={post.title}
-              className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+              fill
+              sizes={imageSizes}
+              quality={90}
+              priority={priority}
+              className="object-cover transition-transform duration-700 group-hover:scale-105"
             />
           ) : (
-            /* Decorative fallback */
             <div className="absolute inset-0 flex items-center justify-center">
               <span className={`font-heading font-black text-ink/[0.025] select-none ${isLarge ? 'text-[120px]' : 'text-[60px]'}`}>LB</span>
             </div>

@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { formatDate, formatViews } from '@/lib/utils';
 import { IconArrowRight, IconClock, IconEye } from '@/components/icons';
 import type { PostWithRelations } from '@/lib/types/database';
@@ -11,16 +12,23 @@ interface PostCardProps {
 export function PostCard({ post, variant = 'default' }: PostCardProps) {
   const isCategory = variant === 'category';
 
+  const imageSizes = isCategory
+    ? '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw'
+    : '128px';
+
   return (
     <Link href={`/articles/${post.slug}`} className="group block">
       <article className={`${isCategory ? 'rounded-[26px] border border-ink/[0.06] bg-white p-4 sm:p-5 shadow-sm hover:shadow-lg hover:shadow-ink/[0.04] hover:-translate-y-0.5 duration-300' : 'flex gap-5 py-5 border-b border-ink/[0.05] transition-all'}`}>
         {/* Thumbnail */}
         <div className={`${isCategory ? 'w-full h-52 sm:h-64 md:h-72 rounded-3xl mb-4' : 'shrink-0 w-24 h-24 sm:w-32 sm:h-28 rounded-2xl'} bg-warm overflow-hidden relative`}>
           {post.cover_image ? (
-            <img 
-              src={post.cover_image} 
+            <Image
+              src={post.cover_image}
               alt={post.title}
-              className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+              fill
+              sizes={imageSizes}
+              quality={90}
+              className="object-cover transition-transform duration-700 group-hover:scale-105"
             />
           ) : (
             <div className="absolute inset-0 flex items-center justify-center">
