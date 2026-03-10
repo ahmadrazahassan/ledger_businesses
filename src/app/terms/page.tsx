@@ -225,17 +225,17 @@ export default function TermsPage() {
                 <div className="space-y-4 text-ink/70 leading-relaxed">
                   <h3 className="text-xl font-heading font-bold text-ink mt-6 mb-3">9.1 Governing Law</h3>
                   <p>
-                    These Terms of Service shall be governed by and construed in accordance with the laws of the United States, without regard to its conflict of law provisions.
+                    These Terms of Service shall be governed by and construed in accordance with the laws of England and Wales. Any matters arising from these terms shall be subject to the jurisdiction of the courts of England and Wales.
                   </p>
 
                   <h3 className="text-xl font-heading font-bold text-ink mt-6 mb-3">9.2 Dispute Resolution</h3>
                   <p>
-                    Any dispute arising out of or relating to these terms or the Website shall be resolved through binding arbitration in accordance with the rules of the American Arbitration Association. The arbitration shall take place in a mutually agreed location, and judgment on the award may be entered in any court having jurisdiction.
+                    In the event of any dispute arising out of or in connection with these terms, the parties shall first attempt to resolve the matter through good-faith negotiation. If the dispute cannot be resolved informally within 30 days, either party may refer the matter to mediation under the Centre for Effective Dispute Resolution (CEDR) Model Mediation Procedure. If mediation is unsuccessful, the dispute may be referred to the courts of England and Wales.
                   </p>
 
-                  <h3 className="text-xl font-heading font-bold text-ink mt-6 mb-3">9.3 Class Action Waiver</h3>
+                  <h3 className="text-xl font-heading font-bold text-ink mt-6 mb-3">9.3 Consumer Rights</h3>
                   <p>
-                    You agree that any dispute resolution proceedings will be conducted only on an individual basis and not in a class, consolidated, or representative action.
+                    Nothing in these terms affects your statutory rights as a consumer under UK law, including the Consumer Rights Act 2015 and the Consumer Contracts (Information, Cancellation and Additional Charges) Regulations 2013.
                   </p>
                 </div>
               </section>

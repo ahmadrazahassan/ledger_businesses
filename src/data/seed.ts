@@ -417,56 +417,7 @@ export const posts: PostWithRelations[] = [
   },
 ];
 
-export const banners: Banner[] = [
-  {
-    id: 'b1',
-    placement_key: 'leaderboard',
-    style_variant: 'default',
-    image_url: '',
-    link_url: 'https://example.com/sponsor-1',
-    label: 'Sponsor',
-    alt_text: 'Sponsor banner',
-    impressions: 0,
-    clicks: 0,
-    start_date: '2026-01-01T00:00:00Z',
-    end_date: '2026-12-31T23:59:59Z',
-    active: true,
-    created_at: '2026-01-01T00:00:00Z',
-    updated_at: '2026-01-01T00:00:00Z',
-  },
-  {
-    id: 'b2',
-    placement_key: 'inline-card',
-    style_variant: 'default',
-    image_url: '',
-    link_url: 'https://example.com/sponsor-2',
-    label: 'Sponsor',
-    alt_text: 'Sponsor banner',
-    impressions: 0,
-    clicks: 0,
-    start_date: '2026-01-01T00:00:00Z',
-    end_date: '2026-12-31T23:59:59Z',
-    active: true,
-    created_at: '2026-01-01T00:00:00Z',
-    updated_at: '2026-01-01T00:00:00Z',
-  },
-  {
-    id: 'b3',
-    placement_key: 'sidebar',
-    style_variant: 'default',
-    image_url: '',
-    link_url: 'https://example.com/sponsor-3',
-    label: 'Sponsor',
-    alt_text: 'Sponsor banner',
-    impressions: 0,
-    clicks: 0,
-    start_date: '2026-01-01T00:00:00Z',
-    end_date: '2026-12-31T23:59:59Z',
-    active: true,
-    created_at: '2026-01-01T00:00:00Z',
-    updated_at: '2026-01-01T00:00:00Z',
-  },
-];
+export const banners: Banner[] = [];
 
 // ── Helper to get seed data for the homepage ──
 export function getFeaturedPosts(): PostWithRelations[] {

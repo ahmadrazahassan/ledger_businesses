@@ -91,6 +91,23 @@ export default function ContactPage() {
                 </a>
               </div>
 
+              {/* Location */}
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-ink/30 mb-3">Location</p>
+                <div className="flex items-center gap-3.5 px-4 py-4 rounded-2xl border border-ink/[0.06] bg-white">
+                  <div className="w-10 h-10 rounded-lg bg-ink/[0.04] flex items-center justify-center shrink-0">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-ink/40">
+                      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                      <circle cx="12" cy="10" r="3" />
+                    </svg>
+                  </div>
+                  <div>
+                    <p className="text-[14px] font-semibold text-ink">United Kingdom</p>
+                    <p className="text-[12px] text-ink/40 mt-0.5">Serving UK businesses nationwide</p>
+                  </div>
+                </div>
+              </div>
+
               {/* Response Time */}
               <div className="px-4 py-4 rounded-2xl bg-gradient-to-br from-accent/[0.06] to-accent/[0.02] border border-accent/10">
                 <div className="flex items-center gap-2.5 mb-2">

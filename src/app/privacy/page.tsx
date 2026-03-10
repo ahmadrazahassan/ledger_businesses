@@ -242,13 +242,29 @@ export default function PrivacyPage() {
 
               {/* Section 12 */}
               <section>
-                <h2 className="text-2xl md:text-3xl font-heading font-bold text-ink mb-4">12. Contact Us</h2>
+                <h2 className="text-2xl md:text-3xl font-heading font-bold text-ink mb-4">12. UK Data Protection</h2>
+                <div className="space-y-4 text-ink/70 leading-relaxed">
+                  <p>
+                    Ledger Businesses is committed to complying with the UK General Data Protection Regulation (UK GDPR) and the Data Protection Act 2018. If you believe we have not handled your personal data in accordance with applicable data protection law, you have the right to lodge a complaint with the Information Commissioner&apos;s Office (ICO).
+                  </p>
+                  <div className="p-6 rounded-2xl bg-white border border-ink/[0.06] mt-4">
+                    <p className="font-semibold text-ink mb-2">Information Commissioner&apos;s Office</p>
+                    <p>Website: <a href="https://ico.org.uk" target="_blank" rel="noopener noreferrer" className="text-accent hover:underline">ico.org.uk</a></p>
+                    <p>Helpline: 0303 123 1113</p>
+                  </div>
+                </div>
+              </section>
+
+              {/* Section 13 */}
+              <section>
+                <h2 className="text-2xl md:text-3xl font-heading font-bold text-ink mb-4">13. Contact Us</h2>
                 <div className="space-y-4 text-ink/70 leading-relaxed">
                   <p>
                     If you have questions, concerns, or requests regarding this Privacy Policy or our data practices, please contact us:
                   </p>
                   <div className="p-6 rounded-2xl bg-white border border-ink/[0.06] mt-4">
                     <p className="font-semibold text-ink mb-2">Ledger Businesses</p>
+                    <p>Location: United Kingdom</p>
                     <p>Email: fiza@ledgerthebusinesses.com</p>
                     <p>Contact Form: <a href="/contact" className="text-accent hover:underline">ledgerbusinesses.com/contact</a></p>
                   </div>

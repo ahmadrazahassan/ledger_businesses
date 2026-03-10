@@ -49,20 +49,24 @@ const websiteStructuredData = {
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Ledger Businesses — The Authority in Business Intelligence",
+    default: "Ledger Businesses — UK Accounting, Payroll & Tax Compliance Guides",
     template: "%s | Ledger Businesses",
   },
   description:
-    "Premium editorial coverage of Business, AI, Startups, B2B, Software, and emerging technology. Confident analysis for decision-makers.",
+    "Expert guides on Sage accounting, bookkeeping, payroll, invoicing, MTD compliance, and financial reporting for UK small and medium businesses.",
   keywords: [
-    "business intelligence",
-    "AI",
-    "startups",
-    "B2B",
-    "software",
-    "enterprise",
-    "funding",
-    "GPTs",
+    "Sage accounting",
+    "UK bookkeeping",
+    "payroll UK",
+    "Making Tax Digital",
+    "MTD compliance",
+    "Sage Payroll",
+    "UK SME accounting",
+    "VAT compliance",
+    "cloud accounting UK",
+    "invoicing software",
+    "financial reporting",
+    "Sage vs Xero",
   ],
   authors: [{ name: "Ledger Businesses" }],
   alternates: {
@@ -87,11 +91,11 @@ export const metadata: Metadata = {
   },
   openGraph: {
     type: "website",
-    locale: "en_US",
+    locale: "en_GB",
     siteName: "Ledger Businesses",
-    title: "Ledger Businesses — The Authority in Business Intelligence",
+    title: "Ledger Businesses — UK Accounting, Payroll & Tax Compliance Guides",
     description:
-      "Premium editorial coverage of Business, AI, Startups, B2B, Software, and emerging technology.",
+      "Expert guides on Sage accounting, bookkeeping, payroll, invoicing, MTD compliance, and financial reporting for UK SMEs.",
     url: siteUrl,
     images: [{ url: "/og-default.png", width: 1200, height: 630 }],
   },
@@ -100,7 +104,7 @@ export const metadata: Metadata = {
     site: "@ledgerbusinesses",
     title: "Ledger Businesses",
     description:
-      "Premium editorial coverage of Business, AI, Startups, B2B, Software, and emerging technology.",
+      "Expert guides on Sage accounting, bookkeeping, payroll, invoicing, MTD compliance, and financial reporting for UK SMEs.",
     images: ["/og-default.png"],
   },
   icons: {
@@ -115,7 +119,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en-GB">
       <head>
         <script
           async

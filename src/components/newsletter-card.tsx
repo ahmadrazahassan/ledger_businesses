@@ -1,57 +1,11 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState } from 'react';
 import { IconArrowRight } from '@/components/icons';
-
-function useCountUp(target: number, duration: number = 2000) {
-  const [count, setCount] = useState(0);
-  const [hasStarted, setHasStarted] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && !hasStarted) {
-          setHasStarted(true);
-        }
-      },
-      { threshold: 0.3 }
-    );
-
-    if (ref.current) observer.observe(ref.current);
-    return () => observer.disconnect();
-  }, [hasStarted]);
-
-  useEffect(() => {
-    if (!hasStarted) return;
-
-    let startTime: number;
-    let animationFrame: number;
-
-    const animate = (timestamp: number) => {
-      if (!startTime) startTime = timestamp;
-      const progress = Math.min((timestamp - startTime) / duration, 1);
-
-      // Ease-out cubic for smooth deceleration
-      const eased = 1 - Math.pow(1 - progress, 3);
-      setCount(Math.floor(eased * target));
-
-      if (progress < 1) {
-        animationFrame = requestAnimationFrame(animate);
-      }
-    };
-
-    animationFrame = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(animationFrame);
-  }, [hasStarted, target, duration]);
-
-  return { count, ref };
-}
 
 export function NewsletterCard() {
   const [email, setEmail] = useState('');
   const [submitted, setSubmitted] = useState(false);
-  const { count, ref: counterRef } = useCountUp(10000, 2500);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -59,7 +13,7 @@ export function NewsletterCard() {
   };
 
   return (
-    <div className="rounded-[28px] md:rounded-[36px] bg-accent overflow-hidden" ref={counterRef}>
+    <div className="rounded-[28px] md:rounded-[36px] bg-accent overflow-hidden">
       <div className="px-8 py-16 md:px-16 md:py-20 text-center">
         {/* Eyebrow */}
         <span className="inline-block px-3 py-1 text-[10px] font-black uppercase tracking-[0.18em] bg-white/20 text-white rounded-full mb-7">
@@ -70,36 +24,9 @@ export function NewsletterCard() {
           Stay informed.
         </h2>
 
-        <p className="text-[15px] text-white/70 leading-relaxed mb-6 max-w-md mx-auto">
-          Concise analysis on business, AI, and technology. Delivered weekly to decision-makers. No noise.
+        <p className="text-[15px] text-white/70 leading-relaxed mb-10 max-w-md mx-auto">
+          Weekly insights on accounting, payroll, MTD compliance, and financial operations for UK business leaders. No noise.
         </p>
-
-        {/* Subscriber count with animation */}
-        <div className="flex items-center justify-center gap-3 mb-10">
-          <div className="flex items-center gap-1.5">
-            {/* Stacked avatar dots */}
-            <div className="flex -space-x-2">
-              {['bg-ink/80', 'bg-ink/60', 'bg-ink/40', 'bg-ink/25'].map((bg, i) => (
-                <div
-                  key={i}
-                  className={`w-6 h-6 rounded-full bg-white/20 border-2 border-white/30 flex items-center justify-center`}
-                >
-                  <span className="text-[7px] font-bold text-white/80">
-                    {['A', 'R', 'S', 'M'][i]}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="flex items-baseline gap-1">
-            <span className="text-[22px] font-heading font-black text-white tabular-nums">
-              {count >= 1000 ? `${(count / 1000).toFixed(count >= 10000 ? 0 : 1)}K` : count}+
-            </span>
-            <span className="text-[13px] font-semibold text-white/60">
-              subscribers already
-            </span>
-          </div>
-        </div>
 
         {submitted ? (
           <div className="py-4">

@@ -6,7 +6,6 @@ import { SectionWrapper } from '@/components/layout/section-wrapper';
 import { PostCardHero } from '@/components/posts/post-card-hero';
 import { SponsorLeaderboard } from '@/components/sponsors/sponsor-leaderboard';
 import { SponsorMidBanner } from '@/components/sponsors/sponsor-mid-banner';
-import { SponsorSidebar } from '@/components/sponsors/sponsor-sidebar';
 import { TopicGrid } from '@/components/topic-grid';
 import { LatestArticles } from '@/components/latest-articles';
 import { TrendingList } from '@/components/trending-list';
@@ -148,14 +147,12 @@ export default async function HomePage() {
                 </div>
               )}
               <div className="hidden lg:flex flex-col gap-5">
-                <SponsorSidebar />
-                {/* Second sidebar placeholder */}
-                <div className="rounded-[22px] bg-accent/[0.06] border border-accent/10 p-5 text-center">
-                  <span className="text-[9px] font-bold text-ink/35 uppercase tracking-[0.15em] block mb-3">Sponsor</span>
-                  <p className="text-[13px] font-semibold text-ink/50 mb-2">Your brand could be here</p>
-                  <p className="text-[11px] text-ink/40 leading-relaxed mb-4">Premium sidebar placement for enterprise brands.</p>
-                  <a href="mailto:fiza@ledgerthebusinesses.com" className="inline-flex items-center gap-1.5 px-4 py-2 bg-accent text-white text-[11px] font-bold rounded-full hover:bg-accent/85 transition-all">
-                    Get started
+                <div className="rounded-[22px] bg-accent/[0.06] border border-accent/10 p-6 text-center">
+                  <span className="text-[9px] font-bold text-ink/35 uppercase tracking-[0.15em] block mb-3">Newsletter</span>
+                  <p className="text-[15px] font-bold text-ink mb-2">Stay updated</p>
+                  <p className="text-[12px] text-ink/50 leading-relaxed mb-4">Weekly insights on accounting, payroll, and tax compliance for UK businesses.</p>
+                  <a href="#newsletter" className="inline-flex items-center gap-1.5 px-5 py-2.5 bg-accent text-white text-[11px] font-bold rounded-full hover:bg-accent/85 transition-all">
+                    Subscribe free
                     <IconArrowRight size={10} />
                   </a>
                 </div>

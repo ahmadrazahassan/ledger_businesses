@@ -171,13 +171,13 @@ export default function AffiliateDisclosurePage() {
 
               {/* Section 8 */}
               <section>
-                <h2 className="text-2xl md:text-3xl font-heading font-bold text-ink mb-4">FTC Compliance</h2>
+                <h2 className="text-2xl md:text-3xl font-heading font-bold text-ink mb-4">UK Regulatory Compliance</h2>
                 <div className="space-y-4 text-ink/70 leading-relaxed">
                   <p>
-                    Ledger Businesses complies with the Federal Trade Commission's guidelines on endorsements and testimonials. We disclose material connections between our website and the companies we mention when such connections exist.
+                    Ledger Businesses complies with the Advertising Standards Authority (ASA) and the Committee of Advertising Practice (CAP) Code, which govern advertising and marketing communications in the United Kingdom. We disclose material connections between our website and the companies we mention when such connections exist.
                   </p>
                   <p>
-                    Our affiliate disclosures meet or exceed FTC requirements for clarity and prominence. We believe that transparent disclosure benefits both our readers and our business.
+                    Our affiliate disclosures are designed to meet or exceed the requirements set out by the ASA, the Competition and Markets Authority (CMA) guidance on online endorsements, and the Consumer Protection from Unfair Trading Regulations 2008. We believe that transparent disclosure benefits both our readers and our business.
                   </p>
                 </div>
               </section>
