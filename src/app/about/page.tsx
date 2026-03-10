@@ -30,11 +30,7 @@ export default function AboutPage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-16 md:mb-20">
-            <div className="rounded-2xl border border-ink/10 bg-white p-6">
-              <p className="text-[10px] uppercase tracking-[0.14em] text-ink/45 mb-2">Based in</p>
-              <p className="text-[22px] font-heading font-bold text-ink">United Kingdom</p>
-            </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-16 md:mb-20">
             <div className="rounded-2xl border border-ink/10 bg-white p-6">
               <p className="text-[10px] uppercase tracking-[0.14em] text-ink/45 mb-2">Focus</p>
               <p className="text-[22px] font-heading font-bold text-ink">UK SMEs</p>

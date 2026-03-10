@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { DM_Sans, DM_Mono, Inter } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import { getSiteUrl, toAbsoluteUrl } from "@/lib/site";
 import "./globals.css";
 
@@ -137,6 +138,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteStructuredData) }}
         />
         {children}
+        <Analytics />
       </body>
     </html>
   );
