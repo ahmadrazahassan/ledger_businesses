@@ -4,6 +4,7 @@ import { Analytics } from "@vercel/analytics/next";
 import { getSiteUrl, toAbsoluteUrl } from "@/lib/site";
 import { ConditionalSiteAssistant } from "@/components/ai/conditional-site-assistant";
 import { CookieBanner } from "@/components/ui/cookie-banner";
+import { CookieBannerProvider } from "@/components/ui/cookie-banner-provider";
 import "./globals.css";
 
 const dmSans = DM_Sans({
@@ -139,9 +140,11 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteStructuredData) }}
         />
-        {children}
-        <ConditionalSiteAssistant />
-        <CookieBanner />
+        <CookieBannerProvider>
+          {children}
+          <ConditionalSiteAssistant />
+          <CookieBanner />
+        </CookieBannerProvider>
         <Analytics />
       </body>
     </html>

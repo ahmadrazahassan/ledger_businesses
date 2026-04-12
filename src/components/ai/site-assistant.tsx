@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { ArrowUp, Loader2, MessageSquare, Search, X } from 'lucide-react';
+import { useCookieBanner } from '@/components/ui/cookie-banner-provider';
 import type { ClientChatMessage } from '@/lib/ai/chat-types';
 
 /** Apple-style system stack for assistant copy */
@@ -31,6 +32,7 @@ function AssistantBody({ text }: { text: string }) {
 }
 
 export function SiteAssistant() {
+  const { showBanner: cookieBannerVisible } = useCookieBanner();
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState<ClientChatMessage[]>([]);
   const [loading, setLoading] = useState(false);
@@ -105,9 +107,11 @@ export function SiteAssistant() {
 
   return (
     <div
-      className="pointer-events-none fixed bottom-0 left-1/2 z-[90] w-full max-w-[440px] -translate-x-1/2 px-4"
+      className="pointer-events-none fixed left-1/2 z-[85] w-full max-w-[440px] -translate-x-1/2 px-4 transition-[bottom] duration-300 ease-[cubic-bezier(0.25,0.1,0.25,1)]"
       style={{
-        bottom: 'max(0.5rem, env(safe-area-inset-bottom, 0px))',
+        bottom: cookieBannerVisible
+          ? 'calc(env(safe-area-inset-bottom, 0px) + min(46vh, 18rem))'
+          : 'max(0.5rem, env(safe-area-inset-bottom, 0px))',
       }}
     >
       <div className="pointer-events-auto flex w-full flex-col gap-3">
