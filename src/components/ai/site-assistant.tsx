@@ -32,7 +32,7 @@ function AssistantBody({ text }: { text: string }) {
 }
 
 export function SiteAssistant() {
-  const { showBanner: cookieBannerVisible } = useCookieBanner();
+  const { showBanner: cookieConsentVisible } = useCookieBanner();
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState<ClientChatMessage[]>([]);
   const [loading, setLoading] = useState(false);
@@ -109,8 +109,8 @@ export function SiteAssistant() {
     <div
       className="pointer-events-none fixed left-1/2 z-[85] w-full max-w-[440px] -translate-x-1/2 px-4 transition-[bottom] duration-300 ease-[cubic-bezier(0.25,0.1,0.25,1)]"
       style={{
-        bottom: cookieBannerVisible
-          ? 'calc(env(safe-area-inset-bottom, 0px) + min(46vh, 18rem))'
+        bottom: cookieConsentVisible
+          ? 'calc(env(safe-area-inset-bottom, 0px) + clamp(6.25rem, 14vh, 8rem))'
           : 'max(0.5rem, env(safe-area-inset-bottom, 0px))',
       }}
     >

@@ -1,6 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
-  <!-- Paths mirror src/components/brand/logo-cube-paths.ts -->
-  <rect width="64" height="64" rx="14" fill="#f8f9fa"/>
+  <!-- Ledger Businesses mark — keep paths in sync with src/components/brand/logo-cube-paths.ts -->
   <g fill="#1e1f26">
     <path d="M32 12.5 47 23.5 32.72 31.55 32 30.65 31.28 31.55 17 23.5 32 12.5Z"/>
     <path d="M17 23.5 17 47.5 32 55.5 31.28 31.55 17 23.5Z"/>
