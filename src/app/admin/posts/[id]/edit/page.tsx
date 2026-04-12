@@ -49,7 +49,7 @@ export default function EditPostPage({ params }: EditPostPageProps) {
         <div className="text-center">
           <h2 className="text-[24px] font-bold text-ink mb-2">Post not found</h2>
           <p className="text-[14px] text-ink/50 mb-6">The post you're looking for doesn't exist.</p>
-          <Link href="/admin/posts" className="px-5 py-2 bg-accent text-white text-[12px] font-bold rounded-full hover:brightness-110">
+          <Link href="/admin/posts" className="px-5 py-2 bg-accent text-accent-foreground text-[12px] font-bold rounded-full hover:bg-accent-hover">
             Back to Posts
           </Link>
         </div>
@@ -409,7 +409,7 @@ function EditPostEditor({ post }: { post: any }) {
           <button onClick={handleDelete} className="px-4 py-2 text-[12px] font-semibold text-red-500 border border-red-200 rounded-full hover:bg-red-50 hover:border-red-300 transition-all duration-200">
             Delete
           </button>
-          <button onClick={handleSave} disabled={saving} className="px-5 py-2 bg-accent text-white text-[12px] font-bold rounded-full hover:brightness-110 shadow-sm transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
+          <button onClick={handleSave} disabled={saving} className="px-5 py-2 bg-accent text-accent-foreground text-[12px] font-bold rounded-full hover:bg-accent-hover shadow-sm transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
             {saving ? 'Updating...' : 'Update'}
           </button>
         </div>
@@ -432,7 +432,7 @@ function EditPostEditor({ post }: { post: any }) {
             <div className="p-5">
               <div className="flex items-center justify-between mb-1.5">
                 <label className={`${labelClass} mb-0`}>Slug</label>
-                <button type="button" onClick={() => setSlugManual(!slugManual)} className="text-[10px] font-bold text-accent hover:underline">
+                <button type="button" onClick={() => setSlugManual(!slugManual)} className="text-[10px] font-bold text-accent-content hover:underline">
                   {slugManual ? 'Auto-generate' : 'Edit manually'}
                 </button>
               </div>
@@ -580,14 +580,14 @@ function EditPostEditor({ post }: { post: any }) {
                               }
                             }
                           }}
-                          className="w-4 h-4 text-accent border-ink/20 rounded focus:ring-accent focus:ring-2"
+                          className="w-4 h-4 text-accent-content border-ink/20 rounded focus:ring-accent focus:ring-2"
                         />
                         <div className="flex-1 flex items-center justify-between">
-                          <span className="text-sm font-medium text-ink group-hover:text-accent transition-colors">
+                          <span className="text-sm font-medium text-ink group-hover:text-accent-content transition-colors">
                             {category.name}
                           </span>
                           {isPrimary && (
-                            <span className="px-2 py-0.5 text-[10px] font-bold text-accent bg-accent/10 rounded-full">
+                            <span className="px-2 py-0.5 text-[10px] font-bold text-accent-content bg-accent/10 rounded-full">
                               PRIMARY
                             </span>
                           )}

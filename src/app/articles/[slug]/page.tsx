@@ -190,7 +190,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
             {/* Category chip */}
             <Link
               href={`/category/${post.category.slug}`}
-              className="inline-flex items-center gap-1.5 px-3 py-1 bg-accent/15 text-accent text-xs font-bold rounded-full mb-5 hover:bg-accent/25 transition-colors"
+              className="inline-flex items-center gap-1.5 px-3 py-1 bg-accent/15 text-accent-content text-xs font-bold rounded-full mb-5 hover:bg-accent/25 transition-colors"
             >
               <span className="w-1.5 h-1.5 rounded-full bg-accent" />
               {post.category.name}
@@ -206,22 +206,81 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
               {post.excerpt}
             </p>
 
+            {/* Affiliate Disclosure Alert */}
+            <div className="mb-6 p-4 rounded-xl bg-accent/5 border border-accent/10 flex items-start gap-3">
+              <span className="text-accent-content mt-0.5">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="10" />
+                  <line x1="12" y1="16" x2="12" y2="12" />
+                  <line x1="12" y1="8" x2="12.01" y2="8" />
+                </svg>
+              </span>
+              <p className="text-sm text-ink/70 leading-relaxed">
+                <strong>Ledger Businesses is reader-supported.</strong> When you buy through links on our site, we may earn an affiliate commission at no extra cost to you. <Link href="/affiliate-disclosure" className="text-accent-content hover:underline">Learn more</Link>.
+              </p>
+            </div>
+
             {/* Meta info */}
-            <div className="flex flex-wrap items-center gap-4 text-sm text-gray pb-8 border-b border-ink/[0.06]">
-              <span className="flex items-center gap-1.5">
-                <IconCalendar size={14} />
-                <span>{formatDate(post.published_at || post.created_at)}</span>
-              </span>
-              <span className="w-1 h-1 rounded-full bg-gray-light" />
-              <span className="flex items-center gap-1.5">
-                <IconClock size={14} />
-                <span>{post.reading_time} min read</span>
-              </span>
-              <span className="w-1 h-1 rounded-full bg-gray-light" />
-              <span className="flex items-center gap-1.5">
-                <IconEye size={14} />
-                <span>{post.view_count.toLocaleString()} views</span>
-              </span>
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-8 border-b border-ink/[0.06]">
+              <div className="flex flex-wrap items-center gap-4 text-sm text-gray">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full overflow-hidden bg-ink/10 relative shrink-0">
+                    {post.author.avatar_url ? (
+                      <Image src={post.author.avatar_url} alt={post.author.name} fill className="object-cover" />
+                    ) : (
+                      <span className="absolute inset-0 flex items-center justify-center font-bold text-ink/40 text-xs">
+                        {post.author.name.charAt(0)}
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="font-semibold text-ink">{post.author.name}</span>
+                    <Link href="/about" className="text-xs text-accent-content hover:underline">
+                      View Editorial Profile
+                    </Link>
+                  </div>
+                </div>
+                
+                <span className="hidden md:block w-1 h-1 rounded-full bg-gray-light" />
+                
+                <div className="flex items-center gap-4">
+                  <span className="flex items-center gap-1.5">
+                    <IconCalendar size={14} />
+                    <span className="flex flex-col">
+                      <span>Published: {formatDate(post.published_at || post.created_at)}</span>
+                      {post.updated_at && post.updated_at !== post.published_at && (
+                        <span className="text-xs opacity-75">Updated: {formatDate(post.updated_at)}</span>
+                      )}
+                    </span>
+                  </span>
+                  <span className="w-1 h-1 rounded-full bg-gray-light" />
+                  <span className="flex items-center gap-1.5">
+                    <IconClock size={14} />
+                    <span>{post.reading_time} min read</span>
+                  </span>
+                </div>
+              </div>
+
+              {/* Social Share */}
+              <div className="flex items-center gap-3 shrink-0">
+                <span className="text-xs font-semibold uppercase tracking-wider text-ink/40">Share</span>
+                <a 
+                  href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(articleUrl)}`}
+                  target="_blank" rel="noopener noreferrer"
+                  className="w-8 h-8 rounded-full border border-ink/10 flex items-center justify-center text-ink/60 hover:text-accent-content hover:border-accent/30 transition-colors"
+                  aria-label="Share on Twitter"
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.008 5.938H5.039z"/></svg>
+                </a>
+                <a 
+                  href={`https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(articleUrl)}&title=${encodeURIComponent(post.title)}`}
+                  target="_blank" rel="noopener noreferrer"
+                  className="w-8 h-8 rounded-full border border-ink/10 flex items-center justify-center text-ink/60 hover:text-accent-content hover:border-accent/30 transition-colors"
+                  aria-label="Share on LinkedIn"
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                </a>
+              </div>
             </div>
           </SectionWrapper>
 
@@ -251,13 +310,13 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
             <div className="prose prose-lg max-w-none text-ink/85 leading-[1.85] 
               prose-headings:text-ink prose-headings:font-heading prose-headings:mb-4 prose-headings:mt-8
               prose-p:mb-6
-              prose-a:text-accent prose-a:no-underline hover:prose-a:underline 
+              prose-a:text-accent-content prose-a:no-underline hover:prose-a:underline 
               prose-strong:text-ink prose-strong:font-semibold
               prose-blockquote:border-l-4 prose-blockquote:border-accent prose-blockquote:pl-6 prose-blockquote:text-ink/60 prose-blockquote:italic
               prose-ul:my-6 prose-ol:my-6
               prose-li:mb-2
               prose-img:rounded-xl prose-img:shadow-md
-              prose-code:text-accent prose-code:bg-accent/10 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded">
+              prose-code:text-accent-content prose-code:bg-accent/10 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded">
               <div dangerouslySetInnerHTML={{ __html: post.content_html }} />
             </div>
           </SectionWrapper>
@@ -270,7 +329,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                 {post.tags.map((tag: string) => (
                   <span
                     key={tag}
-                    className="px-3 py-1 text-xs font-medium text-ink/50 bg-ink/[0.03] border border-ink/[0.06] rounded-full hover:border-accent/30 hover:text-accent transition-colors cursor-pointer"
+                    className="px-3 py-1 text-xs font-medium text-ink/50 bg-ink/[0.03] border border-ink/[0.06] rounded-full hover:border-accent/30 hover:text-accent-content transition-colors cursor-pointer"
                   >
                     {tag}
                   </span>
@@ -291,10 +350,10 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                   href={`/articles/${relPost.slug}`}
                   className="group p-5 rounded-xl border border-ink/[0.06] bg-card hover:border-accent/20 hover:shadow-card transition-all"
                 >
-                  <span className="text-[10px] font-bold text-accent uppercase tracking-wide">
+                  <span className="text-[10px] font-bold text-accent-content uppercase tracking-wide">
                     {relPost.category.name}
                   </span>
-                  <h3 className="text-sm font-bold text-ink mt-2 mb-2 leading-snug group-hover:text-accent transition-colors">
+                  <h3 className="text-sm font-bold text-ink mt-2 mb-2 leading-snug group-hover:text-accent-content transition-colors">
                     {relPost.title}
                   </h3>
                   <p className="text-xs text-gray line-clamp-2">{relPost.excerpt}</p>

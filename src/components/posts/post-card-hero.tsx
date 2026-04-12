@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { formatDate, formatViews } from '@/lib/utils';
-import { IconArrowRight, IconClock, IconEye } from '@/components/icons';
+import { formatDate } from '@/lib/utils';
+import { IconArrowRight, IconClock } from '@/components/icons';
 import type { PostWithRelations } from '@/lib/types/database';
 
 interface PostCardHeroProps {
@@ -9,6 +9,15 @@ interface PostCardHeroProps {
   size?: 'large' | 'medium' | 'grid';
   priority?: boolean;
 }
+
+const eyebrow =
+  'text-[11px] font-semibold uppercase tracking-[0.07em] text-accent-content';
+const metaStyle = 'text-[12px] text-ink/[0.52]';
+const focusRing =
+  'rounded-[22px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-content/35 focus-visible:ring-offset-2 focus-visible:ring-offset-cream';
+
+const cardShell =
+  'relative flex h-full flex-col overflow-hidden rounded-[22px] border border-ink/[0.08] bg-card shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_28px_rgba(30,31,38,0.06)] transition-[transform,box-shadow,border-color] duration-500 ease-[cubic-bezier(0.25,0.1,0.25,1)] hover:-translate-y-1 hover:border-ink/[0.11] hover:shadow-[0_4px_12px_rgba(0,0,0,0.04),0_20px_48px_rgba(30,31,38,0.08)]';
 
 export function PostCardHero({ post, size = 'large', priority = false }: PostCardHeroProps) {
   const isLarge = size === 'large';
@@ -20,11 +29,12 @@ export function PostCardHero({ post, size = 'large', priority = false }: PostCar
       ? '(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw'
       : '(max-width: 1024px) 100vw, 33vw';
 
+  const imageHeight = isLarge ? 'h-[228px] md:h-[308px]' : isGrid ? 'h-[204px] md:h-[244px]' : 'h-[168px]';
+
   return (
-    <Link href={`/articles/${post.slug}`} className="group block h-full">
-      <article className={`relative h-full overflow-hidden rounded-[24px] border border-ink/[0.06] bg-white transition-all duration-300 hover:shadow-elevated hover:-translate-y-1`}>
-        {/* Cover image */}
-        <div className={`relative w-full bg-warm overflow-hidden ${isLarge ? 'h-60 md:h-80' : isGrid ? 'h-52 md:h-64' : 'h-40'}`}>
+    <Link href={`/articles/${post.slug}`} className={`group block h-full ${focusRing}`}>
+      <article className={cardShell}>
+        <div className={`relative w-full overflow-hidden bg-warm ${imageHeight}`}>
           {post.cover_image ? (
             <Image
               src={post.cover_image}
@@ -33,61 +43,58 @@ export function PostCardHero({ post, size = 'large', priority = false }: PostCar
               sizes={imageSizes}
               quality={90}
               priority={priority}
-              className="object-cover transition-transform duration-700 group-hover:scale-105"
+              className="object-cover transition-transform duration-[650ms] ease-[cubic-bezier(0.25,0.1,0.25,1)] group-hover:scale-[1.02]"
             />
           ) : (
-            <div className="absolute inset-0 flex items-center justify-center">
-              <span className={`font-heading font-black text-ink/[0.025] select-none ${isLarge ? 'text-[120px]' : 'text-[60px]'}`}>LB</span>
+            <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-warm via-warm to-ink/[0.04]">
+              <span
+                className={`select-none font-heading font-bold text-ink/[0.07] ${isLarge ? 'text-[96px] md:text-[116px]' : 'text-[58px]'}`}
+              >
+                LB
+              </span>
             </div>
           )}
-
-          {/* Category chip top-left */}
-          <div className="absolute top-4 left-4 z-10">
-            <span className="inline-block px-3 py-1 bg-accent text-white text-[10px] font-black rounded-full uppercase tracking-[0.08em]">
-              {post.category.name}
-            </span>
-          </div>
-
-          {/* Hover arrow */}
-          <div className="absolute bottom-4 right-4 w-9 h-9 rounded-full bg-accent flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 shadow-lg">
-            <IconArrowRight size={14} />
-          </div>
+          <div
+            className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-ink/[0.16] to-transparent"
+            aria-hidden
+          />
         </div>
 
-        {/* Content */}
-        <div className={`${isLarge ? 'p-6 md:p-8' : isGrid ? 'p-6' : 'p-5'}`}>
-          <h3 className={`font-heading font-bold text-ink leading-[1.2] mb-2.5 group-hover:text-ink/70 transition-colors ${isLarge ? 'text-xl md:text-[26px]' : isGrid ? 'text-xl' : 'text-[16px]'}`}>
+        <div
+          className={`flex flex-1 flex-col border-t border-ink/[0.06] ${isLarge ? 'p-6 md:p-7' : isGrid ? 'p-6' : 'p-5'}`}
+        >
+          <p className={`${eyebrow} mb-2.5 md:mb-3`}>{post.category.name}</p>
+
+          <h3
+            className={`font-heading font-bold tracking-[-0.028em] text-ink transition-colors duration-300 group-hover:text-ink ${
+              isLarge
+                ? 'text-[21px] leading-[1.2] md:text-[26px] md:leading-[1.15]'
+                : isGrid
+                  ? 'text-lg leading-[1.25] md:text-[20px]'
+                  : 'text-[16px] leading-[1.3] md:text-[17px]'
+            } mb-2`}
+          >
             {post.title}
           </h3>
 
           {(isLarge || isGrid) && (
-            <p className="text-[14px] text-ink/55 leading-relaxed mb-5 line-clamp-2">
-              {post.excerpt}
-            </p>
+            <p className="mb-5 line-clamp-2 text-[14px] leading-[1.55] text-ink/[0.62] md:text-[15px]">{post.excerpt}</p>
           )}
 
-          {/* Meta */}
-          <div className="flex items-center gap-2 text-[11px]">
-            {/* Author dot */}
-            <div className="w-5 h-5 rounded-full bg-accent/30 flex items-center justify-center text-[8px] font-black text-ink/60 shrink-0">
-              {post.author.name.split(' ').map(n => n[0]).join('')}
+          <div className="mt-auto flex flex-wrap items-center justify-between gap-3 border-t border-ink/[0.07] pt-4">
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+              <time className={`${metaStyle} tabular-nums`} dateTime={post.published_at || post.created_at}>
+                {formatDate(post.published_at || post.created_at)}
+              </time>
+              <span className="hidden h-3 w-px bg-ink/18 sm:block" aria-hidden />
+              <span className={`flex items-center gap-1.5 ${metaStyle} tabular-nums`}>
+                <IconClock size={12} className="shrink-0 text-ink/40" aria-hidden />
+                {post.reading_time} min read
+              </span>
             </div>
-            <span className="font-medium text-ink/60">{post.author.name}</span>
-            <span className="w-0.5 h-0.5 rounded-full bg-ink/15" />
-            <span className="text-ink/50">{formatDate(post.published_at || post.created_at)}</span>
-            {(isLarge || isGrid) && (
-              <>
-                <span className="w-0.5 h-0.5 rounded-full bg-ink/15" />
-                <span className="text-ink/50 flex items-center gap-0.5">
-                  <IconClock size={10} />
-                  {post.reading_time} min
-                </span>
-              </>
-            )}
-            <span className="w-0.5 h-0.5 rounded-full bg-ink/15" />
-            <span className="text-ink/50 flex items-center gap-0.5">
-              <IconEye size={10} />
-              {formatViews(post.view_count)} views
+            <span className="flex items-center gap-1 text-[13px] font-semibold text-accent-content transition-[gap] duration-300 ease-out group-hover:gap-1.5">
+              <span className="max-sm:hidden">Read</span>
+              <IconArrowRight size={15} className="shrink-0" aria-hidden />
             </span>
           </div>
         </div>

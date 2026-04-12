@@ -3,102 +3,23 @@
 import { revalidatePath } from 'next/cache';
 import { createClient } from '@/lib/supabase/server';
 import { slugify } from '@/lib/utils';
-import type { PostStatus } from '@/lib/types/database';
-
-export interface PostFormData {
-  title: string;
-  slug: string;
-  excerpt: string;
-  content_html: string;
-  content_text: string;
-  cover_image: string;
-  author_id: string;
-  category_id: string; // Primary category
-  category_ids?: string[]; // All selected categories
-  tags: string[];
-  status: PostStatus;
-  published_at: string | null;
-  featured_rank: number | null;
-  seo_title: string;
-  seo_description: string;
-  og_image: string;
-  canonical_url?: string;
-}
+import type { PostFormData } from '@/lib/types/database';
+import { insertPostWithCategories } from './post-insert-shared';
 
 export async function createPost(data: PostFormData) {
   try {
     const supabase = await createClient();
+    const result = await insertPostWithCategories(supabase, data);
 
-    // Extract text content from HTML
-    const textContent = data.content_html
-      .replace(/<[^>]*>/g, ' ')
-      .replace(/\s+/g, ' ')
-      .trim();
-
-    // Calculate reading time (238 words per minute)
-    const wordCount = textContent.split(' ').length;
-    const reading_time = Math.max(1, Math.ceil(wordCount / 238));
-
-    // Prepare post data
-    const postData = {
-      title: data.title,
-      slug: data.slug || slugify(data.title),
-      excerpt: data.excerpt,
-      content_html: data.content_html,
-      content_text: textContent,
-      cover_image: data.cover_image || '',
-      author_id: data.author_id,
-      category_id: data.category_id, // Primary category
-      tags: data.tags,
-      status: data.status,
-      published_at: data.status === 'published' && !data.published_at 
-        ? new Date().toISOString() 
-        : data.published_at,
-      reading_time,
-      featured_rank: data.featured_rank,
-      seo_title: data.seo_title || data.title,
-      seo_description: data.seo_description || data.excerpt,
-      og_image: data.og_image || data.cover_image || '',
-      canonical_url: data.canonical_url || null,
-    };
-
-    const { data: post, error } = await supabase
-      .from('posts')
-      .insert(postData)
-      .select()
-      .single();
-
-    if (error) {
-      console.error('Error creating post:', error);
-      return { success: false, error: error.message };
-    }
-
-    // Insert category relationships
-    const categoryIds = data.category_ids && data.category_ids.length > 0 
-      ? data.category_ids 
-      : [data.category_id];
-
-    const categoryRelations = categoryIds.map(catId => ({
-      post_id: post.id,
-      category_id: catId,
-      is_primary: catId === data.category_id,
-    }));
-
-    const { error: catError } = await supabase
-      .from('post_categories')
-      .insert(categoryRelations);
-
-    if (catError) {
-      console.error('Error creating category relations:', catError);
-      // Rollback: delete the post
-      await supabase.from('posts').delete().eq('id', post.id);
-      return { success: false, error: `Failed to set categories: ${catError.message}` };
+    if (!result.success) {
+      console.error('Error creating post:', result.error);
+      return { success: false, error: result.error };
     }
 
     revalidatePath('/admin/posts');
     revalidatePath('/admin');
-    
-    return { success: true, post };
+
+    return { success: true, post: result.post };
   } catch (error) {
     console.error('Exception creating post:', error);
     return {

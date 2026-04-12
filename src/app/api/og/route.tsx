@@ -61,8 +61,8 @@ export async function GET(request: NextRequest) {
               style={{
                 display: 'inline-block',
                 padding: '6px 16px',
-                backgroundColor: '#ff5533',
-                color: '#1e1f26',
+                backgroundColor: '#9fe870',
+                color: '#14161a',
                 fontSize: 14,
                 fontWeight: 700,
                 borderRadius: 9999,

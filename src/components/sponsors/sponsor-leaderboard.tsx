@@ -5,9 +5,11 @@ import type { PostWithRelations } from '@/lib/types/database';
 
 interface SponsorLeaderboardProps {
   posts: PostWithRelations[];
+  /** Section label above the list */
+  eyebrow?: string;
 }
 
-export function SponsorLeaderboard({ posts }: SponsorLeaderboardProps) {
+export function SponsorLeaderboard({ posts, eyebrow = 'Recently published' }: SponsorLeaderboardProps) {
   const items = posts.slice(0, 4);
 
   return (
@@ -15,7 +17,7 @@ export function SponsorLeaderboard({ posts }: SponsorLeaderboardProps) {
       <div className="mx-auto max-w-[1400px] px-5 md:px-10 py-5">
         <div className="flex items-center gap-3 mb-4">
           <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-ink/45">
-            Must Read
+            {eyebrow}
           </span>
           <div className="flex-1 h-px bg-ink/[0.04]" />
         </div>
@@ -23,11 +25,11 @@ export function SponsorLeaderboard({ posts }: SponsorLeaderboardProps) {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-4">
           {items.map((post, i) => (
             <Link key={post.id} href={`/articles/${post.slug}`} className="group flex items-start gap-3">
-              <span className="shrink-0 text-[22px] font-heading font-black text-accent leading-none mt-0.5 tabular-nums">
+              <span className="shrink-0 text-[22px] font-heading font-black text-accent-content leading-none mt-0.5 tabular-nums">
                 {String(i + 1).padStart(2, '0')}
               </span>
               <div className="min-w-0">
-                <span className="text-[10px] font-bold text-accent uppercase tracking-[0.08em]">
+                <span className="text-[10px] font-bold text-accent-content uppercase tracking-[0.08em]">
                   {post.category.name}
                 </span>
                 <h4 className="text-[13px] font-semibold text-ink leading-snug mt-0.5 group-hover:text-ink/60 transition-colors line-clamp-2">

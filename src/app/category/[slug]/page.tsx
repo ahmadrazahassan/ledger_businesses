@@ -136,7 +136,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
           <div className="mb-10 pb-8 border-b border-ink/[0.06]">
             <div className="flex items-center gap-3 mb-4">
               <span className="w-2 h-2 rounded-full bg-accent" />
-              <span className="text-xs font-bold text-accent uppercase tracking-[0.1em]">Topic</span>
+              <span className="text-xs font-bold text-accent-content uppercase tracking-[0.1em]">Topic</span>
             </div>
             <h1 className="text-3xl md:text-4xl font-heading font-bold text-ink mb-3 tracking-[-0.02em]">
               {category.name}
@@ -144,7 +144,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
             <p className="text-base text-ink/50 max-w-xl leading-relaxed">
               {category.description}
             </p>
-            <div className="mt-4 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-accent/10 text-accent text-xs font-bold">
+            <div className="mt-4 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-accent/10 text-accent-content text-xs font-bold">
               {categoryPosts.length} articles
             </div>
           </div>
@@ -159,7 +159,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
           ) : (
             <div className="py-20 text-center">
               <div className="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center mx-auto mb-4">
-                <span className="text-accent text-lg font-bold">0</span>
+                <span className="text-accent-content text-lg font-bold">0</span>
               </div>
               <p className="text-base font-semibold text-ink/50 mb-1">No articles yet</p>
               <p className="text-sm text-gray">New content is published regularly.</p>

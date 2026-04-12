@@ -76,7 +76,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
           <div className="max-w-2xl mb-10">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-10 h-10 rounded-full bg-accent/15 flex items-center justify-center">
-                <IconSearch size={18} className="text-accent" />
+                <IconSearch size={18} className="text-accent-content" />
               </div>
               <h1 className="text-2xl md:text-3xl font-heading font-bold text-ink">
                 Search
@@ -94,7 +94,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                 <span className="text-sm text-ink/60">
                   {results.length} result{results.length !== 1 ? 's' : ''} for
                 </span>
-                <span className="inline-flex items-center px-3 py-1 bg-accent/10 text-accent text-sm font-semibold rounded-full">
+                <span className="inline-flex items-center px-3 py-1 bg-accent/10 text-accent-content text-sm font-semibold rounded-full">
                   &ldquo;{query}&rdquo;
                 </span>
               </div>
@@ -117,7 +117,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                         <Link
                           key={cat.id}
                           href={`/category/${cat.slug}`}
-                          className="px-3 py-1.5 text-xs font-medium text-ink/50 border border-ink/[0.08] rounded-full hover:border-accent hover:text-accent transition-colors"
+                          className="px-3 py-1.5 text-xs font-medium text-ink/50 border border-ink/[0.08] rounded-full hover:border-accent hover:text-accent-content transition-colors"
                         >
                           {cat.name}
                         </Link>
@@ -135,7 +135,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                   <Link
                     key={term}
                     href={`/search?q=${term}`}
-                    className="px-3 py-1.5 text-xs font-medium text-ink/40 border border-ink/[0.06] rounded-full hover:border-accent hover:text-accent hover:bg-accent/5 transition-all"
+                    className="px-3 py-1.5 text-xs font-medium text-ink/40 border border-ink/[0.06] rounded-full hover:border-accent hover:text-accent-content hover:bg-accent/5 transition-all"
                   >
                     {term}
                   </Link>

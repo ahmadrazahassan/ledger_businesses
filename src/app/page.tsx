@@ -5,21 +5,13 @@ import { Footer } from '@/components/layout/footer';
 import { SectionWrapper } from '@/components/layout/section-wrapper';
 import { PostCardHero } from '@/components/posts/post-card-hero';
 import { SponsorLeaderboard } from '@/components/sponsors/sponsor-leaderboard';
-import { SponsorMidBanner } from '@/components/sponsors/sponsor-mid-banner';
-import { TopicGrid } from '@/components/topic-grid';
 import { LatestArticles } from '@/components/latest-articles';
-import { TrendingList } from '@/components/trending-list';
-import { DeepDiveModule } from '@/components/deep-dive-module';
 import { NewsletterCard } from '@/components/newsletter-card';
 import { CategorySpotlight } from '@/components/category-spotlight';
-import { IconArrowRight } from '@/components/icons';
 import {
   getFeaturedPosts,
   getLatestPosts,
-  getTrendingPosts,
-  getEditorPicks,
   getActiveCategories,
-  getSecondaryHeroPosts,
   getCategoryPosts,
 } from '@/lib/queries/homepage';
 
@@ -33,26 +25,20 @@ export const metadata: Metadata = {
 };
 
 export default async function HomePage() {
-  const [featured, latest, trending, editorPicks, categories, secondaryHero, accountingPosts, payrollPosts] = await Promise.all([
+  const [featured, latest, categories, accountingPosts, payrollPosts] = await Promise.all([
     getFeaturedPosts(),
     getLatestPosts(),
-    getTrendingPosts(),
-    getEditorPicks(),
     getActiveCategories(),
-    getSecondaryHeroPosts(),
     getCategoryPosts('accounting-bookkeeping', 4),
     getCategoryPosts('payroll', 4),
   ]);
 
   const mainFeatured = featured[0];
   const secondaryFeatured = featured.slice(1, 3);
-  
-  const mainSecondaryHero = secondaryHero[0];
-  const sideSecondaryHero = secondaryHero.slice(1, 3);
 
-  // Prepare announcement items from trending posts
-  const announcementItems = trending.slice(0, 3).map((post, index) => ({
-    label: index === 0 ? 'Trending' : index === 1 ? 'Popular' : 'Latest',
+  const announcementLabels = ['New', 'Featured', 'Latest'] as const;
+  const announcementItems = latest.slice(0, 3).map((post, index) => ({
+    label: announcementLabels[index] ?? 'Latest',
     text: post.title,
     href: `/articles/${post.slug}`,
     cta: 'Read',
@@ -64,7 +50,6 @@ export default async function HomePage() {
       <Header />
 
       <main>
-        {/* Hero Editorial */}
         {featured.length > 0 ? (
           <SectionWrapper className="pt-8 md:pt-12 pb-6 md:pb-8">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
@@ -92,25 +77,26 @@ export default async function HomePage() {
                 </div>
                 <h3 className="text-[24px] font-heading font-bold text-ink mb-3">No articles yet</h3>
                 <p className="text-[15px] text-ink/50">
-                  Check back soon for the latest business insights and analysis.
+                  Check back soon for the latest UK accounting software reviews and guides.
                 </p>
               </div>
             </div>
           </SectionWrapper>
         )}
 
-        {/* Must-Read Banner — shows top 4 posts */}
-        {trending.length > 0 && <SponsorLeaderboard posts={trending} />}
+        {latest.length > 0 && (
+          <SponsorLeaderboard posts={latest} eyebrow="Recently published" />
+        )}
 
         {/* Accounting Spotlight */}
         {accountingPosts.length > 0 && (
           <SectionWrapper>
-            <CategorySpotlight 
-              title="Accounting & Bookkeeping" 
-              slug="accounting-bookkeeping" 
+            <CategorySpotlight
+              title="Accounting & Bookkeeping"
+              slug="accounting-bookkeeping"
               posts={accountingPosts}
-              tagline="Essential"
-              description="Expert guidance on maintaining pristine financial records and navigating cloud accounting."
+              tagline="Accounting"
+              description="Bookkeeping, cloud accounting, and record-keeping for UK businesses and advisers."
             />
           </SectionWrapper>
         )}
@@ -118,80 +104,25 @@ export default async function HomePage() {
         {/* Latest Articles */}
         {latest.length > 0 && (
           <SectionWrapper id="latest">
-            <div className="flex items-center gap-2 mb-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-accent" />
-              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-ink/40">Feed</span>
-            </div>
-            <h2 className="text-[28px] md:text-[36px] font-heading font-bold text-ink leading-[1.05] mb-2">
-              Latest
+            <h2 className="text-[24px] md:text-[30px] font-heading font-bold text-ink leading-[1.1] mb-2">
+              Latest articles
             </h2>
-            <p className="text-[14px] text-ink/55 mb-8">
-              The most recent analysis from our editorial team.
+            <p className="text-[14px] text-ink/55 mb-8 max-w-2xl">
+              New and updated reviews and guides. All content is written for a UK regulatory context unless stated otherwise.
             </p>
             <LatestArticles posts={latest} categories={categories} />
-          </SectionWrapper>
-        )}
-
-        {/* Trending + Editor's Picks + Sidebar */}
-        {(trending.length > 0 || editorPicks.length > 0) && (
-          <SectionWrapper id="trending">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-              {trending.length > 0 && (
-                <div>
-                  <TrendingList posts={trending.slice(0, 8)} title="Trending" showRank />
-                </div>
-              )}
-              {editorPicks.length > 0 && (
-                <div>
-                  <TrendingList posts={editorPicks} title="Editor's Picks" />
-                </div>
-              )}
-              <div className="hidden lg:flex flex-col gap-5">
-                <div className="rounded-[22px] bg-accent/[0.06] border border-accent/10 p-6 text-center">
-                  <span className="text-[9px] font-bold text-ink/35 uppercase tracking-[0.15em] block mb-3">Newsletter</span>
-                  <p className="text-[15px] font-bold text-ink mb-2">Stay updated</p>
-                  <p className="text-[12px] text-ink/50 leading-relaxed mb-4">Weekly insights on accounting, payroll, and tax compliance for UK businesses.</p>
-                  <a href="#newsletter" className="inline-flex items-center gap-1.5 px-5 py-2.5 bg-accent text-white text-[11px] font-bold rounded-full hover:bg-accent/85 transition-all">
-                    Subscribe free
-                    <IconArrowRight size={10} />
-                  </a>
-                </div>
-              </div>
-            </div>
-          </SectionWrapper>
-        )}
-
-        {/* Secondary Hero Section - Big Article Website Feel */}
-        {secondaryHero.length > 0 && (
-          <SectionWrapper className="pt-6 pb-6">
-            <div className="flex items-center gap-2 mb-4">
-               <span className="w-1.5 h-1.5 rounded-full bg-accent" />
-               <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-ink/40">Focus</span>
-            </div>
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-              <div className="lg:col-span-2">
-                {mainSecondaryHero && (
-                  <PostCardHero post={mainSecondaryHero} size="large" />
-                )}
-              </div>
-              <div className="flex flex-col gap-4">
-                {sideSecondaryHero.map((post) => (
-                  <PostCardHero key={post.id} post={post} size="medium" />
-                ))}
-              </div>
-            </div>
           </SectionWrapper>
         )}
 
         {/* Payroll Spotlight */}
         {payrollPosts.length > 0 && (
           <SectionWrapper className="pb-12">
-            <CategorySpotlight 
-              title="Payroll & Compliance" 
-              slug="payroll" 
+            <CategorySpotlight
+              title="Payroll & Compliance"
+              slug="payroll"
               posts={payrollPosts}
-              tagline="Strategic"
-              description="Navigating the complexities of workforce management, RTI, and auto-enrolment."
+              tagline="Payroll"
+              description="Payroll software, RTI, pensions, and workplace reporting for UK employers."
             />
           </SectionWrapper>
         )}

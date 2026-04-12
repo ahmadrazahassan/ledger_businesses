@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { DM_Sans, DM_Mono, Inter } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { getSiteUrl, toAbsoluteUrl } from "@/lib/site";
+import { SiteAssistant } from "@/components/ai/site-assistant";
+import { CookieBanner } from "@/components/ui/cookie-banner";
 import "./globals.css";
 
 const dmSans = DM_Sans({
@@ -50,11 +52,11 @@ const websiteStructuredData = {
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Ledger Businesses — UK Accounting, Payroll & Tax Compliance Guides",
+    default: "Ledger Businesses — UK Accounting Software Reviews & Guides",
     template: "%s | Ledger Businesses",
   },
   description:
-    "Expert guides on Sage accounting, bookkeeping, payroll, invoicing, MTD compliance, and financial reporting for UK small and medium businesses.",
+    "Independent UK accounting and payroll software reviews, MTD and compliance context, and comparisons for SMEs, sole traders, and advisers.",
   keywords: [
     "Sage accounting",
     "UK bookkeeping",
@@ -94,18 +96,18 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_GB",
     siteName: "Ledger Businesses",
-    title: "Ledger Businesses — UK Accounting, Payroll & Tax Compliance Guides",
+    title: "Ledger Businesses — UK Accounting Software Reviews & Guides",
     description:
-      "Expert guides on Sage accounting, bookkeeping, payroll, invoicing, MTD compliance, and financial reporting for UK SMEs.",
+      "Independent UK accounting and payroll software reviews and compliance-focused guides for SMEs and advisers.",
     url: siteUrl,
     images: [{ url: "/og-default.png", width: 1200, height: 630 }],
   },
   twitter: {
     card: "summary_large_image",
     site: "@ledgerbusinesses",
-    title: "Ledger Businesses",
+    title: "Ledger Businesses — UK Accounting Software Reviews",
     description:
-      "Expert guides on Sage accounting, bookkeeping, payroll, invoicing, MTD compliance, and financial reporting for UK SMEs.",
+      "Independent UK accounting and payroll software reviews and compliance-focused guides for SMEs and advisers.",
     images: ["/og-default.png"],
   },
   icons: {
@@ -138,6 +140,8 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteStructuredData) }}
         />
         {children}
+        <SiteAssistant />
+        <CookieBanner />
         <Analytics />
       </body>
     </html>

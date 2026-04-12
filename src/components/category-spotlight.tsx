@@ -35,7 +35,7 @@ export function CategorySpotlight({ title, slug, posts, description, tagline = "
         </div>
         <Link 
           href={`/category/${slug}`}
-          className="inline-flex items-center gap-2 text-[13px] font-bold text-accent hover:text-accent/80 transition-colors"
+          className="inline-flex items-center gap-2 text-[13px] font-bold text-accent-content hover:text-accent-content/80 transition-colors"
         >
           View all
           <IconArrowRight size={12} />

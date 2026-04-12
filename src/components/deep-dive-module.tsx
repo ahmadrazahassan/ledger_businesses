@@ -21,7 +21,7 @@ export function DeepDiveModule() {
         {/* Top row: label + issue */}
         <div className="flex items-start justify-between mb-10">
           <div>
-            <span className="inline-block px-3 py-1 bg-accent text-white text-[10px] font-black rounded-md uppercase tracking-[0.1em]">
+            <span className="inline-block px-3 py-1 bg-accent text-accent-foreground text-[10px] font-black rounded-full uppercase tracking-[0.1em]">
               Deep Dive
             </span>
             <p className="text-[11px] text-ink/50 mt-2 font-medium">
@@ -46,7 +46,7 @@ export function DeepDiveModule() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-0 mb-10 border-t border-ink/[0.07]">
           {guideChapters.map((chapter, i) => (
             <div key={i} className="flex items-start gap-3 py-4 border-b border-ink/[0.07]">
-              <span className="shrink-0 text-[13px] font-bold text-accent tabular-nums mt-px">
+              <span className="shrink-0 text-[13px] font-bold text-accent-content tabular-nums mt-px">
                 {String(i + 1).padStart(2, '0')}
               </span>
               <span className="text-[13px] text-ink/65 leading-snug">{chapter}</span>
@@ -61,7 +61,7 @@ export function DeepDiveModule() {
         >
           Read the Guide
           <span className="w-6 h-6 rounded-full bg-accent flex items-center justify-center">
-            <IconArrowRight size={11} className="text-white" />
+            <IconArrowRight size={11} className="text-accent-foreground" />
           </span>
         </Link>
       </div>

@@ -104,7 +104,7 @@ export default function AdminCategoriesPage() {
           }}
           className={`inline-flex items-center gap-1.5 px-5 py-2.5 text-[12px] font-bold rounded-full transition-all shadow-sm ${showForm && !editingId
               ? 'text-ink/60 border border-ink/10 hover:border-ink/20 bg-white'
-              : 'bg-accent text-white hover:brightness-110'
+              : 'bg-accent text-accent-foreground hover:bg-accent-hover'
             }`}
         >
           {showForm && !editingId ? (
@@ -179,7 +179,7 @@ export default function AdminCategoriesPage() {
               </button>
               <button
                 onClick={editingId ? handleUpdate : handleAdd}
-                className="px-6 py-2.5 bg-accent text-white text-[12px] font-bold rounded-full hover:brightness-110 shadow-sm transition-all"
+                className="px-6 py-2.5 bg-accent text-accent-foreground text-[12px] font-bold rounded-full hover:bg-accent-hover shadow-sm transition-all"
               >
                 {editingId ? 'Update' : 'Add Category'}
               </button>
@@ -197,12 +197,12 @@ export default function AdminCategoriesPage() {
           >
             <div className="flex items-center gap-4 flex-1 min-w-0">
               <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center shrink-0">
-                <span className="text-[14px] font-heading font-bold text-accent">{cat.name.charAt(0)}</span>
+                <span className="text-[14px] font-heading font-bold text-accent-content">{cat.name.charAt(0)}</span>
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2.5">
                   <p className="text-[14px] font-semibold text-ink truncate">{cat.name}</p>
-                  <span className="text-[10px] font-bold text-accent bg-accent/8 px-2 py-0.5 rounded-md border border-accent/15 shrink-0">
+                  <span className="text-[10px] font-bold text-accent-content bg-accent/8 px-2 py-0.5 rounded-md border border-accent/15 shrink-0">
                     {cat.post_count} posts
                   </span>
                 </div>
@@ -222,7 +222,7 @@ export default function AdminCategoriesPage() {
             <div className="flex items-center gap-1 ml-3 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
               <button
                 onClick={() => handleEdit(cat)}
-                className="px-3 py-1.5 rounded-lg text-[12px] font-semibold text-ink/50 hover:text-accent hover:bg-accent/5 transition-all"
+                className="px-3 py-1.5 rounded-lg text-[12px] font-semibold text-ink/50 hover:text-accent-content hover:bg-accent/5 transition-all"
               >
                 Edit
               </button>

@@ -23,7 +23,7 @@ export function PartnerStrip() {
         <div className="animate-marquee flex items-center gap-10 w-max">
           {doubled.map((name, i) => (
             <span key={`${name}-${i}`} className="flex items-center gap-10">
-              <span className="text-[15px] font-semibold text-ink/30 whitespace-nowrap hover:text-accent/60 transition-colors duration-300 cursor-default select-none">
+              <span className="text-[15px] font-semibold text-ink/30 whitespace-nowrap hover:text-accent-content/60 transition-colors duration-300 cursor-default select-none">
                 {name}
               </span>
               <span className="w-1 h-1 rounded-full bg-accent/30" />

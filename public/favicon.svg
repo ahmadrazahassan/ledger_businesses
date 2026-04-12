@@ -1,5 +1,9 @@
-<svg width="32" height="32" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect x="2" y="2" width="60" height="60" rx="12" stroke="#1e1f26" stroke-width="3" fill="#f0e7dd"/>
-  <path d="M24 18v28h16" stroke="#1e1f26" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-  <rect x="40" y="18" width="6" height="6" rx="1.5" fill="#05ce78"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <!-- Paths mirror src/components/brand/logo-cube-paths.ts -->
+  <rect width="64" height="64" rx="14" fill="#f8f9fa"/>
+  <g fill="#1e1f26">
+    <path d="M32 12.5 47 23.5 32.72 31.55 32 30.65 31.28 31.55 17 23.5 32 12.5Z"/>
+    <path d="M17 23.5 17 47.5 32 55.5 31.28 31.55 17 23.5Z"/>
+    <path d="M47 23.5 47 47.5 32 55.5 32.72 31.55 47 23.5Z"/>
+  </g>
 </svg>

@@ -19,7 +19,7 @@ export default function TermsPage() {
         <SectionWrapper narrow className="pt-16 md:pt-24 pb-16">
           {/* Header */}
           <div className="mb-12">
-            <span className="inline-block px-3 py-1 bg-accent/15 text-accent text-xs font-bold rounded-full mb-6">
+            <span className="inline-block px-3 py-1 bg-accent/15 text-accent-content text-xs font-bold rounded-full mb-6">
               Legal
             </span>
             <h1 className="text-4xl md:text-5xl font-heading font-bold text-ink leading-tight mb-4">
@@ -185,7 +185,10 @@ export default function TermsPage() {
 
                   <h3 className="text-xl font-heading font-bold text-ink mt-6 mb-3">6.3 Professional Advice Disclaimer</h3>
                   <p>
-                    The content on our Website is for informational purposes only and should not be construed as professional advice. We are not financial advisors, legal advisors, or business consultants. You should consult with appropriate professionals before making any business, financial, or legal decisions.
+                    The content on our Website is for informational and educational purposes only and should not be construed as formal financial, accounting, or legal advice. We provide independent reviews of UK accounting software and guides to HMRC compliance (e.g., MTD, PAYE).
+                  </p>
+                  <p>
+                    However, every business situation is unique. We are not your appointed accountant or tax advisor. You should always consult with a qualified UK professional (e.g., an ICAEW or ACCA registered accountant) before making critical financial decisions or relying solely on software for tax compliance.
                   </p>
                 </div>
               </section>
@@ -281,7 +284,7 @@ export default function TermsPage() {
                   <div className="p-6 rounded-2xl bg-white border border-ink/[0.06] mt-4">
                     <p className="font-semibold text-ink mb-2">Ledger Businesses</p>
                     <p>Email: fiza@ledgerthebusinesses.com</p>
-                    <p>Contact Form: <a href="/contact" className="text-accent hover:underline">ledgerbusinesses.com/contact</a></p>
+                    <p>Contact Form: <a href="/contact" className="text-accent-content hover:underline">ledgerbusinesses.com/contact</a></p>
                   </div>
                 </div>
               </section>

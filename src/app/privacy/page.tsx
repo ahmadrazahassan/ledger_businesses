@@ -19,7 +19,7 @@ export default function PrivacyPage() {
         <SectionWrapper narrow className="pt-16 md:pt-24 pb-16">
           {/* Header */}
           <div className="mb-12">
-            <span className="inline-block px-3 py-1 bg-accent/15 text-accent text-xs font-bold rounded-full mb-6">
+            <span className="inline-block px-3 py-1 bg-accent/15 text-accent-content text-xs font-bold rounded-full mb-6">
               Legal
             </span>
             <h1 className="text-4xl md:text-5xl font-heading font-bold text-ink leading-tight mb-4">
@@ -46,12 +46,12 @@ export default function PrivacyPage() {
                 <div className="space-y-4 text-ink/70 leading-relaxed">
                   <h3 className="text-xl font-heading font-bold text-ink mt-6 mb-3">1.1 Information You Provide</h3>
                   <p>
-                    We collect information that you voluntarily provide to us when you subscribe to our newsletter, create an account, or contact us. This may include:
+                    We collect information that you voluntarily provide to us when you subscribe to our newsletter, create an account, or contact us regarding UK accounting software reviews or compliance guides. This may include:
                   </p>
                   <ul className="list-disc pl-6 space-y-2">
                     <li>Email address</li>
                     <li>Name</li>
-                    <li>Company name and job title (optional)</li>
+                    <li>Company name and job title (optional, e.g., Director, Bookkeeper)</li>
                     <li>Communication preferences</li>
                     <li>Any other information you choose to provide</li>
                   </ul>
@@ -249,7 +249,7 @@ export default function PrivacyPage() {
                   </p>
                   <div className="p-6 rounded-2xl bg-white border border-ink/[0.06] mt-4">
                     <p className="font-semibold text-ink mb-2">Information Commissioner&apos;s Office</p>
-                    <p>Website: <a href="https://ico.org.uk" target="_blank" rel="noopener noreferrer" className="text-accent hover:underline">ico.org.uk</a></p>
+                    <p>Website: <a href="https://ico.org.uk" target="_blank" rel="noopener noreferrer" className="text-accent-content hover:underline">ico.org.uk</a></p>
                     <p>Helpline: 0303 123 1113</p>
                   </div>
                 </div>
@@ -265,7 +265,7 @@ export default function PrivacyPage() {
                   <div className="p-6 rounded-2xl bg-white border border-ink/[0.06] mt-4">
                     <p className="font-semibold text-ink mb-2">Ledger Businesses</p>
                     <p>Email: fiza@ledgerthebusinesses.com</p>
-                    <p>Contact Form: <a href="/contact" className="text-accent hover:underline">ledgerbusinesses.com/contact</a></p>
+                    <p>Contact Form: <a href="/contact" className="text-accent-content hover:underline">ledgerbusinesses.com/contact</a></p>
                   </div>
                 </div>
               </section>

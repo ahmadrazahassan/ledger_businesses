@@ -1,6 +1,13 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Bulk HTML/JSON imports send large payloads to Server Actions (default is 1 MB).
+  // https://nextjs.org/docs/app/api-reference/config/next-config-js/serverActions
+  experimental: {
+    serverActions: {
+      bodySizeLimit: "32mb",
+    },
+  },
   images: {
     remotePatterns: [
       {

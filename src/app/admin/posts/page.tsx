@@ -1,17 +1,24 @@
 'use client';
 
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
+import { Suspense, useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { formatDate } from '@/lib/utils';
 import { useToast } from '@/components/ui/toast';
 import { getPosts, deletePost } from './actions';
 
-export default function AdminPostsPage() {
+function AdminPostsPageInner() {
+  const searchParams = useSearchParams();
   const { showToast } = useToast();
   const [posts, setPosts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
+
+  useEffect(() => {
+    const s = searchParams.get('status');
+    if (s === 'draft' || s === 'published') setStatusFilter(s);
+  }, [searchParams]);
 
   useEffect(() => {
     loadPosts();
@@ -88,7 +95,7 @@ export default function AdminPostsPage() {
           </Link>
           <Link
             href="/admin/posts/new"
-            className="flex items-center gap-2 px-6 py-3 bg-accent text-white text-[14px] font-bold rounded-full hover:brightness-110 shadow-sm hover:shadow-md transition-all duration-200"
+            className="flex items-center gap-2 px-6 py-3 bg-accent text-accent-foreground text-[14px] font-bold rounded-full hover:bg-accent-hover shadow-sm hover:shadow-md transition-all duration-200"
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
               <line x1="12" y1="5" x2="12" y2="19" />
@@ -157,7 +164,7 @@ export default function AdminPostsPage() {
             {!searchQuery && (
               <Link
                 href="/admin/posts/new"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-accent text-white text-[14px] font-bold rounded-full hover:brightness-110 shadow-sm hover:shadow-md transition-all duration-200"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-accent text-accent-foreground text-[14px] font-bold rounded-full hover:bg-accent-hover shadow-sm hover:shadow-md transition-all duration-200"
               >
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
                   <line x1="12" y1="5" x2="12" y2="19" />
@@ -203,7 +210,7 @@ export default function AdminPostsPage() {
                     </span>
                   </div>
                   <Link href={`/admin/posts/${post.id}/edit`}>
-                    <h3 className="text-[18px] font-bold text-ink group-hover:text-accent transition-colors mb-2">
+                    <h3 className="text-[18px] font-bold text-ink group-hover:text-accent-content transition-colors mb-2">
                       {post.title}
                     </h3>
                   </Link>
@@ -219,7 +226,7 @@ export default function AdminPostsPage() {
                     <span>·</span>
                     <span>{post.reading_time} min read</span>
                     <span>·</span>
-                    <span className="px-2.5 py-0.5 bg-accent/10 text-accent rounded-full font-semibold">
+                    <span className="px-2.5 py-0.5 bg-accent/10 text-accent-content rounded-full font-semibold">
                       {post.category.name}
                     </span>
                   </div>
@@ -244,5 +251,19 @@ export default function AdminPostsPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function AdminPostsPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex items-center justify-center min-h-[400px]">
+          <div className="w-12 h-12 border-4 border-ink/10 border-t-accent rounded-full animate-spin" />
+        </div>
+      }
+    >
+      <AdminPostsPageInner />
+    </Suspense>
   );
 }

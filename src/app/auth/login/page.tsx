@@ -8,12 +8,6 @@ import { LogoFull } from '@/components/brand/logo-full';
 import { LogoSymbol } from '@/components/brand/logo-symbol';
 import { IconArrowRight } from '@/components/icons';
 
-const platformStats = [
-  { value: '50K+', label: 'Weekly readers' },
-  { value: '8', label: 'Expert topics' },
-  { value: '200+', label: 'Published articles' },
-];
-
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -66,25 +60,16 @@ function LoginForm() {
     <div className="min-h-screen flex">
       {/* ── Left Column — Brand showcase ── */}
       <div className="hidden lg:flex lg:w-[55%] relative bg-ink overflow-hidden">
-        {/* Dot grid pattern (CSS only, no gradients) */}
-        <div
-          className="absolute inset-0 opacity-[0.03]"
-          style={{
-            backgroundImage: 'radial-gradient(circle, #ffffff 1px, transparent 1px)',
-            backgroundSize: '24px 24px',
-          }}
-        />
-
-        {/* Large geometric "S" watermark */}
+        {/* Large cube watermark */}
         <div className="absolute -right-20 -bottom-20 opacity-[0.03]">
-          <LogoSymbol size={500} className="[&_rect]:stroke-white [&_path]:stroke-white [&_rect:last-child]:fill-white" />
+          <LogoSymbol size={500} variant="light" className="text-white" />
         </div>
 
         {/* Content */}
         <div className="relative z-10 flex flex-col justify-between w-full p-12 xl:p-16">
           {/* Top — Logo */}
           <div className="flex items-center gap-3">
-            <LogoSymbol size={36} className="[&_rect]:stroke-white/80 [&_path]:stroke-white/80 [&_rect:last-child]:fill-accent" />
+            <LogoSymbol size={36} variant="light" className="text-white" />
             <div className="flex items-baseline gap-[3px]">
               <span className="text-[17px] font-extrabold tracking-[-0.03em] text-white/90">
                 Ledger Businesses
@@ -102,26 +87,14 @@ function LoginForm() {
             </div>
 
             <h1 className="text-[40px] xl:text-[48px] font-heading font-bold text-white leading-[1.1] tracking-[-0.03em] mb-5">
-              Where editorial
+              Editorial
               <br />
-              excellence
-              <br />
-              <span className="text-accent">begins.</span>
+              <span className="text-accent">admin access</span>
             </h1>
 
             <p className="text-[15px] text-white/35 leading-relaxed max-w-sm">
-              Manage articles, curate topics, and shape the narrative for decision-makers across the globe.
+              Sign in to publish and manage UK-focused accounting and payroll content.
             </p>
-
-            {/* Stats row */}
-            <div className="flex items-center gap-8 mt-10 pt-8 border-t border-white/[0.06]">
-              {platformStats.map((stat) => (
-                <div key={stat.label}>
-                  <p className="text-2xl font-heading font-bold text-accent">{stat.value}</p>
-                  <p className="text-[11px] text-white/25 mt-1">{stat.label}</p>
-                </div>
-              ))}
-            </div>
           </div>
 
           {/* Bottom — Decorative elements */}
@@ -153,7 +126,7 @@ function LoginForm() {
           <div className="mb-8">
             <div className="hidden lg:flex items-center gap-2 mb-6">
               <span className="w-6 h-[2px] bg-accent rounded-full" />
-              <span className="text-[10px] font-bold text-accent uppercase tracking-[0.15em]">
+              <span className="text-[10px] font-bold text-accent-content uppercase tracking-[0.15em]">
                 Sign in
               </span>
             </div>
@@ -194,7 +167,7 @@ function LoginForm() {
                 <label className="block text-[11px] font-bold text-ink/50 uppercase tracking-[0.06em]">
                   Password
                 </label>
-                <button type="button" className="text-[11px] font-medium text-accent hover:underline">
+                <button type="button" className="text-[11px] font-medium text-accent-content hover:underline">
                   Forgot?
                 </button>
               </div>
@@ -249,7 +222,7 @@ function LoginForm() {
           {/* Footer */}
           <div className="mt-8 pt-6 border-t border-ink/[0.06]">
             <div className="flex items-center justify-between">
-              <Link href="/" className="text-xs text-ink/30 hover:text-accent transition-colors flex items-center gap-1.5">
+              <Link href="/" className="text-xs text-ink/30 hover:text-accent-content transition-colors flex items-center gap-1.5">
                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
                   <path d="M10 7H4m0 0l2.5-2.5M4 7l2.5 2.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>

@@ -229,7 +229,7 @@ export default function NewPostPage() {
           <button
             onClick={handleSave}
             disabled={loading}
-            className="flex items-center gap-2 px-6 py-3 bg-accent text-white text-[14px] font-bold rounded-full hover:brightness-110 shadow-sm hover:shadow-md transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex items-center gap-2 px-6 py-3 bg-accent text-accent-foreground text-[14px] font-bold rounded-full hover:bg-accent-hover shadow-sm hover:shadow-md transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? (
               <>
@@ -273,7 +273,7 @@ export default function NewPostPage() {
                 <button
                   type="button"
                   onClick={() => setSlugManual(!slugManual)}
-                  className="text-[12px] font-semibold text-accent hover:text-accent/80 transition-colors"
+                  className="text-[12px] font-semibold text-accent-content hover:text-accent-content/80 transition-colors"
                 >
                   {slugManual ? 'Auto-generate' : 'Edit manually'}
                 </button>
@@ -406,14 +406,14 @@ export default function NewPostPage() {
                               }
                             }
                           }}
-                          className="w-4 h-4 text-accent border-ink/20 rounded focus:ring-accent focus:ring-2"
+                          className="w-4 h-4 text-accent-content border-ink/20 rounded focus:ring-accent focus:ring-2"
                         />
                         <div className="flex-1 flex items-center justify-between">
-                          <span className="text-sm font-medium text-ink group-hover:text-accent transition-colors">
+                          <span className="text-sm font-medium text-ink group-hover:text-accent-content transition-colors">
                             {category.name}
                           </span>
                           {isPrimary && (
-                            <span className="px-2 py-0.5 text-[10px] font-bold text-accent bg-accent/10 rounded-full">
+                            <span className="px-2 py-0.5 text-[10px] font-bold text-accent-content bg-accent/10 rounded-full">
                               PRIMARY
                             </span>
                           )}

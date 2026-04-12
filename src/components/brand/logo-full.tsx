@@ -15,7 +15,9 @@ export function LogoFull({ className = '', variant = 'dark' }: LogoFullProps) {
         <span className={`text-[17px] font-extrabold tracking-[-0.03em] ${textColor}`}>
           Ledger
         </span>
-        <span className={`text-[17px] font-extrabold tracking-[-0.03em] text-accent`}>
+        <span
+          className={`text-[17px] font-extrabold tracking-[-0.03em] ${variant === 'light' ? 'text-accent' : 'text-accent-content'}`}
+        >
           Businesses
         </span>
       </div>

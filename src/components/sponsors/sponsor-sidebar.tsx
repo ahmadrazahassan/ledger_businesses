@@ -23,7 +23,7 @@ export function SponsorSidebar() {
           Reach the leaders who shape strategy.
         </p>
 
-        <div className="flex items-center gap-1.5 text-[12px] font-semibold text-accent group-hover:text-ink transition-colors duration-300">
+        <div className="flex items-center gap-1.5 text-[12px] font-semibold text-accent-content group-hover:text-ink transition-colors duration-300">
           Learn more
           <IconArrowUpRight size={11} />
         </div>

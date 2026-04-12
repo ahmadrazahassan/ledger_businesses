@@ -60,9 +60,9 @@ const quickActions = [
     ),
   },
   {
-    label: 'Import Posts',
+    label: 'Import content',
     href: '/admin/posts/import',
-    desc: 'Bulk JSON import',
+    desc: 'HTML or JSON as drafts',
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
@@ -140,7 +140,7 @@ export default async function AdminDashboard() {
           <p className="text-[13px] text-white/40">Across all published posts</p>
         </div>
 
-        <div className="p-8 rounded-3xl bg-accent text-white">
+        <div className="p-8 rounded-3xl bg-accent text-accent-foreground">
           <div className="flex items-start justify-between mb-6">
             <div>
               <p className="text-[13px] font-bold text-white/50 uppercase tracking-[0.1em] mb-2">Engagement</p>
@@ -167,7 +167,7 @@ export default async function AdminDashboard() {
               className="group p-6 rounded-3xl bg-white border border-ink/[0.06] hover:border-ink/10 hover:shadow-lg hover:shadow-ink/[0.04] transition-all duration-300"
             >
               <div className="flex flex-col gap-4">
-                <div className="w-12 h-12 rounded-2xl bg-ink/[0.04] group-hover:bg-accent/10 flex items-center justify-center text-ink/40 group-hover:text-accent transition-all duration-300">
+                <div className="w-12 h-12 rounded-2xl bg-ink/[0.04] group-hover:bg-accent/10 flex items-center justify-center text-ink/40 group-hover:text-accent-content transition-all duration-300">
                   {action.icon}
                 </div>
                 <div>
@@ -196,7 +196,7 @@ export default async function AdminDashboard() {
             </p>
             <Link
               href="/admin/posts/new"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-accent text-white text-[14px] font-bold rounded-full hover:brightness-110 shadow-sm hover:shadow-md transition-all duration-200"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-accent text-accent-foreground text-[14px] font-bold rounded-full hover:bg-accent-hover shadow-sm hover:shadow-md transition-all duration-200"
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
                 <line x1="12" y1="5" x2="12" y2="19" />

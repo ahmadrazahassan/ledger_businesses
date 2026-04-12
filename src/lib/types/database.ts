@@ -219,6 +219,28 @@ export interface BulkImportRow {
   seo_description?: string;
 }
 
+/** Normalized row for import API (JSON or derived HTML); category_slug optional when default applies */
+export interface ImportPostInput {
+  title: string;
+  slug?: string;
+  excerpt?: string;
+  content_html: string;
+  category_slug?: string;
+  tags?: string[];
+  cover_image?: string;
+  seo_title?: string;
+  seo_description?: string;
+}
+
+export interface ImportRowResult {
+  rowIndex: number;
+  title: string;
+  slug: string;
+  postId?: string;
+  status: 'created' | 'skipped' | 'error';
+  message?: string;
+}
+
 export interface BulkImportResult {
   row: BulkImportRow;
   status: 'valid' | 'duplicate' | 'error';

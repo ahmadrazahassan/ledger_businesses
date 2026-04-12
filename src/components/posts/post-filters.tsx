@@ -24,7 +24,7 @@ export function PostFilters({
         <button
           onClick={() => onCategoryChange(null)}
           className={`px-3.5 py-1.5 text-[11px] font-bold rounded-full transition-all duration-200 ${activeCategory === null
-            ? 'bg-accent text-white'
+            ? 'bg-accent text-accent-foreground'
             : 'bg-ink/[0.03] text-ink/55 hover:bg-ink/[0.06] hover:text-ink/70'
             }`}
         >
@@ -35,7 +35,7 @@ export function PostFilters({
             key={cat.slug}
             onClick={() => onCategoryChange(cat.slug === activeCategory ? null : cat.slug)}
             className={`px-3.5 py-1.5 text-[11px] font-bold rounded-full transition-all duration-200 ${activeCategory === cat.slug
-              ? 'bg-accent text-white'
+              ? 'bg-accent text-accent-foreground'
               : 'bg-ink/[0.03] text-ink/55 hover:bg-ink/[0.06] hover:text-ink/70'
               }`}
           >

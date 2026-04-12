@@ -39,7 +39,7 @@ function TopicItem({ category }: { category: Category }) {
         </h3>
 
         {/* Article count — green */}
-        <span className="text-[11px] font-bold text-accent mt-1 block">
+        <span className="text-[11px] font-bold text-accent-content mt-1 block">
           {category.post_count} articles
         </span>
 

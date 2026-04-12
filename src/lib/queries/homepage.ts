@@ -70,54 +70,6 @@ export async function getLatestPosts(): Promise<PostWithRelations[]> {
   }
 }
 
-export async function getTrendingPosts(): Promise<PostWithRelations[]> {
-  try {
-    const supabase = await createClient();
-    
-    const { data, error } = await supabase
-      .from('posts')
-      .select(`
-        *,
-        author:authors(*),
-        category:categories(*)
-      `)
-      .eq('status', 'published')
-      .order('view_count', { ascending: false })
-      .limit(8);
-
-    if (error) throw error;
-    return data || [];
-  } catch (error) {
-    console.error('Error fetching trending posts:', error);
-    return [];
-  }
-}
-
-export async function getEditorPicks(): Promise<PostWithRelations[]> {
-  try {
-    const supabase = await createClient();
-    
-    // Get posts with high engagement but skip the very top ones to avoid overlap with Trending
-    // Using offset to skip potential overlap with Trending
-    const { data, error } = await supabase
-      .from('posts')
-      .select(`
-        *,
-        author:authors(*),
-        category:categories(*)
-      `)
-      .eq('status', 'published')
-      .order('view_count', { ascending: false })
-      .range(8, 15); // Skip first 8 (Trending)
-
-    if (error) throw error;
-    return data || [];
-  } catch (error) {
-    console.error('Error fetching editor picks:', error);
-    return [];
-  }
-}
-
 export async function getSecondaryHeroPosts(): Promise<PostWithRelations[]> {
   try {
     const supabase = await createClient();

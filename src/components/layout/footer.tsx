@@ -1,120 +1,122 @@
 import Link from 'next/link';
 import { LogoFull } from '@/components/brand/logo-full';
+import { IconMapPin } from '@/components/icons';
+import { FooterNewsletter } from '@/components/layout/footer-newsletter';
+import { FooterNavLink } from '@/components/layout/footer-nav-link';
+import { getCategoryNavLinks } from '@/config/category-navigation';
 
-const footerNav = {
-  explore: [
-    { label: 'Latest', href: '/#latest' },
-    { label: 'Trending', href: '/#trending' },
-    { label: 'Topics', href: '/#topics' },
-    { label: 'Guides', href: '/#deep-dive' },
-    { label: 'Search', href: '/search' },
-  ],
-  topics: [
-    { label: 'Accounting', href: '/category/accounting-bookkeeping' },
-    { label: 'Invoicing', href: '/category/invoicing' },
-    { label: 'Payroll', href: '/category/payroll' },
-    { label: 'HR', href: '/category/hr' },
-    { label: 'Reporting', href: '/category/reporting-business-insights' },
-    { label: 'VAT & Tax', href: '/category/vat-tax-compliance' },
-  ],
-  company: [
-    { label: 'About', href: '/about' },
-    { label: 'Contact', href: '/contact' },
-    { label: 'Privacy', href: '/privacy' },
-    { label: 'Terms', href: '/terms' },
-    { label: 'Affiliate Disclosure', href: '/affiliate-disclosure' },
-  ],
-};
+const INSTAGRAM_HREF = 'https://www.instagram.com/fiza_rana_42';
+
+const companyLinks = [
+  { label: 'Home', href: '/' },
+  { label: 'About', href: '/about' },
+  { label: 'Contact', href: '/contact' },
+  { label: 'Methodology', href: '/methodology' },
+] as const;
+
+const legalLinks = [
+  { label: 'Privacy policy', href: '/privacy' },
+  { label: 'Terms of use', href: '/terms' },
+  { label: 'Affiliate disclosure', href: '/affiliate-disclosure' },
+] as const;
+
+const categoryLinks = getCategoryNavLinks();
+
+function SocialInstagram({ className }: { className?: string }) {
+  return (
+    <svg className={className} width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden>
+      <rect x="2" y="2" width="20" height="20" rx="5" stroke="currentColor" strokeWidth="1.5" />
+      <circle cx="12" cy="12" r="4" stroke="currentColor" strokeWidth="1.5" />
+      <circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" />
+    </svg>
+  );
+}
+
+const colHeading = 'mb-5 text-[15px] font-bold tracking-[-0.02em] text-white';
+
+function NavColumn({
+  title,
+  links,
+  ariaLabel,
+}: {
+  title: string;
+  links: readonly { label: string; href: string }[];
+  ariaLabel: string;
+}) {
+  return (
+    <nav aria-label={ariaLabel} className="min-w-0">
+      <h3 className={colHeading}>{title}</h3>
+      <ul className="space-y-3">
+        {links.map((link) => (
+          <li key={link.href + link.label}>
+            <FooterNavLink href={link.href}>{link.label}</FooterNavLink>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  );
+}
 
 export function Footer() {
+  const year = new Date().getFullYear();
+
   return (
-    <footer className="px-4 md:px-8 pb-4 md:pb-8">
-      {/* Main footer card — rounded */}
-      <div className="mx-auto max-w-[1400px] bg-ink text-white rounded-[28px] md:rounded-[36px] overflow-hidden">
+    <footer className="w-full bg-[#121212] text-white">
+      <div className="mx-auto max-w-[1320px] px-6 py-16 md:px-10 md:py-20 lg:px-12 lg:py-24">
+        <div className="flex flex-col gap-16 lg:flex-row lg:justify-between lg:gap-12 xl:gap-20">
+          {/* Left — editorial + newsletter (Investa-style) */}
+          <div className="max-w-lg shrink-0 lg:max-w-[440px]">
+            <Link href="/" className="inline-block">
+              <LogoFull variant="light" />
+            </Link>
 
-        {/* Footer content */}
-        <div className="px-8 md:px-14 pt-14 pb-8">
-          {/* Brand + nav grid */}
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-10 mb-14">
-            {/* Brand — spans 2 cols on md */}
-            <div className="col-span-2">
-              <div className="mb-5">
-                <LogoFull variant="light" />
-              </div>
-              <p className="text-[13px] text-white/45 leading-relaxed max-w-[280px] mb-6">
-                The authority in business intelligence. Premium editorial coverage for those who lead.
-              </p>
-              {/* Social row */}
-              <div className="flex items-center gap-4">
-                <a 
-                  href="https://www.instagram.com/fiza_rana_42" 
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-[12px] text-white/40 hover:text-accent transition-colors font-medium"
-                >
-                  Instagram
-                </a>
-              </div>
+            <p className="mt-6 text-[14px] leading-relaxed text-white/55">
+              Independent UK editorial on accounting software, payroll, and tax compliance — written for finance
+              teams and business owners.
+            </p>
+            <p className="mt-5 text-[12px] leading-relaxed text-white/40">
+              Your email is never sold. See our{' '}
+              <Link href="/privacy" className="text-white/55 underline underline-offset-2 hover:text-white/80">
+                privacy policy
+              </Link>
+              .
+            </p>
+
+            <div className="mt-6 flex items-start gap-2.5 text-[13px] leading-snug text-white/65">
+              <IconMapPin size={18} className="mt-0.5 shrink-0 text-white/45" aria-hidden />
+              <span>Birmingham, United Kingdom</span>
             </div>
 
-            {/* Explore */}
-            <div>
-              <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/35 mb-5">
-                Explore
-              </h4>
-              <ul className="space-y-2.5">
-                {footerNav.explore.map((link) => (
-                  <li key={link.label}>
-                    <Link href={link.href} className="text-[13px] text-white/50 hover:text-accent transition-colors duration-200">
-                      {link.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
+            <div className="mt-4">
+              <a
+                href={INSTAGRAM_HREF}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Ledger Businesses on Instagram"
+                className="inline-flex rounded-lg p-1.5 -m-1.5 text-white/75 transition-colors hover:bg-white/[0.06] hover:text-accent"
+              >
+                <SocialInstagram />
+              </a>
             </div>
 
-            {/* Topics */}
-            <div>
-              <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/35 mb-5">
-                Topics
-              </h4>
-              <ul className="space-y-2.5">
-                {footerNav.topics.map((link) => (
-                  <li key={link.label}>
-                    <Link href={link.href} className="text-[13px] text-white/50 hover:text-accent transition-colors duration-200">
-                      {link.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Company */}
-            <div>
-              <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/35 mb-5">
-                Company
-              </h4>
-              <ul className="space-y-2.5">
-                {footerNav.company.map((link) => (
-                  <li key={link.label}>
-                    <Link href={link.href} className="text-[13px] text-white/50 hover:text-accent transition-colors duration-200">
-                      {link.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
+            <div className="mt-10 border-t border-white/[0.08] pt-10">
+              <FooterNewsletter variant="investa" />
             </div>
           </div>
 
-          {/* Bottom bar */}
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/[0.06]">
-            <p className="text-[11px] text-white/30">
-              &copy; {new Date().getFullYear()} Ledger Businesses. All rights reserved.
-            </p>
-            <p className="text-[11px] text-white/30">
-              Built with conviction, not compromise.
-            </p>
+          {/* Right — Company · Legal · Categories */}
+          <div className="grid min-w-0 flex-1 grid-cols-1 gap-12 sm:grid-cols-2 sm:gap-x-10 lg:grid-cols-3 lg:gap-8 xl:gap-12">
+            <NavColumn title="Company" links={companyLinks} ariaLabel="Company" />
+            <NavColumn title="Legal" links={legalLinks} ariaLabel="Legal" />
+            <div className="sm:col-span-2 lg:col-span-1">
+              <NavColumn title="Categories" links={categoryLinks} ariaLabel="Categories" />
+            </div>
           </div>
+        </div>
+
+        <div className="mt-20 flex flex-col gap-4 border-t border-white/[0.08] pt-10 md:flex-row md:items-center md:justify-between">
+          <p className="text-[13px] text-white/45">© {year} Ledger Businesses. All rights reserved.</p>
+          <p className="text-[13px] text-white/40">Birmingham, UK — Editorial content</p>
         </div>
       </div>
     </footer>

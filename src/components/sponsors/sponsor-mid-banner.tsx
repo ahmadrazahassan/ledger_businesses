@@ -22,7 +22,7 @@ export function SponsorMidBanner({ posts }: SponsorMidBannerProps) {
                   Featured Reads
                 </span>
               </div>
-              <Link href="/#latest" className="text-[11px] font-semibold text-accent hover:text-accent/70 transition-colors flex items-center gap-1">
+              <Link href="/#latest" className="text-[11px] font-semibold text-accent-content hover:text-accent-content/70 transition-colors flex items-center gap-1">
                 View all <IconArrowRight size={10} />
               </Link>
             </div>
@@ -35,7 +35,7 @@ export function SponsorMidBanner({ posts }: SponsorMidBannerProps) {
                 href={`/articles/${post.slug}`}
                 className="group block px-7 md:px-8 py-6 hover:bg-white/[0.03] transition-colors"
               >
-                <span className="text-[10px] font-bold text-accent uppercase tracking-[0.08em]">
+                <span className="text-[10px] font-bold text-accent-content uppercase tracking-[0.08em]">
                   {post.category.name}
                 </span>
                 <h4 className="text-[15px] font-semibold text-white leading-snug mt-1.5 mb-3 group-hover:text-white/70 transition-colors line-clamp-2">
@@ -57,7 +57,7 @@ export function SponsorMidBanner({ posts }: SponsorMidBannerProps) {
             </span>
             <a
               href="mailto:fiza@ledgerthebusinesses.com"
-              className="text-[10px] font-semibold text-accent/50 hover:text-accent transition-colors flex items-center gap-1"
+              className="text-[10px] font-semibold text-accent-content/50 hover:text-accent-content transition-colors flex items-center gap-1"
             >
               Advertise <IconArrowUpRight size={9} />
             </a>

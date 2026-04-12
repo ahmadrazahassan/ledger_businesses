@@ -19,14 +19,15 @@ export default function AffiliateDisclosurePage() {
         <SectionWrapper narrow className="pt-16 md:pt-24 pb-16">
           {/* Header */}
           <div className="mb-12">
-            <span className="inline-block px-3 py-1 bg-accent/15 text-accent text-xs font-bold rounded-full mb-6">
+            <span className="inline-block px-3 py-1 bg-accent/15 text-accent-content text-xs font-bold rounded-full mb-6">
               Transparency
             </span>
             <h1 className="text-4xl md:text-5xl font-heading font-bold text-ink leading-tight mb-4">
               Affiliate Disclosure
             </h1>
             <p className="text-lg text-ink/60">
-              Last updated: {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+              Last updated:{' '}
+              {new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}
             </p>
           </div>
 
@@ -58,18 +59,16 @@ export default function AffiliateDisclosurePage() {
                 <h2 className="text-2xl md:text-3xl font-heading font-bold text-ink mb-4">Our Affiliate Partners</h2>
                 <div className="space-y-4 text-ink/70 leading-relaxed">
                   <p>
-                    Ledger Businesses participates in affiliate programs with select companies and platforms, including but not limited to:
+                    Ledger Businesses participates in affiliate programs with select companies and platforms, primarily focusing on the UK SME market:
                   </p>
                   <ul className="list-disc pl-6 space-y-2">
-                    <li>Software and SaaS platforms relevant to business operations</li>
-                    <li>Business tools and productivity applications</li>
-                    <li>Professional services and consulting firms</li>
-                    <li>Educational resources and training programs</li>
-                    <li>Books and publications on business topics</li>
-                    <li>Conference and event registrations</li>
+                    <li>UK Accounting software platforms (e.g., Sage, Xero, QuickBooks)</li>
+                    <li>HMRC-recognized Payroll and HR systems</li>
+                    <li>MTD (Making Tax Digital) compliance tools</li>
+                    <li>Invoicing and payment processing solutions</li>
                   </ul>
                   <p>
-                    We carefully select affiliate partners based on their relevance to our audience and the quality of their offerings. We only promote products and services that we believe provide genuine value to business leaders and decision-makers.
+                    We carefully select affiliate partners based on their relevance to UK small businesses, accountants, and bookkeepers. We only promote products and services that we believe provide genuine value and adhere to UK financial regulations.
                   </p>
                 </div>
               </section>
@@ -205,7 +204,7 @@ export default function AffiliateDisclosurePage() {
                   <div className="p-6 rounded-2xl bg-white border border-ink/[0.06] mt-4">
                     <p className="font-semibold text-ink mb-2">Ledger Businesses</p>
                     <p>Email: fiza@ledgerthebusinesses.com</p>
-                    <p>Contact Form: <a href="/contact" className="text-accent hover:underline">ledgerbusinesses.com/contact</a></p>
+                    <p>Contact Form: <a href="/contact" className="text-accent-content hover:underline">ledgerbusinesses.com/contact</a></p>
                   </div>
                   <p className="mt-4">
                     We're committed to transparency and welcome your feedback on how we can better serve our readers while maintaining the financial sustainability necessary to produce high-quality journalism.
@@ -223,7 +222,7 @@ export default function AffiliateDisclosurePage() {
             </p>
             <a
               href="/about"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-accent text-white text-sm font-bold rounded-full hover:brightness-110 transition-all"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-accent text-accent-foreground text-sm font-bold rounded-full hover:bg-accent-hover transition-all"
             >
               Learn More About Us
             </a>

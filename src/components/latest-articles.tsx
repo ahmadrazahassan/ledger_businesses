@@ -61,7 +61,7 @@ export function LatestArticles({ posts, categories }: LatestArticlesProps) {
         <div className="pt-12 text-center">
           <button
             onClick={() => setShowCount((c) => c + 12)}
-            className="inline-flex items-center gap-2 pl-8 pr-6 py-3.5 bg-accent text-white text-[14px] font-bold rounded-full hover:bg-accent/85 transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5"
+            className="inline-flex items-center gap-2 pl-8 pr-6 py-3.5 bg-accent text-accent-foreground text-[14px] font-semibold rounded-full transition-colors hover:bg-accent-hover shadow-lg hover:shadow-xl hover:-translate-y-0.5"
           >
             Load more articles
             <span className="w-6 h-6 rounded-full bg-ink/10 flex items-center justify-center">

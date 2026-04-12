@@ -161,7 +161,7 @@ export default function AdminBannersPage() {
         </div>
         <button
           onClick={openAdd}
-          className="inline-flex items-center gap-1.5 px-5 py-2.5 bg-accent text-white text-[12px] font-bold rounded-full hover:brightness-110 shadow-sm transition-all"
+          className="inline-flex items-center gap-1.5 px-5 py-2.5 bg-accent text-accent-foreground text-[12px] font-bold rounded-full hover:bg-accent-hover shadow-sm transition-all"
         >
           <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 2.5v7M2.5 6h7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" /></svg>
           Add Banner
@@ -171,7 +171,7 @@ export default function AdminBannersPage() {
       {/* Banner Size Guide */}
       <div className="mb-8 p-6 rounded-2xl bg-white border border-ink/[0.06]">
         <div className="flex items-center gap-2 mb-4">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-accent">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-accent-content">
             <circle cx="12" cy="12" r="10" />
             <line x1="12" y1="16" x2="12" y2="12" />
             <line x1="12" y1="8" x2="12.01" y2="8" />
@@ -187,7 +187,7 @@ export default function AdminBannersPage() {
                   <span className={`px-2 py-1 text-[10px] font-bold rounded-full ${placementPill[placement]}`}>
                     {placementLabel[placement]}
                   </span>
-                  <span className="text-[11px] font-mono font-bold text-accent">{spec.size}</span>
+                  <span className="text-[11px] font-mono font-bold text-accent-content">{spec.size}</span>
                 </div>
                 <p className="text-[11px] text-ink/50 leading-relaxed">{spec.description}</p>
                 <p className="text-[10px] text-ink/35 mt-2 font-medium">{spec.dimensions}</p>
@@ -234,12 +234,12 @@ export default function AdminBannersPage() {
                           value={placement}
                           checked={isSelected}
                           onChange={(e) => patch({ placement_key: e.target.value as BannerPlacement })}
-                          className="mt-1 w-4 h-4 text-accent border-ink/20 focus:ring-accent"
+                          className="mt-1 w-4 h-4 text-accent-content border-ink/20 focus:ring-accent"
                         />
                         <div className="flex-1">
                           <div className="flex items-center justify-between mb-1">
                             <span className="text-[13px] font-bold text-ink">{placementLabel[placement]}</span>
-                            <span className="text-[11px] font-mono font-semibold text-accent">{spec.size}</span>
+                            <span className="text-[11px] font-mono font-semibold text-accent-content">{spec.size}</span>
                           </div>
                           <p className="text-[11px] text-ink/50 leading-relaxed mb-1">{spec.description}</p>
                           <p className="text-[10px] text-ink/35 font-medium">{spec.dimensions}</p>
@@ -267,7 +267,7 @@ export default function AdminBannersPage() {
                   ) : (
                     <div>
                       <div className="w-10 h-10 rounded-xl bg-ink/[0.04] group-hover:bg-accent/10 flex items-center justify-center mx-auto mb-2 transition-all">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="text-ink/25 group-hover:text-accent transition-colors"><rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="8.5" cy="8.5" r="1.5" /><path d="M21 15l-5-5L5 21" /></svg>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="text-ink/25 group-hover:text-accent-content transition-colors"><rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="8.5" cy="8.5" r="1.5" /><path d="M21 15l-5-5L5 21" /></svg>
                       </div>
                       <p className="text-[13px] text-ink/40 group-hover:text-ink/60 transition-colors font-medium">Drop an image or click to upload</p>
                       <p className="text-[11px] text-ink/25 mt-0.5">PNG, JPG up to 2 MB</p>
@@ -320,7 +320,7 @@ export default function AdminBannersPage() {
 
             <div className="flex items-center justify-end gap-2 px-6 py-5 border-t border-ink/[0.06] mt-1">
               <button onClick={closeForm} className="px-5 py-2.5 text-[12px] font-semibold text-ink/50 hover:text-ink/70 rounded-full transition-all">Cancel</button>
-              <button onClick={handleSave} className="px-6 py-2.5 bg-accent text-white text-[12px] font-bold rounded-full hover:brightness-110 shadow-sm transition-all">
+              <button onClick={handleSave} className="px-6 py-2.5 bg-accent text-accent-foreground text-[12px] font-bold rounded-full hover:bg-accent-hover shadow-sm transition-all">
                 {editingId ? 'Save Changes' : 'Add Banner'}
               </button>
             </div>
@@ -336,7 +336,7 @@ export default function AdminBannersPage() {
           </div>
           <p className="text-[14px] text-ink/50 mb-1 font-medium">No banners yet</p>
           <p className="text-[12px] text-ink/35 mb-5">Create your first ad placement.</p>
-          <button onClick={openAdd} className="px-5 py-2.5 bg-accent text-white text-[12px] font-bold rounded-full hover:brightness-110 shadow-sm transition-all">
+          <button onClick={openAdd} className="px-5 py-2.5 bg-accent text-accent-foreground text-[12px] font-bold rounded-full hover:bg-accent-hover shadow-sm transition-all">
             Create Banner
           </button>
         </div>

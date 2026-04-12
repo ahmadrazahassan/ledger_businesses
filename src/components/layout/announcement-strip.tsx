@@ -14,6 +14,8 @@ interface AnnouncementStripProps {
   items?: AnnouncementItem[];
 }
 
+const ANNOUNCEMENT_DISMISS_EVENT = 'ledger-announcement-dismissed';
+
 export function AnnouncementStrip({ items = [] }: AnnouncementStripProps) {
   const [dismissed, setDismissed] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -39,7 +41,10 @@ export function AnnouncementStrip({ items = [] }: AnnouncementStripProps) {
   const current = items[activeIndex];
 
   return (
-    <div className="relative bg-accent overflow-hidden">
+    <div
+      id="site-announcement-strip"
+      className="relative z-40 bg-accent overflow-hidden"
+    >
       <div className="mx-auto max-w-[1400px] px-5 md:px-10 py-2 flex items-center justify-center gap-3">
         {/* Indicator dots */}
         {items.length > 1 && (
@@ -84,7 +89,13 @@ export function AnnouncementStrip({ items = [] }: AnnouncementStripProps) {
         </div>
       </div>
       <button
-        onClick={() => setDismissed(true)}
+        type="button"
+        onClick={() => {
+          setDismissed(true);
+          if (typeof window !== 'undefined') {
+            window.dispatchEvent(new CustomEvent(ANNOUNCEMENT_DISMISS_EVENT));
+          }
+        }}
         className="absolute right-4 top-1/2 -translate-y-1/2 p-1.5 text-ink/30 hover:text-ink/70 transition-colors"
         aria-label="Dismiss"
       >

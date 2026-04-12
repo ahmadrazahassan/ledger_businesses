@@ -30,7 +30,7 @@ export default function ContactPage() {
           <div className="mb-14 md:mb-20">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-2 h-2 rounded-full bg-accent animate-pulse" />
-              <span className="text-[13px] font-semibold text-accent uppercase tracking-[0.12em]">
+              <span className="text-[13px] font-semibold text-accent-content uppercase tracking-[0.12em]">
                 Available to connect
               </span>
             </div>
@@ -56,13 +56,13 @@ export default function ContactPage() {
                   className="flex items-center gap-3.5 px-4 py-4 rounded-2xl border border-ink/[0.06] bg-white hover:border-accent/20 hover:shadow-lg hover:shadow-accent/[0.04] transition-all duration-300"
                 >
                   <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center shrink-0">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-accent">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-accent-content">
                       <rect x="2" y="4" width="20" height="16" rx="2" />
                       <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
                     </svg>
                   </div>
                   <div className="min-w-0">
-                    <p className="text-[13px] font-semibold text-ink group-hover:text-accent transition-colors break-all">fiza@ledgerthebusinesses.com</p>
+                    <p className="text-[13px] font-semibold text-ink group-hover:text-accent-content transition-colors break-all">fiza@ledgerthebusinesses.com</p>
                     <p className="text-[12px] text-ink/40 mt-0.5">For all inquiries</p>
                   </div>
                 </a>
@@ -78,24 +78,24 @@ export default function ContactPage() {
                   className="flex items-center gap-3.5 px-4 py-4 rounded-2xl border border-ink/[0.06] bg-white hover:border-accent/20 hover:shadow-lg hover:shadow-accent/[0.04] transition-all duration-300 group"
                 >
                   <div className="w-10 h-10 rounded-lg bg-ink/[0.04] group-hover:bg-accent/10 flex items-center justify-center shrink-0 transition-all">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-ink/40 group-hover:text-accent transition-colors">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-ink/40 group-hover:text-accent-content transition-colors">
                       <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
                       <path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z" />
                       <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
                     </svg>
                   </div>
                   <div>
-                    <p className="text-[14px] font-semibold text-ink group-hover:text-accent transition-colors">Instagram</p>
+                    <p className="text-[14px] font-semibold text-ink group-hover:text-accent-content transition-colors">Instagram</p>
                     <p className="text-[12px] text-ink/40 mt-0.5">@fiza_rana_42</p>
                   </div>
                 </a>
               </div>
 
               {/* Response Time */}
-              <div className="px-4 py-4 rounded-2xl bg-gradient-to-br from-accent/[0.06] to-accent/[0.02] border border-accent/10">
+              <div className="px-4 py-4 rounded-2xl bg-accent/[0.06] border border-accent/10">
                 <div className="flex items-center gap-2.5 mb-2">
                   <div className="w-7 h-7 rounded-full bg-accent/15 flex items-center justify-center">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-accent">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-accent-content">
                       <circle cx="12" cy="12" r="10" />
                       <polyline points="12 6 12 12 16 14" />
                     </svg>
@@ -139,14 +139,14 @@ export default function ContactPage() {
                 <div className="h-full flex items-center justify-center p-12 rounded-3xl border border-accent/15 bg-accent/[0.04]">
                   <div className="text-center">
                     <div className="w-16 h-16 rounded-full bg-accent/15 flex items-center justify-center mx-auto mb-6">
-                      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-accent">
+                      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-accent-content">
                         <polyline points="20 6 9 17 4 12" />
                       </svg>
                     </div>
                     <h3 className="text-2xl font-heading font-bold text-ink mb-3">Message Sent!</h3>
                     <p className="text-ink/50 leading-relaxed max-w-sm mx-auto">
                       Your email client should have opened. If not, you can reach me directly at{' '}
-                      <a href="mailto:fiza@ledgerthebusinesses.com" className="text-accent font-medium">
+                      <a href="mailto:fiza@ledgerthebusinesses.com" className="text-accent-content font-medium">
                         fiza@ledgerthebusinesses.com
                       </a>
                     </p>
