@@ -2,9 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 import type { SupabaseClient } from '@supabase/supabase-js';
-import { insertPostWithCategories } from '@/app/admin/posts/post-insert-shared';
 import { createClient } from '@/lib/supabase/server';
-import { parseHtmlForImport, titleFromFileName } from '@/lib/import/html-import';
 import type { ImportHtmlArticleResult, PostFormData, PostStatus } from '@/lib/types/database';
 import { slugify } from '@/lib/utils';
 
@@ -27,6 +25,26 @@ function publishedAtForStatus(status: PostStatus): string | null {
   return null;
 }
 
+export async function getImportDefaults() {
+  const supabase = await createClient();
+  const [authorsResult, categoriesResult] = await Promise.all([
+    supabase.from('authors').select('id, name').eq('is_active', true).order('name'),
+    supabase.from('categories').select('id, name').eq('is_active', true).order('sort_order'),
+  ]);
+
+  if (authorsResult.error) {
+    throw new Error(`Unable to fetch authors: ${authorsResult.error.message}`);
+  }
+  if (categoriesResult.error) {
+    throw new Error(`Unable to fetch categories: ${categoriesResult.error.message}`);
+  }
+
+  return {
+    authors: authorsResult.data ?? [],
+    categories: categoriesResult.data ?? [],
+  };
+}
+
 export async function importHtmlArticle(input: {
   fileName: string;
   html: string;
@@ -43,6 +61,8 @@ export async function importHtmlArticle(input: {
   if (html.length > MAX_HTML_CHARS) {
     return { success: false, fileName, message: 'HTML exceeds maximum size.' };
   }
+
+  const { parseHtmlForImport, titleFromFileName } = await import('@/lib/import/html-import');
 
   let parsed;
   try {
@@ -66,12 +86,11 @@ export async function importHtmlArticle(input: {
   }
 
   const supabase = await createClient();
+  const { insertPostWithCategories } = await import('@/app/admin/posts/post-insert-shared');
 
   const baseSlug = slugify(title) || slugify(titleFromFileName(fileName)) || 'imported-article';
   const uniqueSlug = await resolveUniquePostSlug(supabase, baseSlug);
-
   const categoryIds = category_ids?.length ? category_ids : [category_id];
-
   const textContent = content.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
 
   const postData: PostFormData = {
@@ -95,7 +114,6 @@ export async function importHtmlArticle(input: {
   };
 
   const result = await insertPostWithCategories(supabase, postData);
-
   if (!result.success) {
     return { success: false, fileName, title, message: result.error };
   }

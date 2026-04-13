@@ -1,6 +1,6 @@
+import 'server-only';
 import { parse } from 'node-html-parser';
 import DOMPurify from 'isomorphic-dompurify';
-import type { PostStatus } from '@/lib/types/database';
 
 export interface ParsedHtmlArticle {
   title: string;
@@ -24,11 +24,11 @@ function buildExcerptFromPlainText(fullText: string, title: string): string {
   const summary = sentences.slice(0, 2).join(' ');
   const candidate = summary || sentences[0] || text;
   if (!candidate) return '';
-  return candidate.length > 220 ? `${candidate.slice(0, 217).trimEnd()}…` : candidate;
+  return candidate.length > 220 ? `${candidate.slice(0, 217).trimEnd()}...` : candidate;
 }
 
 /**
- * Parse and sanitize HTML for post import (server-side).
+ * Parse and sanitize HTML for post import (server-side only).
  */
 export function parseHtmlForImport(rawHtml: string): ParsedHtmlArticle {
   const root = parse(rawHtml, { lowerCaseTagName: true });
@@ -64,11 +64,8 @@ export function parseHtmlForImport(rawHtml: string): ParsedHtmlArticle {
     : [];
 
   const ogImage = root.querySelector('meta[property="og:image"]')?.getAttribute('content')?.trim() ?? '';
-
   const innerHtml = contentRoot.innerHTML;
-  const sanitized = DOMPurify.sanitize(innerHtml, {
-    USE_PROFILES: { html: true },
-  });
+  const sanitized = DOMPurify.sanitize(innerHtml, { USE_PROFILES: { html: true } });
 
   const seo_title = (ogTitle || title).trim();
   const seo_description = cleanText(descMeta ?? ogDesc ?? excerpt ?? '');
@@ -88,15 +85,4 @@ export function titleFromFileName(fileName: string): string {
   const base = fileName.replace(/\.(html|htm)$/i, '').split('/').pop() || fileName;
   const human = base.replace(/[-_]+/g, ' ').replace(/\s+/g, ' ').trim();
   return human || 'Imported article';
-}
-
-/** Guardrails for client-side batching before hitting the server action. */
-export const HTML_IMPORT_LIMITS = {
-  maxFiles: 150,
-  maxHtmlCharsPerFile: 12 * 1024 * 1024,
-  maxZipBytes: 32 * 1024 * 1024,
-} as const;
-
-export function isAllowedImportStatus(s: string): s is PostStatus {
-  return s === 'draft' || s === 'published' || s === 'scheduled' || s === 'archived';
 }

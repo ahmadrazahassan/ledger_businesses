@@ -3,11 +3,10 @@
 import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
 import { useToast } from '@/components/ui/toast';
-import { HTML_IMPORT_LIMITS, isAllowedImportStatus } from '@/lib/import/html-import';
+import { HTML_IMPORT_LIMITS, isAllowedImportStatus } from '@/lib/import/constants';
 import { extractHtmlFilesFromZip } from '@/lib/import/zip';
 import type { HtmlImportQueueItem, PostStatus } from '@/lib/types/database';
-import { getAuthors, getCategories } from '../posts/actions';
-import { importHtmlArticle } from './actions';
+import { getImportDefaults, importHtmlArticle } from './actions';
 
 function newId() {
   return typeof crypto !== 'undefined' && crypto.randomUUID
@@ -69,8 +68,10 @@ export default function AdminImportHtmlPage() {
     let cancelled = false;
     (async () => {
       try {
-        const [cats, auths] = await Promise.all([getCategories(), getAuthors()]);
+        const defaults = await getImportDefaults();
         if (cancelled) return;
+        const cats = defaults.categories ?? [];
+        const auths = defaults.authors ?? [];
         setCategories(cats);
         setAuthors(auths);
         if (auths.length > 0) setAuthorId(auths[0].id);
