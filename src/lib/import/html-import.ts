@@ -1,6 +1,6 @@
 import 'server-only';
 import { parse } from 'node-html-parser';
-import DOMPurify from 'isomorphic-dompurify';
+import sanitizeHtml from 'sanitize-html';
 
 export interface ParsedHtmlArticle {
   title: string;
@@ -65,11 +65,24 @@ export function parseHtmlForImport(rawHtml: string): ParsedHtmlArticle {
 
   const ogImage = root.querySelector('meta[property="og:image"]')?.getAttribute('content')?.trim() ?? '';
   const innerHtml = contentRoot.innerHTML;
+  // Use sanitize-html (no jsdom). isomorphic-dompurify pulls jsdom and breaks on Vercel (ERR_REQUIRE_ESM).
   let sanitized: string;
   try {
-    sanitized = DOMPurify.sanitize(innerHtml, { USE_PROFILES: { html: true } });
+    sanitized = sanitizeHtml(innerHtml, {
+      allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img', 'picture', 'source']),
+      allowedAttributes: {
+        ...sanitizeHtml.defaults.allowedAttributes,
+        a: ['href', 'name', 'target', 'rel'],
+        img: ['src', 'srcset', 'alt', 'title', 'width', 'height', 'loading', 'decoding'],
+        source: ['src', 'srcset', 'type', 'media', 'sizes'],
+      },
+      allowedSchemes: ['http', 'https', 'mailto', 'tel'],
+      allowedSchemesByTag: {
+        img: ['http', 'https', 'data'],
+      },
+    });
   } catch (e) {
-    console.error('[parseHtmlForImport] DOMPurify.sanitize failed, using raw inner HTML:', e);
+    console.error('[parseHtmlForImport] sanitize-html failed, using raw inner HTML:', e);
     sanitized = innerHtml;
   }
 
