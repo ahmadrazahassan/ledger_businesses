@@ -2,13 +2,12 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
-import { SectionWrapper } from '@/components/layout/section-wrapper';
 import { CONTACT_EMAIL, CONTACT_MAILTO } from '@/lib/site';
 
 export const metadata: Metadata = {
-  title: 'About Us',
+  title: 'About',
   description:
-    'Who we are: independent UK accounting and payroll software reviews, led by editor Fiza. Editorial standards and affiliate transparency.',
+    'Ledger Businesses: independent UK editorial on accounting, payroll, and tax compliance software — methodology, editor credentials, and contact.',
   alternates: {
     canonical: '/about',
   },
@@ -18,163 +17,157 @@ export default function AboutPage() {
   return (
     <>
       <Header />
-      <main>
-        <SectionWrapper narrow className="pt-14 md:pt-20 pb-20 md:pb-24">
-          <div className="mb-16 md:mb-20">
-            <span className="inline-flex items-center px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-ink/50 border border-ink/10 rounded-full mb-7">
-              About Ledger Businesses
-            </span>
-            <h1 className="text-[40px] md:text-[60px] font-heading font-bold text-ink leading-[0.98] tracking-[-0.03em] max-w-4xl mb-7">
-              Independent UK accounting software reviews and guides.
-            </h1>
-            <p className="text-[18px] md:text-[21px] text-ink/60 leading-relaxed max-w-3xl">
-              We publish practical, hands-on reviews of accounting, payroll, and tax compliance software. Every guide is designed to help UK SMEs make confident, compliant software decisions.
-            </p>
-          </div>
+      <main className="bg-white">
+        <div className="mx-auto max-w-[1240px] px-5 py-14 md:px-10 md:py-20 lg:px-14 lg:py-24">
+          <div className="rounded-2xl border border-ink/12 px-6 py-12 md:px-10 md:py-16 lg:px-14 lg:py-20">
+            <header className="max-w-3xl">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-ink/40">Ledger Businesses</p>
+              <h1 className="mt-5 text-[clamp(2rem,4.5vw,3.5rem)] font-heading font-bold leading-[1.05] tracking-[-0.04em] text-ink">
+                Independent UK software intelligence for finance-led operators.
+              </h1>
+              <p className="mt-6 text-[17px] leading-[1.65] text-ink/55 md:text-[18px]">
+                We publish hands-on reviews and implementation guides for accounting, payroll, and tax compliance
+                software — written so UK SMEs can choose and run systems with confidence, including Making Tax Digital
+                (MTD) aligned workflows where they apply.
+              </p>
+            </header>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-16 md:mb-20">
-            <div className="rounded-2xl border border-ink/10 bg-white p-6">
-              <p className="text-[10px] uppercase tracking-[0.14em] text-ink/45 mb-2">Focus</p>
-              <p className="text-[22px] font-heading font-bold text-ink">UK SMEs</p>
+            <div className="mt-14 grid grid-cols-1 divide-y divide-ink/10 border-y border-ink/10 md:mt-20 md:grid-cols-3 md:divide-x md:divide-y-0">
+              {[
+                { k: 'Audience', v: 'UK SMEs & finance teams' },
+                { k: 'Coverage', v: 'Accounting · Payroll · Compliance' },
+                { k: 'Standard', v: 'Editorial-first, evidence-led' },
+              ].map((row) => (
+                <div key={row.k} className="py-6 md:px-6 md:py-8 lg:px-8">
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-ink/40">{row.k}</p>
+                  <p className="mt-3 text-[17px] font-heading font-bold tracking-tight text-ink md:text-[18px]">{row.v}</p>
+                </div>
+              ))}
             </div>
-            <div className="rounded-2xl border border-ink/10 bg-white p-6">
-              <p className="text-[10px] uppercase tracking-[0.14em] text-ink/45 mb-2">Coverage</p>
-              <p className="text-[22px] font-heading font-bold text-ink">Accounting + Payroll</p>
-            </div>
-            <div className="rounded-2xl border border-ink/10 bg-white p-6">
-              <p className="text-[10px] uppercase tracking-[0.14em] text-ink/45 mb-2">Standard</p>
-              <p className="text-[22px] font-heading font-bold text-ink">Editorial First</p>
-            </div>
-          </div>
 
-          {/* Meet the Founder */}
-          <div className="border-y border-ink/10 py-14 md:py-16 mb-16 md:mb-20">
-            <div className="flex flex-col md:flex-row gap-10 md:gap-14 items-start">
-              <div className="shrink-0">
-                <div className="w-28 h-28 md:w-36 md:h-36 rounded-2xl bg-ink/[0.06] border border-ink/10 flex items-center justify-center">
-                  <span className="text-[48px] md:text-[56px] font-heading font-bold text-accent-content/60">F</span>
+            <section className="mt-14 border-b border-ink/10 pb-14 md:mt-20 md:grid md:grid-cols-12 md:gap-12 lg:gap-16 md:pb-20">
+              <div className="md:col-span-4">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-ink/40">Founder & editor-in-chief</p>
+                <h2 className="mt-4 text-3xl font-heading font-bold tracking-tight text-ink md:text-4xl">Fiza</h2>
+                <div className="mt-8 hidden h-40 w-full max-w-[200px] rounded-lg border border-ink/10 bg-ink/[0.03] md:flex md:items-center md:justify-center">
+                  <span className="text-5xl font-heading font-bold text-ink/15">F</span>
                 </div>
               </div>
-              <div>
-                <p className="text-[11px] uppercase tracking-[0.14em] text-accent-content font-semibold mb-3">Founder & Editor-in-Chief</p>
-                <h2 className="text-[30px] md:text-[40px] font-heading font-bold text-ink leading-[1.05] mb-5">
-                  Fiza
-                </h2>
-                <div className="space-y-4 text-[17px] md:text-[19px] text-ink/65 leading-relaxed max-w-3xl">
-                  <p>
-                    Fiza is the founder and editor-in-chief of Ledger Businesses — a specialist editorial platform dedicated to reviewing and evaluating accounting, bookkeeping, invoicing, payroll, HR, financial reporting, and VAT &amp; tax compliance software for UK small and medium enterprises.
-                  </p>
-                  <p>
-                    With over 8 years of experience as a certified bookkeeper and financial operations consultant in the UK, Fiza has spent her career researching, implementing, and writing about the systems that help companies stay compliant, efficient, and growth-ready. She holds an AAT Level 4 Diploma in Professional Accounting and has guided dozens of SMEs through their transition to Making Tax Digital (MTD) compliant software.
-                  </p>
-                  <p>
-                    Her editorial approach is rooted in accuracy, clarity, and practical application — every software review, guide, and framework published on Ledger Businesses is fact-checked against official HMRC guidance, industry standards, and current regulatory requirements. Fiza personally oversees all software testing and editorial content, ensuring that Ledger Businesses delivers only thoroughly researched, unbiased, and actionable intelligence.
-                  </p>
-                  <p>
-                    Her mission is to make professional-grade financial software knowledge freely accessible to founders, finance leads, and business operators who need real answers — not theory.
-                  </p>
-                </div>
-                <div className="flex items-center gap-6 mt-6">
-                  <a
-                    href={CONTACT_MAILTO}
-                    className="inline-flex items-center gap-2 text-accent-content font-semibold text-[15px] hover:gap-3 transition-all"
-                  >
+              <div className="mt-10 space-y-5 text-[16px] leading-[1.7] text-ink/60 md:col-span-8 md:mt-0 md:text-[17px]">
+                <p>
+                  Fiza is the founder and editor-in-chief of Ledger Businesses — a specialist editorial platform focused on
+                  reviewing accounting, bookkeeping, invoicing, payroll, HR, reporting, and VAT &amp; tax compliance
+                  software for UK small and medium-sized enterprises.
+                </p>
+                <p>
+                  She has over eight years&apos; experience as a certified bookkeeper and financial operations consultant
+                  in the UK, with an AAT Level 4 Diploma in Professional Accounting. That background informs how we test
+                  products, interpret HMRC-facing requirements, and translate vendor capability into what actually matters
+                  on a month-end close or payroll run.
+                </p>
+                <p>
+                  Content is checked against official guidance and current regulatory context where relevant; commercial
+                  relationships are disclosed and do not determine our recommendations. The goal is practical,
+                  defensible advice readers can act on — not generic rankings.
+                </p>
+                <div className="flex flex-wrap gap-x-8 gap-y-3 pt-4 text-[14px] font-medium text-ink">
+                  <a href={CONTACT_MAILTO} className="border-b border-ink/20 pb-0.5 transition-colors hover:border-ink">
                     {CONTACT_EMAIL}
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <line x1="7" y1="17" x2="17" y2="7" />
-                      <polyline points="7 7 17 7 17 17" />
-                    </svg>
                   </a>
                   <a
                     href="https://linkedin.com/in/fiza-rana"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 text-[#0077b5] font-semibold text-[15px] hover:brightness-110 transition-all"
+                    className="border-b border-ink/20 pb-0.5 transition-colors hover:border-ink"
                   >
                     LinkedIn
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
-                      <rect x="2" y="9" width="4" height="12" />
-                      <circle cx="4" cy="4" r="2" />
-                    </svg>
                   </a>
                 </div>
               </div>
-            </div>
-          </div>
+            </section>
 
-          {/* Our Mission */}
-          <div className="mb-16 md:mb-20">
-            <h2 className="text-[30px] md:text-[40px] font-heading font-bold text-ink leading-[1.05] mb-6">
-              Our mission
-            </h2>
-            <p className="text-[17px] md:text-[19px] text-ink/65 leading-relaxed max-w-3xl">
-              We help operators run better businesses by turning complex finance and compliance topics into clear execution frameworks. Our work is built for founders, finance leads, and advisors who value precision and measurable outcomes.
-            </p>
-          </div>
+            <section className="border-b border-ink/10">
+              <h2 className="pt-14 text-2xl font-heading font-bold tracking-tight text-ink md:pt-20 md:text-3xl">
+                What we publish
+              </h2>
+              <p className="mt-5 max-w-2xl text-[16px] leading-[1.65] text-ink/55 md:text-[17px]">
+                Structured reviews, comparison frameworks, and compliance-oriented explainers — aligned to how UK teams
+                buy and run software in practice.
+              </p>
+              <ul className="mt-10 divide-y divide-ink/10 border-t border-ink/10">
+                {[
+                  {
+                    t: 'Accounting & bookkeeping',
+                    d: 'Cloud ledger operations, reconciliations, and reporting that scale with the business.',
+                  },
+                  {
+                    t: 'Payroll & HR',
+                    d: 'RTI-aligned payroll, pensions, and people processes for UK employers.',
+                  },
+                  {
+                    t: 'Tax & compliance',
+                    d: 'MTD, VAT, and control design explained with implementation detail.',
+                  },
+                  {
+                    t: 'Systems & workflow',
+                    d: 'How tools fit into month-end cadence, approvals, and decision-making — not feature lists alone.',
+                  },
+                ].map((item) => (
+                  <li key={item.t} className="grid gap-2 py-6 md:grid-cols-12 md:gap-8 md:py-8">
+                    <span className="text-[15px] font-heading font-bold text-ink md:col-span-5">{item.t}</span>
+                    <span className="text-[15px] leading-relaxed text-ink/55 md:col-span-7">{item.d}</span>
+                  </li>
+                ))}
+              </ul>
+            </section>
 
-          <div className="mb-16 md:mb-20">
-            <h2 className="text-[30px] md:text-[40px] font-heading font-bold text-ink leading-[1.05] mb-7">
-              What we cover
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="rounded-2xl border border-ink/10 p-7 bg-white">
-                <h3 className="text-[22px] font-heading font-bold text-ink mb-3">Accounting & Bookkeeping</h3>
-                <p className="text-[15px] text-ink/60 leading-relaxed">Cloud accounting operations, month-end workflows, and reporting standards that scale with growth.</p>
-              </div>
-              <div className="rounded-2xl border border-ink/10 p-7 bg-white">
-                <h3 className="text-[22px] font-heading font-bold text-ink mb-3">Payroll & HR</h3>
-                <p className="text-[15px] text-ink/60 leading-relaxed">Payroll accuracy, RTI readiness, and practical people-ops systems for UK teams.</p>
-              </div>
-              <div className="rounded-2xl border border-ink/10 p-7 bg-white">
-                <h3 className="text-[22px] font-heading font-bold text-ink mb-3">Tax Compliance</h3>
-                <p className="text-[15px] text-ink/60 leading-relaxed">MTD, VAT, and core compliance controls explained with implementation detail, not theory.</p>
-              </div>
-              <div className="rounded-2xl border border-ink/10 p-7 bg-white">
-                <h3 className="text-[22px] font-heading font-bold text-ink mb-3">Business Systems</h3>
-                <p className="text-[15px] text-ink/60 leading-relaxed">Process design, operating cadence, and software workflows that improve decision velocity.</p>
-              </div>
-            </div>
-          </div>
+            <section className="pt-14 md:pt-20">
+              <h2 className="text-2xl font-heading font-bold tracking-tight text-ink md:text-3xl">Editorial principles</h2>
+              <ol className="mt-10 space-y-8">
+                {[
+                  {
+                    n: '01',
+                    t: 'Accuracy before publication',
+                    d: 'Claims are checked against official sources and product behaviour we observe in testing.',
+                  },
+                  {
+                    n: '02',
+                    t: 'Operational relevance',
+                    d: 'Every piece should improve a process, buying decision, or compliance posture — not fill a page.',
+                  },
+                  {
+                    n: '03',
+                    t: 'Transparency',
+                    d: 'Affiliate relationships and methodology are documented; readers can see how we work.',
+                  },
+                ].map((item) => (
+                  <li key={item.n} className="flex gap-6 md:gap-10">
+                    <span className="shrink-0 text-[11px] font-semibold tabular-nums text-ink/35">{item.n}</span>
+                    <div>
+                      <h3 className="text-[17px] font-heading font-bold text-ink">{item.t}</h3>
+                      <p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-ink/55">{item.d}</p>
+                    </div>
+                  </li>
+                ))}
+              </ol>
+            </section>
 
-          <div className="mb-16 md:mb-20">
-            <h2 className="text-[30px] md:text-[40px] font-heading font-bold text-ink leading-[1.05] mb-7">
-              Editorial principles
-            </h2>
-            <div className="space-y-4">
-              <div className="rounded-2xl border border-ink/10 p-6 bg-white">
-                <p className="text-[11px] uppercase tracking-[0.12em] text-ink/45 mb-2">01</p>
-                <h3 className="text-[20px] font-heading font-bold text-ink mb-2">Accuracy before speed</h3>
-                <p className="text-[15px] text-ink/60 leading-relaxed">We verify facts against official guidance and industry sources before publication.</p>
-              </div>
-              <div className="rounded-2xl border border-ink/10 p-6 bg-white">
-                <p className="text-[11px] uppercase tracking-[0.12em] text-ink/45 mb-2">02</p>
-                <h3 className="text-[20px] font-heading font-bold text-ink mb-2">Operational relevance</h3>
-                <p className="text-[15px] text-ink/60 leading-relaxed">Every article must help a reader implement a better process, not just understand a concept.</p>
-              </div>
-              <div className="rounded-2xl border border-ink/10 p-6 bg-white">
-                <p className="text-[11px] uppercase tracking-[0.12em] text-ink/45 mb-2">03</p>
-                <h3 className="text-[20px] font-heading font-bold text-ink mb-2">Editorial independence</h3>
-                <p className="text-[15px] text-ink/60 leading-relaxed">Commercial relationships never define our recommendations. Utility and evidence do.</p>
-              </div>
-            </div>
+            <footer className="mt-16 border-t border-ink/10 pt-12 md:mt-20 md:pt-16">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-ink/40">Next step</p>
+              <p className="mt-4 max-w-xl text-[16px] leading-relaxed text-ink/55">
+                Editorial collaboration, factual corrections, or partnership standards — use the contact form and choose
+                the subject line that fits.
+              </p>
+              <Link
+                href="/contact"
+                className="mt-8 inline-flex items-center gap-2 text-[14px] font-semibold text-ink transition-colors hover:text-ink/70"
+              >
+                Contact the editor
+                <span aria-hidden>—→</span>
+              </Link>
+            </footer>
           </div>
-
-          <div className="rounded-3xl border border-ink/10 p-8 md:p-10 bg-white">
-            <h2 className="text-[30px] md:text-[38px] font-heading font-bold text-ink leading-[1.05] mb-4">
-              Work with us
-            </h2>
-            <p className="text-[16px] md:text-[18px] text-ink/60 leading-relaxed max-w-2xl mb-7">
-              For editorial collaboration, partnerships, or media requests — reach out to Fiza directly.
-            </p>
-            <Link
-              href="/contact"
-              className="inline-flex items-center justify-center px-7 py-3 text-[13px] font-semibold rounded-full border border-ink/15 text-ink hover:border-ink/30 transition-colors"
-            >
-              Contact Fiza
-            </Link>
-          </div>
-        </SectionWrapper>
+        </div>
       </main>
       <Footer />
     </>

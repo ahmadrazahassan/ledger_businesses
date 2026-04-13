@@ -1,8 +1,9 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Contact Us',
-  description: 'Get in touch with Fiza at Ledger Businesses for inquiries, partnerships, or editorial submissions.',
+  title: 'Contact',
+  description:
+    'Contact Ledger Businesses for editorial enquiries, partnerships, and UK accounting software coverage — Birmingham, United Kingdom.',
   alternates: {
     canonical: '/contact',
   },
