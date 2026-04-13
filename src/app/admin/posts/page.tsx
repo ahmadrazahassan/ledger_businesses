@@ -88,12 +88,6 @@ function AdminPostsPageInner() {
         </div>
         <div className="flex items-center gap-3">
           <Link
-            href="/admin/posts/import"
-            className="px-5 py-3 text-[14px] font-semibold text-ink/60 bg-white border border-ink/[0.08] rounded-full hover:border-ink/15 hover:bg-ink/[0.02] transition-all duration-200"
-          >
-            Import
-          </Link>
-          <Link
             href="/admin/posts/new"
             className="flex items-center gap-2 px-6 py-3 bg-accent text-accent-foreground text-[14px] font-bold rounded-full hover:bg-accent-hover shadow-sm hover:shadow-md transition-all duration-200"
           >

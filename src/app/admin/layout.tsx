@@ -9,7 +9,7 @@ import { ToastProvider } from '@/components/ui/toast';
 const adminNav = [
   { label: 'Dashboard', href: '/admin' },
   { label: 'Posts', href: '/admin/posts' },
-  { label: 'Import', href: '/admin/posts/import' },
+  { label: 'Import', href: '/admin/import' },
   { label: 'Categories', href: '/admin/categories' },
   { label: 'Banners', href: '/admin/banners' },
 ];
@@ -18,8 +18,8 @@ const SCROLL_THRESHOLD = 80;
 
 function isNavActive(pathname: string, href: string) {
   if (href === '/admin') return pathname === '/admin';
-  if (href === '/admin/posts/import') return pathname.startsWith('/admin/posts/import');
-  if (href === '/admin/posts') return pathname.startsWith('/admin/posts') && !pathname.startsWith('/admin/posts/import');
+  if (href === '/admin/posts') return pathname.startsWith('/admin/posts');
+  if (href === '/admin/import') return pathname.startsWith('/admin/import');
   return pathname.startsWith(href);
 }
 

@@ -247,6 +247,38 @@ export interface BulkImportResult {
   message?: string;
 }
 
+/** Admin HTML import (single file per server action call) */
+export interface ImportHtmlArticleInput {
+  fileName: string;
+  html: string;
+  author_id: string;
+  category_id: string;
+  category_ids?: string[];
+  status: PostStatus;
+}
+
+export interface ImportHtmlArticleResult {
+  success: boolean;
+  fileName: string;
+  title?: string;
+  slug?: string;
+  postId?: string;
+  message?: string;
+}
+
+export type HtmlImportItemPhase = 'queued' | 'processing' | 'success' | 'error';
+
+export interface HtmlImportQueueItem {
+  id: string;
+  fileName: string;
+  html: string;
+  phase: HtmlImportItemPhase;
+  message?: string;
+  postId?: string;
+  slug?: string;
+  title?: string;
+}
+
 
 // ── RPC return types ──
 

@@ -39,6 +39,18 @@ const quickActions = [
     ),
   },
   {
+    label: 'Import HTML',
+    href: '/admin/import',
+    desc: 'Upload HTML or ZIP archives',
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+        <polyline points="17 8 12 3 7 8" />
+        <line x1="12" y1="3" x2="12" y2="15" />
+      </svg>
+    ),
+  },
+  {
     label: 'Manage Categories',
     href: '/admin/categories',
     desc: 'Add or edit topics',
@@ -56,18 +68,6 @@ const quickActions = [
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <rect x="3" y="3" width="18" height="18" rx="2" />
         <line x1="3" y1="9" x2="21" y2="9" />
-      </svg>
-    ),
-  },
-  {
-    label: 'Import content',
-    href: '/admin/posts/import',
-    desc: 'HTML or JSON as drafts',
-    icon: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
-        <polyline points="17 8 12 3 7 8" />
-        <line x1="12" y1="3" x2="12" y2="15" />
       </svg>
     ),
   },
@@ -90,7 +90,7 @@ export default async function AdminDashboard() {
           Dashboard
         </h1>
         <p className="text-[16px] text-ink/50 font-medium">
-          Welcome back. Here's what's happening with your content.
+          Welcome back. Here is what is happening with your content.
         </p>
       </div>
 
@@ -159,7 +159,7 @@ export default async function AdminDashboard() {
       {/* Quick Actions */}
       <div>
         <h2 className="text-[20px] font-heading font-bold text-ink mb-6">Quick Actions</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {quickActions.map((action) => (
             <Link
               key={action.href}
