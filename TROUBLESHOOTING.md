@@ -150,7 +150,7 @@ INSERT INTO public.authors (id, name, slug, bio, avatar_url, email, twitter, lin
     'fiza-kanwal',
     'Senior editor covering enterprise technology, AI, B2B strategy, and the future of work.',
     '',
-    'fiza@ledgerbusinesses.com',
+    'fiza.kanwal@ledgerthebusinesses.co.uk',
     'fizakanwal',
     'fizakanwal',
     true

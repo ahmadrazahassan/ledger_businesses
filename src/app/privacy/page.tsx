@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { SectionWrapper } from '@/components/layout/section-wrapper';
+import { CONTACT_EMAIL, SITE_DOMAIN } from '@/lib/site';
 
 export const metadata: Metadata = {
   title: 'Privacy Policy',
@@ -161,7 +162,7 @@ export default function PrivacyPage() {
                     <li>Withdrawal of Consent: Withdraw consent for processing where we rely on consent</li>
                   </ul>
                   <p>
-                    To exercise any of these rights, please contact us at fiza@ledgerthebusinesses.com. We will respond to your request within 30 days.
+                    To exercise any of these rights, please contact us at {CONTACT_EMAIL}. We will respond to your request within 30 days.
                   </p>
                 </div>
               </section>
@@ -175,7 +176,7 @@ export default function PrivacyPage() {
                   </p>
                   <ul className="list-disc pl-6 space-y-2">
                     <li>Clicking the unsubscribe link in any email we send</li>
-                    <li>Contacting us directly at fiza@ledgerthebusinesses.com</li>
+                    <li>Contacting us directly at {CONTACT_EMAIL}</li>
                     <li>Updating your preferences in your account settings</li>
                   </ul>
                   <p>
@@ -264,8 +265,13 @@ export default function PrivacyPage() {
                   </p>
                   <div className="p-6 rounded-2xl bg-white border border-ink/[0.06] mt-4">
                     <p className="font-semibold text-ink mb-2">Ledger Businesses</p>
-                    <p>Email: fiza@ledgerthebusinesses.com</p>
-                    <p>Contact Form: <a href="/contact" className="text-accent-content hover:underline">ledgerbusinesses.com/contact</a></p>
+                    <p>Email: {CONTACT_EMAIL}</p>
+                    <p>
+                      Contact Form:{' '}
+                      <a href="/contact" className="text-accent-content hover:underline">
+                        {SITE_DOMAIN}/contact
+                      </a>
+                    </p>
                   </div>
                 </div>
               </section>

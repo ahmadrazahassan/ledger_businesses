@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { SectionWrapper } from '@/components/layout/section-wrapper';
+import { CONTACT_EMAIL, SITE_DOMAIN } from '@/lib/site';
 
 export const metadata: Metadata = {
   title: 'Affiliate Disclosure',
@@ -203,8 +204,13 @@ export default function AffiliateDisclosurePage() {
                   </p>
                   <div className="p-6 rounded-2xl bg-white border border-ink/[0.06] mt-4">
                     <p className="font-semibold text-ink mb-2">Ledger Businesses</p>
-                    <p>Email: fiza@ledgerthebusinesses.com</p>
-                    <p>Contact Form: <a href="/contact" className="text-accent-content hover:underline">ledgerbusinesses.com/contact</a></p>
+                    <p>Email: {CONTACT_EMAIL}</p>
+                    <p>
+                      Contact Form:{' '}
+                      <a href="/contact" className="text-accent-content hover:underline">
+                        {SITE_DOMAIN}/contact
+                      </a>
+                    </p>
                   </div>
                   <p className="mt-4">
                     We're committed to transparency and welcome your feedback on how we can better serve our readers while maintaining the financial sustainability necessary to produce high-quality journalism.

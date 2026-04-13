@@ -158,7 +158,7 @@ function LoginForm() {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 className="w-full px-4 py-3.5 bg-card border border-ink/[0.08] rounded-xl text-sm text-ink placeholder:text-ink/25 focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/15 transition-all"
-                placeholder="admin@Ledger Businesses.com"
+                placeholder="admin@ledgerthebusinesses.co.uk"
               />
             </div>
 

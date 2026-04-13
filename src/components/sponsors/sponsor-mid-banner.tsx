@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { formatDate } from '@/lib/utils';
 import { IconArrowRight, IconArrowUpRight } from '@/components/icons';
 import type { PostWithRelations } from '@/lib/types/database';
+import { CONTACT_MAILTO } from '@/lib/site';
 
 interface SponsorMidBannerProps {
   posts: PostWithRelations[];
@@ -56,7 +57,7 @@ export function SponsorMidBanner({ posts }: SponsorMidBannerProps) {
               Sponsored by Ledger Businesses Partners
             </span>
             <a
-              href="mailto:fiza@ledgerthebusinesses.com"
+              href={CONTACT_MAILTO}
               className="text-[10px] font-semibold text-accent-content/50 hover:text-accent-content transition-colors flex items-center gap-1"
             >
               Advertise <IconArrowUpRight size={9} />

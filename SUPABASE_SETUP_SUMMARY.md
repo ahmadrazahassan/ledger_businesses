@@ -119,7 +119,7 @@ WHERE id = 'YOUR-UUID'::uuid;
 **Fiza Kanwal**
 - UUID: `a1111111-1111-1111-1111-111111111111`
 - Slug: `fiza-kanwal`
-- Email: `fiza@ledgerbusinesses.com`
+- Email: `fiza.kanwal@ledgerthebusinesses.co.uk`
 - Twitter: `@fizakanwal`
 - LinkedIn: `fizakanwal`
 

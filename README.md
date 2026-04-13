@@ -1,4 +1,6 @@
-# ledgerthebusinesses
+# Ledger Businesses
+
+**Production domain:** [ledgerthebusinesses.co.uk](https://ledgerthebusinesses.co.uk) · **Contact:** fiza.kanwal@ledgerthebusinesses.co.uk
 
 **The authority in business intelligence.**
 
@@ -113,6 +115,9 @@ Create a `.env.local` file in the project root:
 ```env
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+
+# Canonical site URL (metadata, sitemap, OG). Use your live domain:
+NEXT_PUBLIC_SITE_URL=https://ledgerthebusinesses.co.uk
 
 # Cloudinary (admin image uploads)
 # Production: keep the API secret on the server only — use CLOUDINARY_URL (from the Cloudinary console).

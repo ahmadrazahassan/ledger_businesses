@@ -1,4 +1,12 @@
-const DEFAULT_SITE_URL = 'https://ledgerbusinesses.com';
+/** Public site domain (no protocol). */
+export const SITE_DOMAIN = 'ledgerthebusinesses.co.uk';
+
+/** Primary contact email shown sitewide. */
+export const CONTACT_EMAIL = 'fiza.kanwal@ledgerthebusinesses.co.uk';
+
+export const CONTACT_MAILTO = `mailto:${CONTACT_EMAIL}`;
+
+const DEFAULT_SITE_URL = `https://${SITE_DOMAIN}`;
 
 function normalizeSiteUrl(url?: string) {
   if (!url) return DEFAULT_SITE_URL;

@@ -1,4 +1,5 @@
 import OpenAI from 'openai';
+import { SITE_DOMAIN } from '@/lib/site';
 
 export function createOpenRouterClient(): OpenAI {
   const apiKey = process.env.OPENROUTER_API_KEY;
@@ -6,7 +7,7 @@ export function createOpenRouterClient(): OpenAI {
     throw new Error('OPENROUTER_API_KEY is not set');
   }
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://ledgerbusinesses.com';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? `https://${SITE_DOMAIN}`;
 
   return new OpenAI({
     baseURL: process.env.OPENROUTER_BASE_URL ?? 'https://openrouter.ai/api/v1',

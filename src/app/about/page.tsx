@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { SectionWrapper } from '@/components/layout/section-wrapper';
+import { CONTACT_EMAIL, CONTACT_MAILTO } from '@/lib/site';
 
 export const metadata: Metadata = {
   title: 'About Us',
@@ -75,10 +76,10 @@ export default function AboutPage() {
                 </div>
                 <div className="flex items-center gap-6 mt-6">
                   <a
-                    href="mailto:fiza@ledgerthebusinesses.com"
+                    href={CONTACT_MAILTO}
                     className="inline-flex items-center gap-2 text-accent-content font-semibold text-[15px] hover:gap-3 transition-all"
                   >
-                    fiza@ledgerthebusinesses.com
+                    {CONTACT_EMAIL}
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <line x1="7" y1="17" x2="17" y2="7" />
                       <polyline points="7 7 17 7 17 17" />

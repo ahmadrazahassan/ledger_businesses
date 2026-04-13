@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { SectionWrapper } from '@/components/layout/section-wrapper';
+import { CONTACT_EMAIL, CONTACT_MAILTO, SITE_DOMAIN } from '@/lib/site';
 
 export default function ContactPage() {
   const [formState, setFormState] = useState({
@@ -16,7 +17,7 @@ export default function ContactPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const mailtoLink = `mailto:fiza@ledgerthebusinesses.com?subject=${encodeURIComponent(formState.subject)}&body=${encodeURIComponent(`From: ${formState.name} (${formState.email})\n\n${formState.message}`)}`;
+    const mailtoLink = `${CONTACT_MAILTO}?subject=${encodeURIComponent(formState.subject)}&body=${encodeURIComponent(`From: ${formState.name} (${formState.email})\n\n${formState.message}`)}`;
     window.location.href = mailtoLink;
     setSubmitted(true);
   };
@@ -52,7 +53,7 @@ export default function ContactPage() {
               <div className="group">
                 <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-ink/30 mb-3">Email</p>
                 <a
-                  href="mailto:fiza@ledgerthebusinesses.com"
+                  href={CONTACT_MAILTO}
                   className="flex items-center gap-3.5 px-4 py-4 rounded-2xl border border-ink/[0.06] bg-white hover:border-accent/20 hover:shadow-lg hover:shadow-accent/[0.04] transition-all duration-300"
                 >
                   <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center shrink-0">
@@ -62,7 +63,7 @@ export default function ContactPage() {
                     </svg>
                   </div>
                   <div className="min-w-0">
-                    <p className="text-[13px] font-semibold text-ink group-hover:text-accent-content transition-colors break-all">fiza@ledgerthebusinesses.com</p>
+                    <p className="text-[13px] font-semibold text-ink group-hover:text-accent-content transition-colors break-all">{CONTACT_EMAIL}</p>
                     <p className="text-[12px] text-ink/40 mt-0.5">For all inquiries</p>
                   </div>
                 </a>
@@ -146,8 +147,8 @@ export default function ContactPage() {
                     <h3 className="text-2xl font-heading font-bold text-ink mb-3">Message Sent!</h3>
                     <p className="text-ink/50 leading-relaxed max-w-sm mx-auto">
                       Your email client should have opened. If not, you can reach me directly at{' '}
-                      <a href="mailto:fiza@ledgerthebusinesses.com" className="text-accent-content font-medium">
-                        fiza@ledgerthebusinesses.com
+                      <a href={CONTACT_MAILTO} className="text-accent-content font-medium">
+                        {CONTACT_EMAIL}
                       </a>
                     </p>
                     <button
@@ -197,7 +198,7 @@ export default function ContactPage() {
                             value={formState.email}
                             onChange={(e) => setFormState({ ...formState, email: e.target.value })}
                             required
-                            placeholder="john@company.com"
+                            placeholder={`you@${SITE_DOMAIN}`}
                             className="w-full px-4 py-3.5 rounded-xl border border-ink/[0.08] bg-slate-50/50 text-[15px] text-ink placeholder:text-ink/25 focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent/30 transition-all"
                           />
                         </div>

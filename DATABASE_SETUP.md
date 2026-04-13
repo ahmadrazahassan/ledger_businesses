@@ -155,7 +155,7 @@ You're now ready to:
 - ID: `a1111111-1111-1111-1111-111111111111`
 - Slug: `fiza-kanwal`
 - Bio: Senior editor covering enterprise technology, AI, B2B strategy, and the future of work
-- Email: fiza@ledgerbusinesses.com
+- Email: fiza.kanwal@ledgerthebusinesses.co.uk
 - Twitter: @fizakanwal
 - LinkedIn: fizakanwal
 

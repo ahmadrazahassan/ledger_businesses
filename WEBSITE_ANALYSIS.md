@@ -291,8 +291,8 @@ Update `logo-symbol.tsx` to reflect new brand (change "S" letterform, update ari
 Update "SI" watermarks in post cards and OG images to "LTB" or similar.
 
 ### Step 5: Domain & Email
-Update all email references from `@sovereignink.com` to `@ledgerthebusinesses.com`.
-Update fallback URLs from `sovereignink.com` to `ledgerthebusinesses.com`.
+Update all email references from `@sovereignink.com` to `fiza.kanwal@ledgerthebusinesses.co.uk`.
+Update fallback URLs from `sovereignink.com` to `ledgerthebusinesses.co.uk`.
 
 ### Step 6: README & Comments
 Update README.md and all code comments referencing old brand.
