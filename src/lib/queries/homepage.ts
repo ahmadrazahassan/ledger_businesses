@@ -2,6 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server';
 import type { PostWithRelations } from '@/lib/types/database';
+import { getPublishedPostsForCategoryId } from '@/lib/queries/category-posts';
 
 export async function getFeaturedPosts(): Promise<PostWithRelations[]> {
   try {
@@ -100,8 +101,7 @@ export async function getSecondaryHeroPosts(): Promise<PostWithRelations[]> {
 export async function getCategoryPosts(slug: string, limit = 4): Promise<PostWithRelations[]> {
   try {
     const supabase = await createClient();
-    
-    // First get category ID
+
     const { data: category } = await supabase
       .from('categories')
       .select('id')
@@ -110,20 +110,7 @@ export async function getCategoryPosts(slug: string, limit = 4): Promise<PostWit
 
     if (!category) return [];
 
-    const { data, error } = await supabase
-      .from('posts')
-      .select(`
-        *,
-        author:authors(*),
-        category:categories(*)
-      `)
-      .eq('status', 'published')
-      .eq('category_id', category.id)
-      .order('published_at', { ascending: false })
-      .limit(limit);
-
-    if (error) throw error;
-    return data || [];
+    return getPublishedPostsForCategoryId(category.id, { limit });
   } catch (error) {
     console.error(`Error fetching posts for category ${slug}:`, error);
     return [];

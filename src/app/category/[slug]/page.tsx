@@ -9,6 +9,7 @@ import { IconChevronRight } from '@/components/icons';
 import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { toAbsoluteUrl } from '@/lib/site';
+import { getPublishedPostsForCategoryId } from '@/lib/queries/category-posts';
 
 interface CategoryPageProps {
   params: Promise<{ slug: string }>;
@@ -29,21 +30,7 @@ async function getCategory(slug: string) {
 }
 
 async function getCategoryPosts(categoryId: string) {
-  const supabase = await createClient();
-  
-  const { data, error } = await supabase
-    .from('posts')
-    .select(`
-      *,
-      author:authors(*),
-      category:categories(*)
-    `)
-    .eq('category_id', categoryId)
-    .eq('status', 'published')
-    .order('published_at', { ascending: false });
-
-  if (error) return [];
-  return data || [];
+  return getPublishedPostsForCategoryId(categoryId);
 }
 
 export async function generateStaticParams() {
