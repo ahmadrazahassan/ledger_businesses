@@ -57,7 +57,11 @@ function chunkImportRowsForServerAction(
     }
     const oneRowPayload = new Blob([JSON.stringify([row])]).size;
     if (oneRowPayload > maxBytes) {
-      chunks.push([row]);
+      const title = row.title?.trim() || '(untitled)';
+      const sizeKb = Math.ceil(oneRowPayload / 1024);
+      throw new Error(
+        `Article "${title}" is too large to import (${sizeKb}KB). Split or clean the HTML and try again.`
+      );
     } else {
       cur = [row];
     }
@@ -160,7 +164,8 @@ export function ImportPostsForm({ initialAuthors, initialCategories, serverLoadE
   const handleRunImport = async () => {
     setImporting(true);
     try {
-      const batches = chunkImportRowsForServerAction(parsedRows);
+      // Keep margin under transport limits to avoid opaque 500s in production.
+      const batches = chunkImportRowsForServerAction(parsedRows, 700_000);
       const results: ImportRowResult[] = [];
       let rowOffset = 0;
       for (const batch of batches) {

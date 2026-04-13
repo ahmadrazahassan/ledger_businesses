@@ -33,5 +33,22 @@ export function parseHtmlToArticle(html: string, filename?: string): { title: st
   else if (body?.innerHTML?.trim()) content_html = body.innerHTML;
   else content_html = html;
 
+  if (content_html) {
+    const wrapper = doc.createElement('div');
+    wrapper.innerHTML = content_html;
+
+    // Strip layout/script noise so payloads stay small for server actions.
+    wrapper
+      .querySelectorAll(
+        'script,style,svg,noscript,template,iframe,canvas,header,footer,nav,aside,form,button,input,select,textarea,meta,link'
+      )
+      .forEach((el) => el.remove());
+
+    content_html = wrapper.innerHTML
+      .replace(/<!--[\s\S]*?-->/g, '')
+      .replace(/\s{2,}/g, ' ')
+      .trim();
+  }
+
   return { title, content_html };
 }
