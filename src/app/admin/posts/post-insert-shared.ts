@@ -1,6 +1,7 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { PostFormData } from '@/lib/types/database';
 import { slugify } from '@/lib/utils';
+import { normalizePostCategories } from './category-form';
 
 function contentTextFromHtml(html: string) {
   return html
@@ -24,6 +25,12 @@ export async function insertPostWithCategories(
   const wordCount = textContent.split(/\s+/).filter(Boolean).length;
   const reading_time = Math.max(1, Math.ceil(wordCount / 238));
 
+  const normalized = normalizePostCategories(data);
+  if ('error' in normalized) {
+    return { success: false, error: normalized.error };
+  }
+  const { categoryIds, primaryCategoryId } = normalized;
+
   const postData = {
     title: data.title,
     slug: data.slug || slugify(data.title),
@@ -32,7 +39,7 @@ export async function insertPostWithCategories(
     content_text: textContent,
     cover_image: data.cover_image || '',
     author_id: data.author_id,
-    category_id: data.category_id,
+    category_id: primaryCategoryId,
     tags: data.tags,
     status: data.status,
     published_at:
@@ -51,12 +58,10 @@ export async function insertPostWithCategories(
     return { success: false, error: error.message, code: error.code };
   }
 
-  const categoryIds = data.category_ids && data.category_ids.length > 0 ? data.category_ids : [data.category_id];
-
   const categoryRelations = categoryIds.map((catId) => ({
     post_id: post.id,
     category_id: catId,
-    is_primary: catId === data.category_id,
+    is_primary: catId === primaryCategoryId,
   }));
 
   const { error: catError } = await supabase.from('post_categories').insert(categoryRelations);

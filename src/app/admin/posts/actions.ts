@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/server';
 import { slugify } from '@/lib/utils';
 import type { PostFormData } from '@/lib/types/database';
 import { insertPostWithCategories } from './post-insert-shared';
+import { normalizePostCategories } from './category-form';
 
 export async function createPost(data: PostFormData) {
   try {
@@ -33,6 +34,12 @@ export async function updatePost(id: string, data: PostFormData) {
   try {
     const supabase = await createClient();
 
+    const normalized = normalizePostCategories(data);
+    if ('error' in normalized) {
+      return { success: false, error: normalized.error };
+    }
+    const { categoryIds, primaryCategoryId } = normalized;
+
     // Extract text content from HTML
     const textContent = data.content_html
       .replace(/<[^>]*>/g, ' ')
@@ -51,7 +58,7 @@ export async function updatePost(id: string, data: PostFormData) {
       content_text: textContent,
       cover_image: data.cover_image || '',
       author_id: data.author_id,
-      category_id: data.category_id, // Primary category
+      category_id: primaryCategoryId,
       tags: data.tags,
       status: data.status,
       published_at: data.published_at,
@@ -76,27 +83,19 @@ export async function updatePost(id: string, data: PostFormData) {
       return { success: false, error: error.message };
     }
 
-    // Update category relationships
-    // First, delete existing relationships
-    await supabase
-      .from('post_categories')
-      .delete()
-      .eq('post_id', id);
+    const { error: deleteError } = await supabase.from('post_categories').delete().eq('post_id', id);
+    if (deleteError) {
+      console.error('Error clearing post_categories:', deleteError);
+      return { success: false, error: `Failed to update categories: ${deleteError.message}` };
+    }
 
-    // Then insert new relationships
-    const categoryIds = data.category_ids && data.category_ids.length > 0 
-      ? data.category_ids 
-      : [data.category_id];
-
-    const categoryRelations = categoryIds.map(catId => ({
+    const categoryRelations = categoryIds.map((catId) => ({
       post_id: id,
       category_id: catId,
-      is_primary: catId === data.category_id,
+      is_primary: catId === primaryCategoryId,
     }));
 
-    const { error: catError } = await supabase
-      .from('post_categories')
-      .insert(categoryRelations);
+    const { error: catError } = await supabase.from('post_categories').insert(categoryRelations);
 
     if (catError) {
       console.error('Error updating category relations:', catError);
@@ -227,12 +226,21 @@ export async function getPost(id: string) {
       `)
       .eq('post_id', id);
 
-    if (data && postCategories) {
-      data.categories = postCategories.map(pc => ({
-        ...pc.category,
-        is_primary: pc.is_primary,
-      }));
-      data.category_ids = postCategories.map(pc => pc.category_id);
+    if (data) {
+      const junctionIds = (postCategories ?? []).map((pc) => pc.category_id);
+      const mergedIds =
+        junctionIds.length > 0
+          ? [...new Set(junctionIds)]
+          : data.category_id
+            ? [data.category_id]
+            : [];
+      data.category_ids = mergedIds;
+      if (postCategories?.length) {
+        data.categories = postCategories.map((pc) => ({
+          ...pc.category,
+          is_primary: pc.is_primary,
+        }));
+      }
     }
 
     return data;

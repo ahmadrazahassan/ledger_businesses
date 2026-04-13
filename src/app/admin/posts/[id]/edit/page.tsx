@@ -11,6 +11,15 @@ import type { PostStatus } from '@/lib/types/database';
 
 type EditorTab = 'write' | 'html' | 'preview';
 
+/** Empty `category_ids: []` is truthy in JS — never drop back to primary by mistake. */
+function initialSelectedCategoryIds(post: { category_ids?: string[]; category_id: string }): string[] {
+  const raw = post.category_ids;
+  if (Array.isArray(raw) && raw.length > 0) {
+    return [...new Set(raw.filter(Boolean))];
+  }
+  return post.category_id ? [post.category_id] : [];
+}
+
 interface EditPostPageProps {
   params: Promise<{ id: string }>;
 }
@@ -71,8 +80,12 @@ function EditPostEditor({ post }: { post: any }) {
   const [slugManual, setSlugManual] = useState(true);
   const [excerpt, setExcerpt] = useState(post.excerpt);
   const [contentHtml, setContentHtml] = useState(post.content_html);
-  const [categoryId, setCategoryId] = useState(post.category_id);
-  const [selectedCategories, setSelectedCategories] = useState<string[]>(post.category_ids || [post.category_id]);
+  const [categoryId, setCategoryId] = useState(() => {
+    const ids = initialSelectedCategoryIds(post);
+    const primary = post.category_id && ids.includes(post.category_id) ? post.category_id : ids[0];
+    return primary ?? '';
+  });
+  const [selectedCategories, setSelectedCategories] = useState<string[]>(() => initialSelectedCategoryIds(post));
   const [authorId, setAuthorId] = useState(post.author_id);
   const [tags, setTags] = useState(post.tags.join(', '));
   const [status, setStatus] = useState<PostStatus>(post.status);
@@ -865,7 +878,7 @@ function EditPostEditor({ post }: { post: any }) {
                           checked={isSelected}
                           onChange={(e) => {
                             if (e.target.checked) {
-                              const newSelected = [...selectedCategories, category.id];
+                              const newSelected = [...new Set([...selectedCategories, category.id])];
                               setSelectedCategories(newSelected);
                               if (!categoryId) {
                                 setCategoryId(category.id);
