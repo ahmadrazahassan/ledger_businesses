@@ -6,7 +6,7 @@ import { useToast } from '@/components/ui/toast';
 import { HTML_IMPORT_LIMITS, isAllowedImportStatus } from '@/lib/import/constants';
 import { extractHtmlFilesFromZip } from '@/lib/import/zip';
 import type { HtmlImportQueueItem, ImportHtmlArticleResult, PostStatus } from '@/lib/types/database';
-import { getImportDefaults, importHtmlArticle } from './actions';
+import { getImportDefaults, importHtmlArticle } from '@/app/admin/import/actions';
 
 function newId() {
   return typeof crypto !== 'undefined' && crypto.randomUUID
