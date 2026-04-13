@@ -482,8 +482,7 @@ export default function NewPostPage() {
               <ImageUpload
                 value={coverImage}
                 onChange={setCoverImage}
-                bucket="covers"
-                folder="posts"
+                cloudinaryFolder="covers/posts"
                 label="Upload Cover Image"
                 aspectRatio="16/9"
                 maxSizeMB={20}

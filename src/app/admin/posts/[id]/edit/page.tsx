@@ -4,7 +4,7 @@ import { useState, useRef, useCallback, useEffect, use } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { slugify, formatDate } from '@/lib/utils';
-import { uploadImageWithCompression } from '@/lib/upload';
+import { uploadToCloudinary } from '@/lib/cloudinary';
 import { useToast } from '@/components/ui/toast';
 import { getPost, getAuthors, getCategories, updatePost, deletePost } from '../../actions';
 import type { PostStatus } from '@/lib/types/database';
@@ -86,6 +86,7 @@ function EditPostEditor({ post }: { post: any }) {
   const [coverImage, setCoverImage] = useState(post.cover_image);
   const [coverImageUrlInput, setCoverImageUrlInput] = useState('');
   const [coverDragOver, setCoverDragOver] = useState(false);
+  const [coverUploading, setCoverUploading] = useState(false);
   const [featuredRank, setFeaturedRank] = useState<string>(
     post.featured_rank != null ? String(post.featured_rank) : ''
   );
@@ -163,7 +164,7 @@ function EditPostEditor({ post }: { post: any }) {
   }, [syncEditorContent]);
 
   const processImageFile = useCallback(async (file: File) => {
-    const result = await uploadImageWithCompression(file, 'covers', 'posts');
+    const result = await uploadToCloudinary(file, { folder: 'posts' });
     if (!result.success || !result.url) {
       showToast({
         variant: 'error',
@@ -245,21 +246,61 @@ function EditPostEditor({ post }: { post: any }) {
 
   const handleCoverUpload = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (!file) return;
-    const url = URL.createObjectURL(file);
-    setCoverImage(url);
     e.target.value = '';
-  }, []);
+    if (!file || !file.type.startsWith('image/')) return;
 
-  const handleCoverDrop = useCallback(async (e: React.DragEvent) => {
-    e.preventDefault();
-    setCoverDragOver(false);
-    const file = e.dataTransfer.files?.[0];
-    if (file && file.type.startsWith('image/')) {
-      const url = URL.createObjectURL(file);
-      setCoverImage(url);
+    setCoverUploading(true);
+    try {
+      const result = await uploadToCloudinary(file, { folder: 'covers/posts', maxSizeMB: 20 });
+      if (result.success && result.url) {
+        setCoverImage(result.url);
+        showToast({
+          variant: 'success',
+          title: 'Cover uploaded',
+          description: 'Cover image was uploaded successfully.',
+        });
+      } else {
+        showToast({
+          variant: 'error',
+          title: 'Cover upload failed',
+          description: result.error || 'Please try another image file.',
+        });
+      }
+    } finally {
+      setCoverUploading(false);
     }
-  }, []);
+  }, [showToast]);
+
+  const handleCoverDrop = useCallback(
+    async (e: React.DragEvent) => {
+      e.preventDefault();
+      setCoverDragOver(false);
+      const file = e.dataTransfer.files?.[0];
+      if (!file || !file.type.startsWith('image/')) return;
+
+      setCoverUploading(true);
+      try {
+        const result = await uploadToCloudinary(file, { folder: 'covers/posts', maxSizeMB: 20 });
+        if (result.success && result.url) {
+          setCoverImage(result.url);
+          showToast({
+            variant: 'success',
+            title: 'Cover uploaded',
+            description: 'Cover image was uploaded successfully.',
+          });
+        } else {
+          showToast({
+            variant: 'error',
+            title: 'Cover upload failed',
+            description: result.error || 'Please try another image file.',
+          });
+        }
+      } finally {
+        setCoverUploading(false);
+      }
+    },
+    [showToast]
+  );
 
   const applyCoverImageUrl = useCallback(() => {
     const value = coverImageUrlInput.trim();
@@ -637,7 +678,14 @@ function EditPostEditor({ post }: { post: any }) {
               <h3 className="text-[11px] font-bold text-ink/45 uppercase tracking-[0.08em]">Cover Image</h3>
             </div>
             <div className="p-5">
-              <input ref={coverInputRef} type="file" accept="image/*" className="hidden" onChange={handleCoverUpload} />
+              <input
+                ref={coverInputRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleCoverUpload}
+                disabled={coverUploading}
+              />
               {coverImage ? (
                 <div className="space-y-3">
                   <div className="relative group rounded-xl overflow-hidden">
@@ -666,16 +714,38 @@ function EditPostEditor({ post }: { post: any }) {
               ) : (
                 <div className="space-y-3">
                   <div
-                    onClick={() => coverInputRef.current?.click()}
-                    onDragOver={(e) => { e.preventDefault(); setCoverDragOver(true); }}
+                    onClick={() => !coverUploading && coverInputRef.current?.click()}
+                    onDragOver={(e) => {
+                      if (coverUploading) return;
+                      e.preventDefault();
+                      setCoverDragOver(true);
+                    }}
                     onDragLeave={() => setCoverDragOver(false)}
-                    onDrop={handleCoverDrop}
-                    className={`w-full h-28 rounded-xl border-2 border-dashed flex items-center justify-center cursor-pointer transition-all duration-200 ${coverDragOver ? 'border-accent/40 bg-accent/[0.02]' : 'border-ink/[0.08] hover:border-accent/30'
-                      }`}
+                    onDrop={
+                      coverUploading
+                        ? (e) => {
+                            e.preventDefault();
+                          }
+                        : handleCoverDrop
+                    }
+                    className={`w-full h-28 rounded-xl border-2 border-dashed flex items-center justify-center transition-all duration-200 ${
+                      coverUploading
+                        ? 'border-ink/[0.06] bg-ink/[0.02] cursor-wait'
+                        : `cursor-pointer ${coverDragOver ? 'border-accent/40 bg-accent/[0.02]' : 'border-ink/[0.08] hover:border-accent/30'}`
+                    }`}
                   >
                     <div className="text-center">
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="text-ink/20 mx-auto mb-1.5"><rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="8.5" cy="8.5" r="1.5" /><path d="M21 15l-5-5L5 21" /></svg>
-                      <span className="text-[12px] text-ink/35 font-medium">Drop image or click</span>
+                      {coverUploading ? (
+                        <>
+                          <div className="w-8 h-8 border-2 border-ink/15 border-t-accent rounded-full animate-spin mx-auto mb-2" />
+                          <span className="text-[12px] text-ink/45 font-medium">Uploading cover...</span>
+                        </>
+                      ) : (
+                        <>
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="text-ink/20 mx-auto mb-1.5"><rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="8.5" cy="8.5" r="1.5" /><path d="M21 15l-5-5L5 21" /></svg>
+                          <span className="text-[12px] text-ink/35 font-medium">Drop image or click</span>
+                        </>
+                      )}
                     </div>
                   </div>
                   <div className="flex items-center gap-2">

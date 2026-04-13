@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useCallback, useEffect } from 'react';
-import { uploadImageWithCompression } from '@/lib/upload';
+import { uploadToCloudinary } from '@/lib/cloudinary';
 import { useToast } from '@/components/ui/toast';
 
 interface RichEditorProps {
@@ -126,7 +126,7 @@ export function RichEditor({
     async (file: File) => {
       setUploading(true);
       try {
-        const result = await uploadImageWithCompression(file, 'covers', 'posts');
+        const result = await uploadToCloudinary(file, { folder: 'posts' });
 
         if (result.success && result.url) {
           insertImageAtCursor(result.url, 'Uploaded image');

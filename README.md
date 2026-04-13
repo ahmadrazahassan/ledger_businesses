@@ -113,9 +113,22 @@ Create a `.env.local` file in the project root:
 ```env
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+
+# Cloudinary (admin image uploads)
+# Production: keep the API secret on the server only — use CLOUDINARY_URL (from the Cloudinary console).
+# The app requests a short-lived signature from /api/cloudinary/sign (requires a logged-in admin).
+CLOUDINARY_URL=cloudinary://API_KEY:API_SECRET@CLOUD_NAME
+
+# Must match the cloud name in CLOUDINARY_URL (used by next-cloudinary for delivery URLs / CldImage).
+NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=your_cloud_name
+
+# Optional: unsigned upload preset for local dev if you do not set CLOUDINARY_URL
+# NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET=your_unsigned_preset_name
 ```
 
 > The app runs with demo seed data without Supabase. Connect Supabase when ready for production.
+
+> **Do not** expose `CLOUDINARY_URL`, `CLOUDINARY_API_SECRET`, or the API secret in `NEXT_PUBLIC_*` variables. If a secret is ever committed or shared, rotate it in the Cloudinary dashboard.
 
 ### 3. Run the development server
 

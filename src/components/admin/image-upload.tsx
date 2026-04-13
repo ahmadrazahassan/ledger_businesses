@@ -1,14 +1,15 @@
 'use client';
 
 import { useState, useRef, useCallback } from 'react';
-import { uploadImageWithCompression } from '@/lib/upload';
+import { CldImage } from 'next-cloudinary';
+import { cloudinaryPublicIdFromUrl, uploadToCloudinary } from '@/lib/cloudinary';
 import { useToast } from '@/components/ui/toast';
 
 interface ImageUploadProps {
   value?: string;
   onChange: (url: string) => void;
-  bucket?: 'covers' | 'avatars' | 'banners';
-  folder?: string;
+  /** Cloudinary folder path (e.g. covers/posts). Omit to use default. */
+  cloudinaryFolder?: string;
   label?: string;
   aspectRatio?: string;
   maxSizeMB?: number;
@@ -18,8 +19,7 @@ interface ImageUploadProps {
 export function ImageUpload({
   value,
   onChange,
-  bucket = 'covers',
-  folder,
+  cloudinaryFolder = 'covers',
   label = 'Upload Image',
   aspectRatio = '16/9',
   maxSizeMB = 20,
@@ -88,7 +88,10 @@ export function ImageUpload({
           return;
         }
 
-        const result = await uploadImageWithCompression(file, bucket, folder);
+        const result = await uploadToCloudinary(file, {
+          folder: cloudinaryFolder,
+          maxSizeMB,
+        });
 
         if (result.success && result.url) {
           onChange(result.url);
@@ -114,7 +117,7 @@ export function ImageUpload({
         setUploading(false);
       }
     },
-    [bucket, folder, maxSizeMB, onChange, showToast]
+    [cloudinaryFolder, maxSizeMB, onChange, showToast]
   );
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -146,6 +149,8 @@ export function ImageUpload({
     }
   };
 
+  const cldPublicId = value ? cloudinaryPublicIdFromUrl(value) : null;
+
   return (
     <div className={className}>
       <input
@@ -159,12 +164,24 @@ export function ImageUpload({
       {value ? (
         <div className="space-y-3">
           <div className="relative group rounded-2xl overflow-hidden">
-            <img
-              src={value}
-              alt="Uploaded"
-              className="w-full h-auto object-cover"
-              style={{ aspectRatio }}
-            />
+            {cldPublicId ? (
+              <CldImage
+                src={cldPublicId}
+                alt="Uploaded"
+                width={1600}
+                height={900}
+                sizes="(max-width: 768px) 100vw, 800px"
+                className="w-full h-auto object-cover"
+                style={{ aspectRatio }}
+              />
+            ) : (
+              <img
+                src={value}
+                alt="Uploaded"
+                className="w-full h-auto object-cover"
+                style={{ aspectRatio }}
+              />
+            )}
             <div className="absolute inset-0 bg-ink/60 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center gap-3">
               <button
                 type="button"
