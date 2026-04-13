@@ -13,6 +13,8 @@ interface RichEditorProps {
 
 type EditorTab = 'write' | 'html' | 'preview';
 
+type PointerMenu = { clientX: number; clientY: number };
+
 export function RichEditor({
   value,
   onChange,
@@ -26,9 +28,11 @@ export function RichEditor({
   const [showImageUrlInput, setShowImageUrlInput] = useState(false);
   const [imageUrl, setImageUrl] = useState('');
   const [blockType, setBlockType] = useState('p');
+  const [pointerMenu, setPointerMenu] = useState<PointerMenu | null>(null);
   const editorRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const selectionRef = useRef<Range | null>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     document.execCommand('styleWithCSS', false, 'true');
@@ -41,6 +45,23 @@ export function RichEditor({
       }
     }
   }, [activeTab, value]);
+
+  useEffect(() => {
+    if (!pointerMenu) return;
+    const close = (e: MouseEvent) => {
+      if (menuRef.current?.contains(e.target as Node)) return;
+      setPointerMenu(null);
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setPointerMenu(null);
+    };
+    document.addEventListener('mousedown', close);
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('mousedown', close);
+      document.removeEventListener('keydown', onKey);
+    };
+  }, [pointerMenu]);
 
   const syncContent = useCallback(() => {
     if (editorRef.current) {
@@ -79,6 +100,20 @@ export function RichEditor({
     },
     [focusAndRestoreSelection, saveSelection, syncContent]
   );
+
+  const openPointerMenu = useCallback((clientX: number, clientY: number) => {
+    saveSelection();
+    const pad = 8;
+    const w = 280;
+    const h = 320;
+    let x = clientX;
+    let y = clientY;
+    if (x + w > window.innerWidth - pad) x = window.innerWidth - w - pad;
+    if (y + h > window.innerHeight - pad) y = window.innerHeight - h - pad;
+    x = Math.max(pad, x);
+    y = Math.max(pad, y);
+    setPointerMenu({ clientX: x, clientY: y });
+  }, [saveSelection]);
 
   const insertImageAtCursor = useCallback(
     (url: string, alt = 'Image') => {
@@ -130,6 +165,7 @@ export function RichEditor({
 
         if (result.success && result.url) {
           insertImageAtCursor(result.url, 'Uploaded image');
+          setPointerMenu(null);
         } else {
           showToast({
             variant: 'error',
@@ -227,18 +263,131 @@ export function RichEditor({
     insertImageAtCursor(imageUrl.trim(), 'Inserted image');
     setImageUrl('');
     setShowImageUrlInput(false);
+    setPointerMenu(null);
   };
 
   const applyBlockType = (value: string) => {
     setBlockType(value);
     runCommand('formatBlock', value);
+    setPointerMenu(null);
+  };
+
+  const handleEditorContextMenu = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    openPointerMenu(e.clientX, e.clientY);
+  };
+
+  const handleEditorClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.shiftKey) {
+      window.requestAnimationFrame(() => {
+        openPointerMenu(e.clientX, e.clientY);
+      });
+    }
   };
 
   const dockButtonClass =
-    'flex flex-col items-center justify-center gap-1 h-[42px] px-2 text-[10px] font-medium text-ink/65 border border-ink/[0.08] rounded-xl bg-white hover:border-ink/20 hover:text-ink transition-all';
+    'flex shrink-0 flex-col items-center justify-center gap-0.5 h-11 min-w-[4.25rem] px-2 text-[10px] font-medium text-ink/65 border border-ink/[0.08] rounded-xl bg-white hover:border-ink/20 hover:text-ink transition-all';
+
+  const menuBtnClass =
+    'w-full text-left px-3 py-2 text-[13px] text-ink rounded-lg hover:bg-ink/[0.06] transition-colors flex items-center gap-2';
+
+  const renderToolbarButtons = (closePointerMenu?: boolean) => (
+    <>
+      <select
+        value={blockType}
+        onChange={(e) => applyBlockType(e.target.value)}
+        onMouseDown={(e) => e.preventDefault()}
+        className="h-11 shrink-0 min-w-[7.5rem] px-2 text-[11px] font-semibold text-ink bg-white border border-ink/[0.1] rounded-xl focus:outline-none"
+      >
+        <option value="p">Paragraph</option>
+        <option value="h2">Heading 2</option>
+        <option value="h3">Heading 3</option>
+        <option value="h4">Heading 4</option>
+        <option value="blockquote">Quote</option>
+      </select>
+
+      <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => { runCommand('bold'); if (closePointerMenu) setPointerMenu(null); }} className={dockButtonClass}>
+        <span className="text-[14px] font-bold">B</span>
+        <span>Bold</span>
+      </button>
+
+      <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => { runCommand('italic'); if (closePointerMenu) setPointerMenu(null); }} className={dockButtonClass}>
+        <span className="text-[14px] italic">I</span>
+        <span>Italic</span>
+      </button>
+
+      <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => { runCommand('underline'); if (closePointerMenu) setPointerMenu(null); }} className={dockButtonClass}>
+        <span className="text-[14px] underline">U</span>
+        <span>Underline</span>
+      </button>
+
+      <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => { runCommand('insertUnorderedList'); if (closePointerMenu) setPointerMenu(null); }} className={dockButtonClass}>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="8" y1="6" x2="21" y2="6" /><line x1="8" y1="12" x2="21" y2="12" /><line x1="8" y1="18" x2="21" y2="18" /><circle cx="4" cy="6" r="1.5" /><circle cx="4" cy="12" r="1.5" /><circle cx="4" cy="18" r="1.5" /></svg>
+        <span>Bullets</span>
+      </button>
+
+      <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => { runCommand('insertOrderedList'); if (closePointerMenu) setPointerMenu(null); }} className={dockButtonClass}>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="10" y1="6" x2="21" y2="6" /><line x1="10" y1="12" x2="21" y2="12" /><line x1="10" y1="18" x2="21" y2="18" /></svg>
+        <span>Numbered</span>
+      </button>
+
+      <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => { runCommand('hiliteColor', '#FFF59D'); if (closePointerMenu) setPointerMenu(null); }} className={dockButtonClass}>
+        <span className="px-1 rounded bg-yellow-200 text-[11px]">A</span>
+        <span>Highlight</span>
+      </button>
+
+      <button
+        type="button"
+        onMouseDown={(e) => e.preventDefault()}
+        onClick={() => {
+          const enteredUrl = window.prompt('Enter link URL');
+          if (!enteredUrl) return;
+          const safeUrl = /^https?:\/\//i.test(enteredUrl) ? enteredUrl : `https://${enteredUrl}`;
+          runCommand('createLink', safeUrl);
+          if (closePointerMenu) setPointerMenu(null);
+        }}
+        className={dockButtonClass}
+      >
+        <span>Link</span>
+      </button>
+
+      <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => { runCommand('unlink'); if (closePointerMenu) setPointerMenu(null); }} className={dockButtonClass}>
+        <span>Unlink</span>
+      </button>
+
+      <button
+        type="button"
+        onMouseDown={(e) => e.preventDefault()}
+        onClick={() => {
+          fileInputRef.current?.click();
+          if (closePointerMenu) setPointerMenu(null);
+        }}
+        disabled={uploading}
+        className={`${dockButtonClass} disabled:opacity-50`}
+      >
+        {uploading ? <div className="w-3.5 h-3.5 border-2 border-ink/20 border-t-ink rounded-full animate-spin" /> : <span>Upload</span>}
+      </button>
+
+      <button
+        type="button"
+        onMouseDown={(e) => e.preventDefault()}
+        onClick={() => {
+          setShowImageUrlInput((p) => !p);
+          if (closePointerMenu) setPointerMenu(null);
+        }}
+        className={dockButtonClass}
+      >
+        <span>Image URL</span>
+      </button>
+
+      <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => { runCommand('removeFormat'); if (closePointerMenu) setPointerMenu(null); }} className={dockButtonClass}>
+        <span>Clear</span>
+      </button>
+    </>
+  );
 
   return (
-    <div className={className}>
+    <div className={`${className} relative`}>
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-1.5 p-1.5 bg-ink/[0.04] rounded-2xl border border-ink/[0.06]">
           {(['write', 'html', 'preview'] as EditorTab[]).map((tab) => (
@@ -258,127 +407,11 @@ export function RichEditor({
         </div>
 
         {activeTab === 'write' && (
-          <p className="text-[12px] text-ink/45">Formatting controls are available below the tabs</p>
+          <p className="text-[11px] text-ink/45 max-w-[14rem] sm:max-w-none text-right sm:text-left">
+            Toolbar stays at bottom while you scroll. Right‑click or Shift+click for quick actions.
+          </p>
         )}
       </div>
-
-      {activeTab === 'write' && (
-        <div className="mb-4 rounded-2xl border border-ink/[0.12] bg-white px-3 py-3 shadow-sm">
-          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-2">
-            <select
-              value={blockType}
-              onChange={(e) => applyBlockType(e.target.value)}
-              onMouseDown={() => saveSelection()}
-              className="h-[42px] w-full px-3 text-[12px] font-semibold text-ink bg-white border border-ink/[0.1] rounded-xl focus:outline-none"
-            >
-              <option value="p">Paragraph</option>
-              <option value="h2">Heading 2</option>
-              <option value="h3">Heading 3</option>
-              <option value="h4">Heading 4</option>
-              <option value="blockquote">Quote</option>
-            </select>
-
-            <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => runCommand('bold')} className={dockButtonClass}>
-              <span className="text-[14px] font-bold">B</span>
-              <span>Bold</span>
-            </button>
-
-            <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => runCommand('italic')} className={dockButtonClass}>
-              <span className="text-[14px] italic">I</span>
-              <span>Italic</span>
-            </button>
-
-            <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => runCommand('underline')} className={dockButtonClass}>
-              <span className="text-[14px] underline">U</span>
-              <span>Underline</span>
-            </button>
-
-            <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => runCommand('insertUnorderedList')} className={dockButtonClass}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="8" y1="6" x2="21" y2="6" /><line x1="8" y1="12" x2="21" y2="12" /><line x1="8" y1="18" x2="21" y2="18" /><circle cx="4" cy="6" r="1.5" /><circle cx="4" cy="12" r="1.5" /><circle cx="4" cy="18" r="1.5" /></svg>
-              <span>Bullets</span>
-            </button>
-
-            <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => runCommand('insertOrderedList')} className={dockButtonClass}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="10" y1="6" x2="21" y2="6" /><line x1="10" y1="12" x2="21" y2="12" /><line x1="10" y1="18" x2="21" y2="18" /><path d="M4 6h1v4" /><path d="M4 10h2" /><path d="M4 16c0-1 1-2 2-2s2 1 2 2-1 2-2 2H4l4-4" /></svg>
-              <span>Numbered</span>
-            </button>
-
-            <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => runCommand('hiliteColor', '#FFF59D')} className={dockButtonClass}>
-              <span className="px-1 rounded bg-yellow-200 text-[12px]">A</span>
-              <span>Highlight</span>
-            </button>
-
-            <button
-              type="button"
-              onMouseDown={(e) => e.preventDefault()}
-              onClick={() => {
-                const enteredUrl = window.prompt('Enter link URL');
-                if (!enteredUrl) return;
-                const safeUrl = /^https?:\/\//i.test(enteredUrl) ? enteredUrl : `https://${enteredUrl}`;
-                runCommand('createLink', safeUrl);
-              }}
-              className={dockButtonClass}
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M10 13a5 5 0 0 0 7.54.54l2.92-2.92a5 5 0 0 0-7.07-7.07L11.72 5" /><path d="M14 11a5 5 0 0 0-7.54-.54L3.54 13.38a5 5 0 0 0 7.07 7.07L12.28 19" /></svg>
-              <span>Link</span>
-            </button>
-
-            <button
-              type="button"
-              onMouseDown={(e) => e.preventDefault()}
-              onClick={() => runCommand('unlink')}
-              className={dockButtonClass}
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17 7l-10 10" /><path d="M7 7h5" /><path d="M12 12v5" /></svg>
-              <span>Unlink</span>
-            </button>
-
-            <button
-              type="button"
-              onMouseDown={(e) => e.preventDefault()}
-              onClick={() => fileInputRef.current?.click()}
-              disabled={uploading}
-              className={`${dockButtonClass} disabled:opacity-50`}
-            >
-              {uploading ? <div className="w-3.5 h-3.5 border-2 border-ink/20 border-t-ink rounded-full animate-spin" /> : <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="8.5" cy="8.5" r="1.5" /><polyline points="21 15 16 10 5 21" /></svg>}
-              <span>Upload</span>
-            </button>
-
-            <button
-              type="button"
-              onMouseDown={(e) => e.preventDefault()}
-              onClick={() => setShowImageUrlInput((prev) => !prev)}
-              className={dockButtonClass}
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M10 13a5 5 0 0 0 7.54.54l2.92-2.92a5 5 0 0 0-7.07-7.07L11.72 5" /><path d="M14 11a5 5 0 0 0-7.54-.54L3.54 13.38a5 5 0 0 0 7.07 7.07L12.28 19" /></svg>
-              <span>Image URL</span>
-            </button>
-
-            <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => runCommand('removeFormat')} className={dockButtonClass}>
-              <span className="text-[13px]">Tx</span>
-              <span>Clear</span>
-            </button>
-          </div>
-
-          {showImageUrlInput && (
-            <div className="mt-3 pt-3 border-t border-ink/[0.08] flex flex-col sm:flex-row gap-2">
-              <input
-                value={imageUrl}
-                onChange={(e) => setImageUrl(e.target.value)}
-                placeholder="https://example.com/image.jpg"
-                className="flex-1 h-[40px] px-3 text-[13px] text-ink bg-white border border-ink/[0.1] rounded-xl focus:outline-none focus:border-ink/25"
-              />
-              <button
-                type="button"
-                onClick={handleImageUrlInsert}
-                className="h-[40px] px-4 text-[12px] font-semibold text-white bg-ink rounded-xl hover:opacity-90 transition-opacity"
-              >
-                Insert Image
-              </button>
-            </div>
-          )}
-        </div>
-      )}
 
       <input
         ref={fileInputRef}
@@ -401,6 +434,8 @@ export function RichEditor({
           onDrop={handleDrop}
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
+          onContextMenu={handleEditorContextMenu}
+          onClick={handleEditorClick}
           className={`w-full min-h-[400px] px-6 py-5 bg-white border rounded-2xl text-[15px] text-ink leading-relaxed focus:outline-none focus:border-ink/20 focus:ring-4 focus:ring-ink/[0.03] transition-all overflow-auto ${
             isDragging ? 'border-accent border-2 bg-accent/[0.02]' : 'border-ink/[0.08]'
           }`}
@@ -408,8 +443,105 @@ export function RichEditor({
           style={{
             minHeight: '400px',
             fontFamily: 'inherit',
+            paddingBottom: '5.5rem',
           }}
         />
+      )}
+
+      {pointerMenu && activeTab === 'write' && (
+        <div
+          ref={menuRef}
+          className="fixed z-[100] w-[min(18rem,calc(100vw-1rem))] rounded-2xl border border-ink/[0.12] bg-white py-2 shadow-xl"
+          style={{ left: pointerMenu.clientX, top: pointerMenu.clientY }}
+          onMouseDown={(e) => e.preventDefault()}
+        >
+          <p className="px-3 pb-2 text-[10px] font-bold uppercase tracking-wider text-ink/40">Quick actions</p>
+          <button
+            type="button"
+            className={menuBtnClass}
+            onClick={() => {
+              fileInputRef.current?.click();
+              setPointerMenu(null);
+            }}
+            disabled={uploading}
+          >
+            <span className="font-mono text-[11px] text-ink/50">IMG</span>
+            Upload image (Cloudinary)
+          </button>
+          <button
+            type="button"
+            className={menuBtnClass}
+            onClick={() => {
+              const url = window.prompt('Image URL');
+              if (url?.trim()) insertImageAtCursor(url.trim(), 'Image');
+              setPointerMenu(null);
+            }}
+          >
+            Image from URL
+          </button>
+          <div className="my-1 border-t border-ink/[0.06]" />
+          <button type="button" className={menuBtnClass} onClick={() => { runCommand('bold'); setPointerMenu(null); }}>
+            Bold
+          </button>
+          <button type="button" className={menuBtnClass} onClick={() => { runCommand('italic'); setPointerMenu(null); }}>
+            Italic
+          </button>
+          <button type="button" className={menuBtnClass} onClick={() => { applyBlockType('h2'); }}>
+            Heading 2
+          </button>
+          <button type="button" className={menuBtnClass} onClick={() => { applyBlockType('h3'); }}>
+            Heading 3
+          </button>
+          <button type="button" className={menuBtnClass} onClick={() => { runCommand('insertUnorderedList'); setPointerMenu(null); }}>
+            Bullet list
+          </button>
+          <button type="button" className={menuBtnClass} onClick={() => { runCommand('insertOrderedList'); setPointerMenu(null); }}>
+            Numbered list
+          </button>
+          <button
+            type="button"
+            className={menuBtnClass}
+            onClick={() => {
+              const enteredUrl = window.prompt('Link URL');
+              if (!enteredUrl) return;
+              const safeUrl = /^https?:\/\//i.test(enteredUrl) ? enteredUrl : `https://${enteredUrl}`;
+              runCommand('createLink', safeUrl);
+              setPointerMenu(null);
+            }}
+          >
+            Add link
+          </button>
+        </div>
+      )}
+
+      {activeTab === 'write' && (
+        <div
+          className="fixed bottom-0 left-0 right-0 z-[90] border-t border-ink/[0.08] bg-white/95 backdrop-blur-md shadow-[0_-4px_24px_rgba(0,0,0,0.06)] safe-area-pb"
+          style={{ paddingBottom: 'max(0.75rem, env(safe-area-inset-bottom))' }}
+        >
+          <div className="mx-auto max-w-4xl px-2 py-2">
+            {showImageUrlInput && (
+              <div className="mb-2 flex flex-col gap-2 sm:flex-row sm:items-center">
+                <input
+                  value={imageUrl}
+                  onChange={(e) => setImageUrl(e.target.value)}
+                  placeholder="https://example.com/image.jpg"
+                  className="h-10 flex-1 rounded-xl border border-ink/[0.1] px-3 text-[13px] text-ink focus:border-ink/25 focus:outline-none"
+                />
+                <button
+                  type="button"
+                  onClick={handleImageUrlInsert}
+                  className="h-10 shrink-0 rounded-xl bg-ink px-4 text-[12px] font-semibold text-white hover:opacity-90"
+                >
+                  Insert image
+                </button>
+              </div>
+            )}
+            <div className="flex gap-1.5 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:thin]">
+              {renderToolbarButtons(true)}
+            </div>
+          </div>
+        </div>
       )}
 
       {activeTab === 'html' && (

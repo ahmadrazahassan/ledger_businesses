@@ -91,11 +91,22 @@ function EditPostEditor({ post }: { post: any }) {
     post.featured_rank != null ? String(post.featured_rank) : ''
   );
   const [isDragging, setIsDragging] = useState(false);
+  const [pointerMenu, setPointerMenu] = useState<{ clientX: number; clientY: number } | null>(null);
+  const [editorUploading, setEditorUploading] = useState(false);
+  const [showEditorImageUrl, setShowEditorImageUrl] = useState(false);
+  const [editorImageUrl, setEditorImageUrl] = useState('');
+  const [blockType, setBlockType] = useState('p');
 
   const editorRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const coverInputRef = useRef<HTMLInputElement>(null);
   const editorInitialized = useRef(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const selectionRef = useRef<Range | null>(null);
+
+  useEffect(() => {
+    document.execCommand('styleWithCSS', false, 'true');
+  }, []);
 
   useEffect(() => {
     loadData();
@@ -135,11 +146,81 @@ function EditPostEditor({ post }: { post: any }) {
     if (editorRef.current) setContentHtml(editorRef.current.innerHTML);
   }, []);
 
+  const saveSelection = useCallback(() => {
+    const sel = window.getSelection();
+    if (!sel || sel.rangeCount === 0) return;
+    selectionRef.current = sel.getRangeAt(0).cloneRange();
+  }, []);
+
+  const focusAndRestoreSelection = useCallback(() => {
+    const ed = editorRef.current;
+    if (!ed) return;
+    ed.focus();
+    const sel = window.getSelection();
+    if (sel && selectionRef.current) {
+      sel.removeAllRanges();
+      sel.addRange(selectionRef.current);
+    }
+  }, []);
+
+  const runCommand = useCallback(
+    (command: string, value?: string) => {
+      focusAndRestoreSelection();
+      document.execCommand(command, false, value);
+      saveSelection();
+      syncEditorContent();
+    },
+    [focusAndRestoreSelection, saveSelection, syncEditorContent]
+  );
+
+  const openPointerMenu = useCallback(
+    (clientX: number, clientY: number) => {
+      saveSelection();
+      const pad = 8;
+      const w = 280;
+      const h = 280;
+      let x = clientX;
+      let y = clientY;
+      if (x + w > window.innerWidth - pad) x = window.innerWidth - w - pad;
+      if (y + h > window.innerHeight - pad) y = window.innerHeight - h - pad;
+      x = Math.max(pad, x);
+      y = Math.max(pad, y);
+      setPointerMenu({ clientX: x, clientY: y });
+    },
+    [saveSelection]
+  );
+
+  useEffect(() => {
+    if (!pointerMenu) return;
+    const close = (e: MouseEvent) => {
+      if (menuRef.current?.contains(e.target as Node)) return;
+      setPointerMenu(null);
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setPointerMenu(null);
+    };
+    document.addEventListener('mousedown', close);
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('mousedown', close);
+      document.removeEventListener('keydown', onKey);
+    };
+  }, [pointerMenu]);
+
   const insertImageAtCursor = useCallback((src: string) => {
     const editor = editorRef.current;
     if (!editor) return;
     editor.focus();
     const sel = window.getSelection();
+    if (sel && selectionRef.current) {
+      try {
+        sel.removeAllRanges();
+        sel.addRange(selectionRef.current.cloneRange());
+      } catch {
+        /* invalid stored range */
+      }
+    }
+    const selection = window.getSelection();
     const img = document.createElement('img');
     img.src = src;
     img.className = 'max-w-full rounded-xl my-3';
@@ -147,33 +228,40 @@ function EditPostEditor({ post }: { post: any }) {
     const wrapper = document.createElement('div');
     wrapper.className = 'my-2';
     wrapper.appendChild(img);
-    if (!sel || sel.rangeCount === 0) {
+    if (!selection || selection.rangeCount === 0) {
       editor.appendChild(wrapper);
       syncEditorContent();
+      setPointerMenu(null);
       return;
     }
-    const range = sel.getRangeAt(0);
+    const range = selection.getRangeAt(0);
     range.deleteContents();
     range.insertNode(wrapper);
     const newRange = document.createRange();
     newRange.setStartAfter(wrapper);
     newRange.collapse(true);
-    sel.removeAllRanges();
-    sel.addRange(newRange);
+    selection.removeAllRanges();
+    selection.addRange(newRange);
     syncEditorContent();
+    setPointerMenu(null);
   }, [syncEditorContent]);
 
   const processImageFile = useCallback(async (file: File) => {
-    const result = await uploadToCloudinary(file, { folder: 'posts' });
-    if (!result.success || !result.url) {
-      showToast({
-        variant: 'error',
-        title: 'Image upload failed',
-        description: result.error || 'Please try another image file.',
-      });
-      return;
+    setEditorUploading(true);
+    try {
+      const result = await uploadToCloudinary(file, { folder: 'posts' });
+      if (!result.success || !result.url) {
+        showToast({
+          variant: 'error',
+          title: 'Image upload failed',
+          description: result.error || 'Please try another image file.',
+        });
+        return;
+      }
+      insertImageAtCursor(result.url);
+    } finally {
+      setEditorUploading(false);
     }
-    insertImageAtCursor(result.url);
   }, [insertImageAtCursor, showToast]);
 
   const handlePaste = useCallback(async (e: React.ClipboardEvent<HTMLDivElement>) => {
@@ -226,7 +314,6 @@ function EditPostEditor({ post }: { post: any }) {
   }, []);
 
   const handleDragLeave = useCallback(() => setIsDragging(false), []);
-  const handleInsertImageClick = () => fileInputRef.current?.click();
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -236,6 +323,34 @@ function EditPostEditor({ post }: { post: any }) {
 
   const handleEditorInput = () => syncEditorContent();
   const handleHtmlChange = (value: string) => setContentHtml(value);
+
+  const applyBlockType = (value: string) => {
+    setBlockType(value);
+    runCommand('formatBlock', value);
+    setPointerMenu(null);
+  };
+
+  const handleEditorContextMenu = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    openPointerMenu(e.clientX, e.clientY);
+  };
+
+  const handleEditorClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.shiftKey) {
+      window.requestAnimationFrame(() => {
+        openPointerMenu(e.clientX, e.clientY);
+      });
+    }
+  };
+
+  const handleEditorImageUrlInsert = () => {
+    const v = editorImageUrl.trim();
+    if (!v) return;
+    insertImageAtCursor(/^https?:\/\//i.test(v) ? v : `https://${v}`);
+    setEditorImageUrl('');
+    setShowEditorImageUrl(false);
+    setPointerMenu(null);
+  };
 
   useEffect(() => {
     if (activeTab === 'write' && editorRef.current && editorInitialized.current) {
@@ -492,7 +607,7 @@ function EditPostEditor({ post }: { post: any }) {
           {/* Editor */}
           <div className={cardClass}>
             <div className="p-5">
-              <div className="flex items-center justify-between mb-4">
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between mb-4">
                 <div className="flex items-center gap-1 p-1 bg-ink/[0.03] rounded-xl border border-ink/[0.06]">
                   {(['write', 'html', 'preview'] as EditorTab[]).map((tab) => (
                     <button
@@ -507,9 +622,9 @@ function EditPostEditor({ post }: { post: any }) {
                   ))}
                 </div>
                 {activeTab === 'write' && (
-                  <button type="button" onClick={handleInsertImageClick} className="px-3 py-1.5 text-[12px] font-semibold text-ink/50 border border-ink/[0.08] rounded-lg hover:border-ink/15 hover:text-ink/70 transition-all duration-200">
-                    Insert Image
-                  </button>
+                  <p className="text-[11px] text-ink/40">
+                    Right-click or Shift+click for quick actions. Formatting bar stays at the bottom while you scroll.
+                  </p>
                 )}
               </div>
 
@@ -521,14 +636,19 @@ function EditPostEditor({ post }: { post: any }) {
                   contentEditable
                   suppressContentEditableWarning
                   onInput={handleEditorInput}
+                  onBlur={saveSelection}
+                  onMouseUp={saveSelection}
+                  onKeyUp={saveSelection}
                   onPaste={handlePaste}
                   onDrop={handleDrop}
                   onDragOver={handleDragOver}
                   onDragLeave={handleDragLeave}
+                  onContextMenu={handleEditorContextMenu}
+                  onClick={handleEditorClick}
                   className={`w-full min-h-[320px] px-4 py-3.5 bg-[#f8f9fb] border rounded-xl text-[14px] text-ink leading-relaxed focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/15 focus:bg-white transition-all duration-200 prose prose-sm max-w-none ${isDragging ? 'border-accent border-2 bg-accent/[0.02]' : 'border-ink/[0.08]'
                     }`}
                   data-placeholder="Write your article content here..."
-                  style={{ minHeight: '320px' }}
+                  style={{ minHeight: '320px', paddingBottom: '5rem' }}
                 />
               )}
 
@@ -547,10 +667,149 @@ function EditPostEditor({ post }: { post: any }) {
               )}
 
               {activeTab === 'write' && (
-                <p className="mt-2 text-[11px] text-ink/35">Paste, drag, or insert images anywhere in the content.</p>
+                <p className="mt-2 text-[11px] text-ink/35">Paste or drag images into the article anytime.</p>
               )}
             </div>
           </div>
+
+          {pointerMenu && activeTab === 'write' && (
+            <div
+              ref={menuRef}
+              className="fixed z-[100] w-[min(18rem,calc(100vw-1rem))] rounded-2xl border border-ink/[0.12] bg-white py-2 shadow-xl"
+              style={{ left: pointerMenu.clientX, top: pointerMenu.clientY }}
+              onMouseDown={(e) => e.preventDefault()}
+            >
+              <p className="px-3 pb-2 text-[10px] font-bold uppercase tracking-wider text-ink/40">Quick actions</p>
+              <button
+                type="button"
+                className="flex w-full items-center gap-2 px-3 py-2 text-left text-[13px] text-ink rounded-lg hover:bg-ink/[0.06]"
+                onClick={() => {
+                  fileInputRef.current?.click();
+                  setPointerMenu(null);
+                }}
+                disabled={editorUploading}
+              >
+                <span className="font-mono text-[11px] text-ink/50">IMG</span>
+                Upload image (Cloudinary)
+              </button>
+              <button
+                type="button"
+                className="flex w-full items-center gap-2 px-3 py-2 text-left text-[13px] text-ink rounded-lg hover:bg-ink/[0.06]"
+                onClick={() => {
+                  const url = window.prompt('Image URL');
+                  if (url?.trim()) insertImageAtCursor(url.trim());
+                  setPointerMenu(null);
+                }}
+              >
+                Image from URL
+              </button>
+              <div className="my-1 border-t border-ink/[0.06]" />
+              <button type="button" className="flex w-full px-3 py-2 text-left text-[13px] text-ink rounded-lg hover:bg-ink/[0.06]" onClick={() => { runCommand('bold'); setPointerMenu(null); }}>
+                Bold
+              </button>
+              <button type="button" className="flex w-full px-3 py-2 text-left text-[13px] text-ink rounded-lg hover:bg-ink/[0.06]" onClick={() => { runCommand('italic'); setPointerMenu(null); }}>
+                Italic
+              </button>
+              <button type="button" className="flex w-full px-3 py-2 text-left text-[13px] text-ink rounded-lg hover:bg-ink/[0.06]" onClick={() => applyBlockType('h2')}>
+                Heading 2
+              </button>
+              <button type="button" className="flex w-full px-3 py-2 text-left text-[13px] text-ink rounded-lg hover:bg-ink/[0.06]" onClick={() => applyBlockType('h3')}>
+                Heading 3
+              </button>
+              <button type="button" className="flex w-full px-3 py-2 text-left text-[13px] text-ink rounded-lg hover:bg-ink/[0.06]" onClick={() => { runCommand('insertUnorderedList'); setPointerMenu(null); }}>
+                Bullet list
+              </button>
+              <button
+                type="button"
+                className="flex w-full px-3 py-2 text-left text-[13px] text-ink rounded-lg hover:bg-ink/[0.06]"
+                onClick={() => {
+                  const enteredUrl = window.prompt('Link URL');
+                  if (!enteredUrl) return;
+                  const safeUrl = /^https?:\/\//i.test(enteredUrl) ? enteredUrl : `https://${enteredUrl}`;
+                  runCommand('createLink', safeUrl);
+                  setPointerMenu(null);
+                }}
+              >
+                Add link
+              </button>
+            </div>
+          )}
+
+          {activeTab === 'write' && (
+            <div
+              className="fixed bottom-0 left-0 right-0 z-[90] border-t border-ink/[0.08] bg-white/95 backdrop-blur-md shadow-[0_-4px_24px_rgba(0,0,0,0.06)]"
+              style={{ paddingBottom: 'max(0.75rem, env(safe-area-inset-bottom))' }}
+            >
+              <div className="mx-auto max-w-4xl px-2 py-2">
+                {showEditorImageUrl && (
+                  <div className="mb-2 flex flex-col gap-2 sm:flex-row sm:items-center">
+                    <input
+                      value={editorImageUrl}
+                      onChange={(e) => setEditorImageUrl(e.target.value)}
+                      placeholder="https://example.com/image.jpg"
+                      className="h-10 flex-1 rounded-xl border border-ink/[0.1] px-3 text-[13px] text-ink focus:border-ink/25 focus:outline-none"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleEditorImageUrlInsert}
+                      className="h-10 shrink-0 rounded-xl bg-ink px-4 text-[12px] font-semibold text-white hover:opacity-90"
+                    >
+                      Insert image
+                    </button>
+                  </div>
+                )}
+                <div className="flex gap-1.5 overflow-x-auto pb-1">
+                  <select
+                    value={blockType}
+                    onChange={(e) => applyBlockType(e.target.value)}
+                    onMouseDown={(e) => e.preventDefault()}
+                    className="h-11 shrink-0 min-w-[6.5rem] rounded-xl border border-ink/[0.1] bg-white px-2 text-[11px] font-semibold text-ink focus:outline-none"
+                  >
+                    <option value="p">Paragraph</option>
+                    <option value="h2">Heading 2</option>
+                    <option value="h3">Heading 3</option>
+                    <option value="h4">Heading 4</option>
+                    <option value="blockquote">Quote</option>
+                  </select>
+                  <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => runCommand('bold')} className="flex h-11 min-w-[3.5rem] shrink-0 flex-col items-center justify-center rounded-xl border border-ink/[0.08] bg-white px-2 text-[10px] font-medium text-ink/65 hover:border-ink/20 hover:text-ink">
+                    <span className="text-[13px] font-bold">B</span>
+                  </button>
+                  <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => runCommand('italic')} className="flex h-11 min-w-[3.5rem] shrink-0 flex-col items-center justify-center rounded-xl border border-ink/[0.08] bg-white px-2 text-[10px] font-medium text-ink/65 hover:border-ink/20 hover:text-ink">
+                    <span className="text-[13px] italic">I</span>
+                  </button>
+                  <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => runCommand('underline')} className="flex h-11 min-w-[3.5rem] shrink-0 flex-col items-center justify-center rounded-xl border border-ink/[0.08] bg-white px-2 text-[10px] font-medium text-ink/65 hover:border-ink/20 hover:text-ink">
+                    <span className="text-[12px] underline">U</span>
+                  </button>
+                  <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => runCommand('insertUnorderedList')} className="flex h-11 min-w-[3.5rem] shrink-0 flex-col items-center justify-center rounded-xl border border-ink/[0.08] bg-white px-2 text-[10px] font-medium text-ink/65 hover:border-ink/20 hover:text-ink">
+                    • List
+                  </button>
+                  <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => runCommand('insertOrderedList')} className="flex h-11 min-w-[3.5rem] shrink-0 flex-col items-center justify-center rounded-xl border border-ink/[0.08] bg-white px-2 text-[10px] font-medium text-ink/65 hover:border-ink/20 hover:text-ink">
+                    1. List
+                  </button>
+                  <button
+                    type="button"
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={editorUploading}
+                    className="flex h-11 min-w-[4.5rem] shrink-0 flex-col items-center justify-center rounded-xl border border-ink/[0.08] bg-white px-2 text-[10px] font-medium text-ink/65 hover:border-ink/20 hover:text-ink disabled:opacity-50"
+                  >
+                    {editorUploading ? <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-ink/20 border-t-ink" /> : 'Upload'}
+                  </button>
+                  <button
+                    type="button"
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={() => setShowEditorImageUrl((p) => !p)}
+                    className="flex h-11 min-w-[4.5rem] shrink-0 flex-col items-center justify-center rounded-xl border border-ink/[0.08] bg-white px-2 text-[10px] font-medium text-ink/65 hover:border-ink/20 hover:text-ink"
+                  >
+                    Image URL
+                  </button>
+                  <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => runCommand('removeFormat')} className="flex h-11 min-w-[3.5rem] shrink-0 flex-col items-center justify-center rounded-xl border border-ink/[0.08] bg-white px-2 text-[10px] font-medium text-ink/65 hover:border-ink/20 hover:text-ink">
+                    Clear
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Sidebar (1/3) */}
