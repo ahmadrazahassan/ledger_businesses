@@ -4,7 +4,6 @@ import { useState, useCallback } from 'react';
 import Link from 'next/link';
 import { slugify } from '@/lib/utils';
 import { useToast } from '@/components/ui/toast';
-import { importPostsAsDrafts, publishPostIds } from '../import-actions';
 import type { ImportPostInput, ImportRowResult } from '@/lib/types/database';
 import { parseHtmlToArticle } from '@/lib/import-html';
 
@@ -37,38 +36,7 @@ const steps: { id: Phase; label: string }[] = [
   { id: 'done', label: 'Complete' },
 ];
 
-/** Split rows so each Server Action request stays under typical body limits. */
-function chunkImportRowsForServerAction(
-  rows: ImportPostInput[],
-  maxBytes = 900_000
-): ImportPostInput[][] {
-  const chunks: ImportPostInput[][] = [];
-  let cur: ImportPostInput[] = [];
-  for (const row of rows) {
-    const next = [...cur, row];
-    const size = new Blob([JSON.stringify(next)]).size;
-    if (size <= maxBytes) {
-      cur = next;
-      continue;
-    }
-    if (cur.length > 0) {
-      chunks.push(cur);
-      cur = [];
-    }
-    const oneRowPayload = new Blob([JSON.stringify([row])]).size;
-    if (oneRowPayload > maxBytes) {
-      const title = row.title?.trim() || '(untitled)';
-      const sizeKb = Math.ceil(oneRowPayload / 1024);
-      throw new Error(
-        `Article "${title}" is too large to import (${sizeKb}KB). Split or clean the HTML and try again.`
-      );
-    } else {
-      cur = [row];
-    }
-  }
-  if (cur.length > 0) chunks.push(cur);
-  return chunks;
-}
+const MAX_SINGLE_ROW_BYTES = 700_000;
 
 type Props = {
   initialAuthors: ImportOptionAuthor[];
@@ -164,32 +132,70 @@ export function ImportPostsForm({ initialAuthors, initialCategories, serverLoadE
   const handleRunImport = async () => {
     setImporting(true);
     try {
-      // Keep margin under transport limits to avoid opaque 500s in production.
-      const batches = chunkImportRowsForServerAction(parsedRows, 700_000);
       const results: ImportRowResult[] = [];
-      let rowOffset = 0;
-      for (const batch of batches) {
-        const { results: batchResults } = await importPostsAsDrafts(
-          batch,
+      for (let rowIndex = 0; rowIndex < parsedRows.length; rowIndex++) {
+        const row = parsedRows[rowIndex];
+        const payload = {
+          row,
+          rowIndex,
           authorId,
-          defaultCategoryId
-        );
-        for (const r of batchResults) {
-          results.push({ ...r, rowIndex: rowOffset + r.rowIndex });
+          defaultCategoryId,
+        };
+        const payloadBytes = new Blob([JSON.stringify(payload)]).size;
+
+        if (payloadBytes > MAX_SINGLE_ROW_BYTES) {
+          results.push({
+            rowIndex,
+            title: row.title || '(untitled)',
+            slug: row.slug || slugify(row.title || 'post'),
+            status: 'error',
+            message: `Article payload too large (${Math.ceil(payloadBytes / 1024)}KB). Split or simplify this file.`,
+          });
+          continue;
         }
-        rowOffset += batch.length;
+
+        try {
+          const res = await fetch('/api/admin/posts/import-row', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+          });
+
+          const body = (await res.json().catch(() => null)) as
+            | { result?: ImportRowResult; error?: string }
+            | null;
+
+          if (!res.ok || !body?.result) {
+            results.push({
+              rowIndex,
+              title: row.title || '(untitled)',
+              slug: row.slug || slugify(row.title || 'post'),
+              status: 'error',
+              message: body?.error || `Import request failed (${res.status})`,
+            });
+            continue;
+          }
+
+          results.push(body.result);
+        } catch (e) {
+          results.push({
+            rowIndex,
+            title: row.title || '(untitled)',
+            slug: row.slug || slugify(row.title || 'post'),
+            status: 'error',
+            message: e instanceof Error ? e.message : 'Network or server error',
+          });
+        }
       }
       setImportResults(results);
       const ids = results.filter((r) => r.status === 'created' && r.postId).map((r) => r.postId!);
       setCreatedPostIds(ids);
       setPhase('done');
       const created = results.filter((r) => r.status === 'created').length;
-      const batchNote =
-        batches.length > 1 ? ` (${batches.length} batches)` : '';
       showToast({
         variant: 'success',
         title: 'Import finished',
-        description: `${created} saved as drafts.${batchNote}`,
+        description: `${created} saved as drafts.`,
       });
     } catch (e) {
       showToast({
@@ -206,16 +212,27 @@ export function ImportPostsForm({ initialAuthors, initialCategories, serverLoadE
     if (createdPostIds.length === 0) return;
     setPublishing(true);
     try {
-      const res = await publishPostIds(createdPostIds);
-      if (res.success) {
+      const response = await fetch('/api/admin/posts/publish', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ids: createdPostIds }),
+      });
+      const res = (await response.json().catch(() => null)) as
+        | { success?: boolean; published?: number; error?: string }
+        | null;
+      if (response.ok && res?.success) {
         showToast({
           variant: 'success',
           title: 'Published',
-          description: `${res.published} article(s) are now live.`,
+          description: `${res.published ?? 0} article(s) are now live.`,
         });
         setCreatedPostIds([]);
       } else {
-        showToast({ variant: 'error', title: 'Publish failed', description: res.error });
+        showToast({
+          variant: 'error',
+          title: 'Publish failed',
+          description: res?.error || `Publish request failed (${response.status})`,
+        });
       }
     } finally {
       setPublishing(false);
