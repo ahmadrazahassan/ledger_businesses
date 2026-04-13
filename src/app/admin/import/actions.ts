@@ -13,8 +13,12 @@ async function resolveUniquePostSlug(supabase: SupabaseClient, baseSlug: string)
   let i = 0;
   while (true) {
     const candidate = i === 0 ? base : `${base}-${i}`;
-    const { data } = await supabase.from('posts').select('id').eq('slug', candidate).maybeSingle();
-    if (!data) return candidate;
+    // Use limit(1) instead of maybeSingle(): duplicate slug rows would make maybeSingle() error.
+    const { data, error } = await supabase.from('posts').select('id').eq('slug', candidate).limit(1);
+    if (error) {
+      throw new Error(`Slug check failed: ${error.message}`);
+    }
+    if (!data?.length) return candidate;
     i += 1;
     if (i > 5000) return `${base}-${Date.now()}`;
   }
@@ -55,77 +59,116 @@ export async function importHtmlArticle(input: {
 }): Promise<ImportHtmlArticleResult> {
   const { fileName, html, author_id, category_id, category_ids, status } = input;
 
-  if (!fileName?.trim() || !html) {
-    return { success: false, fileName: fileName?.trim() || '(unknown)', message: 'Missing file name or HTML content.' };
-  }
-  if (html.length > MAX_HTML_CHARS) {
-    return { success: false, fileName, message: 'HTML exceeds maximum size.' };
-  }
-
-  const { parseHtmlForImport, titleFromFileName } = await import('@/lib/import/html-import');
-
-  let parsed;
   try {
-    parsed = parseHtmlForImport(html);
+    if (!fileName?.trim() || !html) {
+      return { success: false, fileName: fileName?.trim() || '(unknown)', message: 'Missing file name or HTML content.' };
+    }
+    if (html.length > MAX_HTML_CHARS) {
+      return { success: false, fileName, message: 'HTML exceeds maximum size.' };
+    }
+
+    let parseMod: typeof import('@/lib/import/html-import');
+    try {
+      parseMod = await import('@/lib/import/html-import');
+    } catch (e) {
+      console.error('[importHtmlArticle] Failed to load html-import module:', e);
+      return {
+        success: false,
+        fileName,
+        message: e instanceof Error ? e.message : 'Failed to load HTML import module.',
+      };
+    }
+
+    const { parseHtmlForImport, titleFromFileName } = parseMod;
+
+    let parsed;
+    try {
+      parsed = parseHtmlForImport(html);
+    } catch (e) {
+      return {
+        success: false,
+        fileName,
+        message: e instanceof Error ? e.message : 'Failed to parse HTML.',
+      };
+    }
+
+    let title = parsed.title.trim();
+    if (!title) {
+      title = titleFromFileName(fileName);
+    }
+
+    const content = parsed.content_html.trim();
+    if (!content) {
+      return { success: false, fileName, title, message: 'No article content found after parsing.' };
+    }
+
+    const supabase = await createClient();
+
+    let insertMod: typeof import('@/app/admin/posts/post-insert-shared');
+    try {
+      insertMod = await import('@/app/admin/posts/post-insert-shared');
+    } catch (e) {
+      console.error('[importHtmlArticle] Failed to load post-insert module:', e);
+      return {
+        success: false,
+        fileName,
+        title,
+        message: e instanceof Error ? e.message : 'Failed to load post insert module.',
+      };
+    }
+
+    const { insertPostWithCategories } = insertMod;
+
+    const baseSlug = slugify(title) || slugify(titleFromFileName(fileName)) || 'imported-article';
+    const uniqueSlug = await resolveUniquePostSlug(supabase, baseSlug);
+    const categoryIds = category_ids?.length ? category_ids : [category_id];
+    const textContent = content.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+
+    const postData: PostFormData = {
+      title: title.slice(0, 500),
+      slug: uniqueSlug,
+      excerpt: (parsed.excerpt || title).slice(0, 2000),
+      content_html: parsed.content_html,
+      content_text: textContent,
+      cover_image: parsed.cover_image || '',
+      author_id,
+      category_id,
+      category_ids: categoryIds,
+      tags: parsed.tags,
+      status,
+      published_at: publishedAtForStatus(status),
+      featured_rank: null,
+      seo_title: (parsed.seo_title || title).slice(0, 500),
+      seo_description: (parsed.seo_description || parsed.excerpt || title).slice(0, 500),
+      og_image: parsed.cover_image || '',
+      canonical_url: undefined,
+    };
+
+    const result = await insertPostWithCategories(supabase, postData);
+    if (!result.success) {
+      return { success: false, fileName, title, message: result.error };
+    }
+
+    try {
+      revalidatePath('/admin');
+      revalidatePath('/admin/posts');
+    } catch (revErr) {
+      console.error('[importHtmlArticle] revalidatePath failed:', revErr);
+    }
+
+    return {
+      success: true,
+      fileName,
+      title: result.post.title,
+      slug: result.post.slug,
+      postId: result.post.id,
+    };
   } catch (e) {
+    console.error('[importHtmlArticle] Unhandled error:', e);
     return {
       success: false,
-      fileName,
-      message: e instanceof Error ? e.message : 'Failed to parse HTML.',
+      fileName: fileName?.trim() || '(unknown)',
+      message: e instanceof Error ? e.message : 'Import failed due to a server error.',
     };
   }
-
-  let title = parsed.title.trim();
-  if (!title) {
-    title = titleFromFileName(fileName);
-  }
-
-  const content = parsed.content_html.trim();
-  if (!content) {
-    return { success: false, fileName, title, message: 'No article content found after parsing.' };
-  }
-
-  const supabase = await createClient();
-  const { insertPostWithCategories } = await import('@/app/admin/posts/post-insert-shared');
-
-  const baseSlug = slugify(title) || slugify(titleFromFileName(fileName)) || 'imported-article';
-  const uniqueSlug = await resolveUniquePostSlug(supabase, baseSlug);
-  const categoryIds = category_ids?.length ? category_ids : [category_id];
-  const textContent = content.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
-
-  const postData: PostFormData = {
-    title: title.slice(0, 500),
-    slug: uniqueSlug,
-    excerpt: (parsed.excerpt || title).slice(0, 2000),
-    content_html: parsed.content_html,
-    content_text: textContent,
-    cover_image: parsed.cover_image || '',
-    author_id,
-    category_id,
-    category_ids: categoryIds,
-    tags: parsed.tags,
-    status,
-    published_at: publishedAtForStatus(status),
-    featured_rank: null,
-    seo_title: (parsed.seo_title || title).slice(0, 500),
-    seo_description: (parsed.seo_description || parsed.excerpt || title).slice(0, 500),
-    og_image: parsed.cover_image || '',
-    canonical_url: undefined,
-  };
-
-  const result = await insertPostWithCategories(supabase, postData);
-  if (!result.success) {
-    return { success: false, fileName, title, message: result.error };
-  }
-
-  revalidatePath('/admin');
-  revalidatePath('/admin/posts');
-
-  return {
-    success: true,
-    fileName,
-    title: result.post.title,
-    slug: result.post.slug,
-    postId: result.post.id,
-  };
 }

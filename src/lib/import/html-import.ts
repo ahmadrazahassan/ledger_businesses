@@ -65,7 +65,13 @@ export function parseHtmlForImport(rawHtml: string): ParsedHtmlArticle {
 
   const ogImage = root.querySelector('meta[property="og:image"]')?.getAttribute('content')?.trim() ?? '';
   const innerHtml = contentRoot.innerHTML;
-  const sanitized = DOMPurify.sanitize(innerHtml, { USE_PROFILES: { html: true } });
+  let sanitized: string;
+  try {
+    sanitized = DOMPurify.sanitize(innerHtml, { USE_PROFILES: { html: true } });
+  } catch (e) {
+    console.error('[parseHtmlForImport] DOMPurify.sanitize failed, using raw inner HTML:', e);
+    sanitized = innerHtml;
+  }
 
   const seo_title = (ogTitle || title).trim();
   const seo_description = cleanText(descMeta ?? ogDesc ?? excerpt ?? '');

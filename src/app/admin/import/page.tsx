@@ -5,7 +5,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useToast } from '@/components/ui/toast';
 import { HTML_IMPORT_LIMITS, isAllowedImportStatus } from '@/lib/import/constants';
 import { extractHtmlFilesFromZip } from '@/lib/import/zip';
-import type { HtmlImportQueueItem, PostStatus } from '@/lib/types/database';
+import type { HtmlImportQueueItem, ImportHtmlArticleResult, PostStatus } from '@/lib/types/database';
 import { getImportDefaults, importHtmlArticle } from './actions';
 
 function newId() {
@@ -149,14 +149,24 @@ export default function AdminImportHtmlPage() {
 
     for (const item of items) {
       updateItem(item.id, { phase: 'processing', message: undefined });
-      const result = await importHtmlArticle({
-        fileName: item.fileName,
-        html: item.html,
-        author_id: authorId,
-        category_id: categoryId,
-        category_ids: categoryIds,
-        status,
-      });
+      let result: ImportHtmlArticleResult;
+      try {
+        result = await importHtmlArticle({
+          fileName: item.fileName,
+          html: item.html,
+          author_id: authorId,
+          category_id: categoryId,
+          category_ids: categoryIds,
+          status,
+        });
+      } catch (e) {
+        fail += 1;
+        updateItem(item.id, {
+          phase: 'error',
+          message: e instanceof Error ? e.message : 'Server error while importing.',
+        });
+        continue;
+      }
 
       if (result.success) {
         ok += 1;
