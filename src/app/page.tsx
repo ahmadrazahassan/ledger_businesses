@@ -25,10 +25,22 @@ export const metadata: Metadata = {
 };
 
 export default async function HomePage() {
-  const [featured, latest, categories, accountingPosts, payrollPosts] = await Promise.all([
+  const [
+    featured,
+    latest,
+    categories,
+    comparisonsPosts,
+    vatTaxPosts,
+    smallBusinessPosts,
+    accountingPosts,
+    payrollPosts,
+  ] = await Promise.all([
     getFeaturedPosts(),
     getLatestPosts(),
     getActiveCategories(),
+    getCategoryPosts('comparisons', 4),
+    getCategoryPosts('vat-tax-compliance', 4),
+    getCategoryPosts('small-business', 4),
     getCategoryPosts('accounting-bookkeeping', 4),
     getCategoryPosts('payroll', 4),
   ]);
@@ -84,6 +96,19 @@ export default async function HomePage() {
           </SectionWrapper>
         )}
 
+        {/* Comparisons — directly under hero */}
+        {comparisonsPosts.length > 0 && (
+          <SectionWrapper>
+            <CategorySpotlight
+              title="Comparisons"
+              slug="comparisons"
+              posts={comparisonsPosts}
+              tagline="Compare"
+              description="Side-by-side software picks, head-to-head reviews, and buying guides for UK businesses."
+            />
+          </SectionWrapper>
+        )}
+
         {latest.length > 0 && (
           <SponsorLeaderboard posts={latest} eyebrow="Recently published" />
         )}
@@ -123,6 +148,32 @@ export default async function HomePage() {
               posts={payrollPosts}
               tagline="Payroll"
               description="Payroll software, RTI, pensions, and workplace reporting for UK employers."
+            />
+          </SectionWrapper>
+        )}
+
+        {/* VAT & Tax Compliance */}
+        {vatTaxPosts.length > 0 && (
+          <SectionWrapper>
+            <CategorySpotlight
+              title="VAT & Tax Compliance"
+              slug="vat-tax-compliance"
+              posts={vatTaxPosts}
+              tagline="Tax"
+              description="VAT, Making Tax Digital, and tax compliance software in a UK regulatory context."
+            />
+          </SectionWrapper>
+        )}
+
+        {/* Small Business */}
+        {smallBusinessPosts.length > 0 && (
+          <SectionWrapper className="pb-12">
+            <CategorySpotlight
+              title="Small Business"
+              slug="small-business"
+              posts={smallBusinessPosts}
+              tagline="SME"
+              description="Practical guides for sole traders, startups, and growing UK small businesses."
             />
           </SectionWrapper>
         )}
