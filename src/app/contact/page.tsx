@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
-import { CONTACT_EMAIL, CONTACT_MAILTO, INSTAGRAM_HREF, SITE_DOMAIN } from '@/lib/site';
+import { HELLO_EMAIL, HELLO_MAILTO, INSTAGRAM_HREF, SITE_DOMAIN } from '@/lib/site';
 import { EditorialSubmitButton } from '@/components/ui/editorial-cta';
 
 const inputClass =
@@ -32,7 +32,7 @@ export default function ContactPage() {
     ]
       .filter(Boolean)
       .join('\n');
-    const mailtoLink = `${CONTACT_MAILTO}?subject=${encodeURIComponent(formState.subject)}&body=${encodeURIComponent(body)}`;
+    const mailtoLink = `${HELLO_MAILTO}?subject=${encodeURIComponent(formState.subject)}&body=${encodeURIComponent(body)}`;
     window.location.href = mailtoLink;
     setSubmitted(true);
   };
@@ -51,8 +51,8 @@ export default function ContactPage() {
                 </h2>
                 <p className="mt-4 text-[15px] leading-relaxed text-ink/55">
                   If nothing opened, write to{' '}
-                  <a href={CONTACT_MAILTO} className="text-ink underline underline-offset-4 decoration-ink/25 hover:decoration-ink">
-                    {CONTACT_EMAIL}
+                  <a href={HELLO_MAILTO} className="text-ink underline underline-offset-4 decoration-ink/25 hover:decoration-ink">
+                    {HELLO_EMAIL}
                   </a>
                 </p>
                 <button
@@ -75,10 +75,10 @@ export default function ContactPage() {
                       Let&apos;s collaborate
                     </h1>
                     <a
-                      href={CONTACT_MAILTO}
+                      href={HELLO_MAILTO}
                       className="mt-6 inline-block text-[15px] text-ink/50 transition-colors hover:text-ink"
                     >
-                      {CONTACT_EMAIL}
+                      {HELLO_EMAIL}
                     </a>
                   </div>
 

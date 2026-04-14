@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
-import { CONTACT_EMAIL, CONTACT_MAILTO, INSTAGRAM_HREF } from '@/lib/site';
+import { CONTACT_EMAIL, CONTACT_MAILTO, HELLO_EMAIL, HELLO_MAILTO, INSTAGRAM_HREF } from '@/lib/site';
 import { EditorialArrowLink } from '@/components/ui/editorial-cta';
 
 export const metadata: Metadata = {
@@ -77,6 +77,9 @@ export default function AboutPage() {
                   defensible advice readers can act on — not generic rankings.
                 </p>
                 <div className="flex flex-wrap gap-x-8 gap-y-3 pt-4 text-[14px] font-medium text-ink">
+                  <a href={HELLO_MAILTO} className="border-b border-ink/20 pb-0.5 transition-colors hover:border-ink">
+                    {HELLO_EMAIL}
+                  </a>
                   <a href={CONTACT_MAILTO} className="border-b border-ink/20 pb-0.5 transition-colors hover:border-ink">
                     {CONTACT_EMAIL}
                   </a>

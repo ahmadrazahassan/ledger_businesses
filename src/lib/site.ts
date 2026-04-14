@@ -1,10 +1,15 @@
 /** Public site domain (no protocol). */
 export const SITE_DOMAIN = 'ledgerthebusinesses.co.uk';
 
-/** Primary contact email shown sitewide. */
+/** Primary contact email shown sitewide (footer, etc.). */
 export const CONTACT_EMAIL = 'fiza.kanwal@ledgerthebusinesses.co.uk';
 
 export const CONTACT_MAILTO = `mailto:${CONTACT_EMAIL}`;
+
+/** General inbox — About and Contact pages only. */
+export const HELLO_EMAIL = 'hello@ledgerthebusinesses.co.uk';
+
+export const HELLO_MAILTO = `mailto:${HELLO_EMAIL}`;
 
 /** Sole public social profile linked from the site (footer, About, Contact). */
 export const INSTAGRAM_HREF = 'https://www.instagram.com/fiza_rana_42';
