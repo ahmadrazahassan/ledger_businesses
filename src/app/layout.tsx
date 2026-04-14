@@ -90,7 +90,7 @@ export const metadata: Metadata = {
   verification: {
     google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || undefined,
     other: {
-      'impact-site-verification': '98c9150f-50e0-4ff7-9133-8b9f238be19b',
+      'impact-site-verification': '53a39466-1eb1-4a19-bdb9-57d584497dbb',
     },
   },
   openGraph: {
