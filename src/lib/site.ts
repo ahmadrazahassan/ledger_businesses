@@ -6,6 +6,9 @@ export const CONTACT_EMAIL = 'fiza.kanwal@ledgerthebusinesses.co.uk';
 
 export const CONTACT_MAILTO = `mailto:${CONTACT_EMAIL}`;
 
+/** Sole public social profile linked from the site (footer, About, Contact). */
+export const INSTAGRAM_HREF = 'https://www.instagram.com/fiza_rana_42';
+
 const DEFAULT_SITE_URL = `https://${SITE_DOMAIN}`;
 
 function normalizeSiteUrl(url?: string) {

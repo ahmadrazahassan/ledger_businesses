@@ -4,9 +4,7 @@ import { IconMapPin, IconMail } from '@/components/icons';
 import { FooterNewsletter } from '@/components/layout/footer-newsletter';
 import { FooterNavLink } from '@/components/layout/footer-nav-link';
 import { getCategoryNavLinks } from '@/config/category-navigation';
-import { CONTACT_EMAIL, CONTACT_MAILTO } from '@/lib/site';
-
-const INSTAGRAM_HREF = 'https://www.instagram.com/fiza_rana_42';
+import { CONTACT_EMAIL, CONTACT_MAILTO, INSTAGRAM_HREF } from '@/lib/site';
 
 /** Governance-style links (reference: About, standards, disclosure, legal, feeds). */
 const governanceLinks = [

@@ -3,11 +3,8 @@
 import { useState } from 'react';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
-import { CONTACT_EMAIL, CONTACT_MAILTO, SITE_DOMAIN } from '@/lib/site';
+import { CONTACT_EMAIL, CONTACT_MAILTO, INSTAGRAM_HREF, SITE_DOMAIN } from '@/lib/site';
 import { EditorialSubmitButton } from '@/components/ui/editorial-cta';
-
-const INSTAGRAM_HREF = 'https://www.instagram.com/fiza_rana_42';
-const LINKEDIN_HREF = 'https://linkedin.com/in/fiza-rana';
 
 const inputClass =
   'w-full bg-transparent border-0 border-b border-ink/20 pb-2.5 pt-1 text-[15px] text-ink placeholder:text-ink/40 focus:border-ink focus:ring-0 focus:outline-none transition-[border-color] duration-200';
@@ -88,22 +85,14 @@ export default function ContactPage() {
                   <div className="flex flex-col gap-6 border-t border-ink/10 pt-8 text-[13px] text-ink/55 md:flex-row md:items-end md:justify-between md:gap-8">
                     <div>
                       <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-ink/40">Find us</p>
-                      <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2">
+                      <div className="mt-3">
                         <a
                           href={INSTAGRAM_HREF}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="font-medium text-ink transition-colors hover:text-ink/70"
                         >
-                          IG
-                        </a>
-                        <a
-                          href={LINKEDIN_HREF}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="font-medium text-ink transition-colors hover:text-ink/70"
-                        >
-                          IN
+                          Instagram
                         </a>
                       </div>
                     </div>

@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
-import { CONTACT_EMAIL, CONTACT_MAILTO } from '@/lib/site';
+import { CONTACT_EMAIL, CONTACT_MAILTO, INSTAGRAM_HREF } from '@/lib/site';
 import { EditorialArrowLink } from '@/components/ui/editorial-cta';
 
 export const metadata: Metadata = {
@@ -75,12 +75,12 @@ export default function AboutPage() {
                     {CONTACT_EMAIL}
                   </a>
                   <a
-                    href="https://linkedin.com/in/fiza-rana"
+                    href={INSTAGRAM_HREF}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="border-b border-ink/20 pb-0.5 transition-colors hover:border-ink"
                   >
-                    LinkedIn
+                    Instagram
                   </a>
                 </div>
               </div>
