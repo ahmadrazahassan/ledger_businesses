@@ -6,7 +6,7 @@ import { CONTACT_EMAIL, SITE_DOMAIN } from '@/lib/site';
 
 export const metadata: Metadata = {
   title: 'Terms of Service',
-  description: 'Terms and conditions for using Ledger Businesses website and services.',
+  description: 'Terms of Service for using Ledger Businesses website and services.',
   alternates: {
     canonical: '/terms',
   },
