@@ -49,8 +49,14 @@ export default function AboutPage() {
               <div className="md:col-span-4">
                 <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-ink/40">Founder & editor-in-chief</p>
                 <h2 className="mt-4 text-3xl font-heading font-bold tracking-tight text-ink md:text-4xl">Fiza</h2>
-                <div className="mt-8 hidden h-40 w-full max-w-[200px] rounded-lg border border-ink/10 bg-ink/[0.03] md:flex md:items-center md:justify-center">
-                  <span className="text-5xl font-heading font-bold text-ink/15">F</span>
+                <div
+                  className="mt-8 flex h-36 w-36 max-w-full items-center justify-center rounded-2xl border border-ink/10 bg-gradient-to-br from-accent/[0.12] via-ink/[0.04] to-ink/[0.07] shadow-[0_1px_0_rgba(30,31,38,0.06)] md:h-40 md:w-40"
+                  role="img"
+                  aria-label="Fiza — editor initials"
+                >
+                  <span className="text-[2.75rem] font-heading font-bold tracking-[-0.06em] text-ink/25 md:text-[3.25rem]">
+                    FR
+                  </span>
                 </div>
               </div>
               <div className="mt-10 space-y-5 text-[16px] leading-[1.7] text-ink/60 md:col-span-8 md:mt-0 md:text-[17px]">

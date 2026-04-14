@@ -146,21 +146,20 @@ export default function AffiliateDisclosurePage() {
                 <h2 className="text-2xl md:text-3xl font-heading font-bold text-ink mb-4">Revenue and Sustainability</h2>
                 <div className="space-y-4 text-ink/70 leading-relaxed">
                   <p>
-                    Ledger Businesses generates revenue through multiple channels to ensure financial sustainability and editorial independence:
+                    Today, Ledger Businesses earns revenue in the ways below. If we add other clearly labelled streams
+                    later, we will update this page — they will never override editorial independence.
                   </p>
                   <ul className="list-disc pl-6 space-y-2">
-                    <li>Affiliate commissions from product and service recommendations</li>
+                    <li>Affiliate commissions when readers buy products or services through tracked links on our site.</li>
                     <li>
-                      Display advertising (including programmatic ads via Google AdSense and similar networks): we may earn
-                      revenue when ads are shown or clicked. Display ads are separate from affiliate links and do not
+                      Display advertising via Google AdSense (and similar networks where we may add them): we may earn
+                      revenue when ads are shown or clicked. Advertising is separate from affiliate links and does not
                       determine what we publish or recommend.
                     </li>
-                    <li>Premium advertising placements for enterprise brands, where used</li>
-                    <li>Sponsored content (clearly labeled and editorially independent), where published</li>
-                    <li>Newsletter and optional premium offerings, where offered</li>
                   </ul>
                   <p>
-                    This diversified revenue model ensures that no single source of income can dictate our editorial direction. We remain accountable to our readers first, not to advertisers or affiliate partners.
+                    No vendor pays for editorial outcomes or rankings. We remain accountable to readers first, not to
+                    advertisers or affiliate partners.
                   </p>
                 </div>
               </section>

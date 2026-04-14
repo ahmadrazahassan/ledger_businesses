@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { DM_Sans, DM_Mono, Inter } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
-import { getSiteUrl, toAbsoluteUrl } from "@/lib/site";
+import { getSiteUrl, toAbsoluteUrl, INSTAGRAM_HREF } from "@/lib/site";
 import { ConditionalSiteAssistant } from "@/components/ai/conditional-site-assistant";
 import { CookieBanner } from "@/components/ui/cookie-banner";
 import { CookieBannerProvider } from "@/components/ui/cookie-banner-provider";
@@ -35,7 +35,7 @@ const organizationStructuredData = {
   name: "Ledger Businesses",
   url: siteUrl,
   logo: toAbsoluteUrl("/favicon.svg"),
-  sameAs: [],
+  sameAs: [INSTAGRAM_HREF],
 };
 
 const websiteStructuredData = {
