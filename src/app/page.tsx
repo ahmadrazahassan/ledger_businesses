@@ -4,7 +4,7 @@ import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { SectionWrapper } from '@/components/layout/section-wrapper';
 import { PostCardHero } from '@/components/posts/post-card-hero';
-import { SponsorLeaderboard } from '@/components/sponsors/sponsor-leaderboard';
+import { LatestStrip } from '@/components/home/latest-strip';
 import { LatestArticles } from '@/components/latest-articles';
 import { NewsletterCard } from '@/components/newsletter-card';
 import { CategorySpotlight } from '@/components/category-spotlight';
@@ -99,7 +99,7 @@ export default async function HomePage() {
         )}
 
         {latest.length > 0 && (
-          <SponsorLeaderboard posts={latest} eyebrow="New on Ledger Businesses" />
+          <LatestStrip posts={latest} eyebrow="New on Ledger Businesses" />
         )}
 
         {/* Accounting Spotlight */}

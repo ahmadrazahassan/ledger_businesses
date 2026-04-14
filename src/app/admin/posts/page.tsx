@@ -210,14 +210,6 @@ function AdminPostsPageInner() {
                   </Link>
                   <p className="text-[14px] text-ink/50 line-clamp-2 mb-4">{post.excerpt}</p>
                   <div className="flex items-center gap-4 text-[13px] text-ink/40">
-                    <span className="inline-flex items-center gap-1.5">
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                        <circle cx="12" cy="12" r="3" />
-                      </svg>
-                      {post.view_count} views
-                    </span>
-                    <span>·</span>
                     <span>{post.reading_time} min read</span>
                     <span>·</span>
                     <span className="px-2.5 py-0.5 bg-accent/10 text-accent-content rounded-full font-semibold">

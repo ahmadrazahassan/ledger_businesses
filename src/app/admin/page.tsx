@@ -1,19 +1,17 @@
 import Link from 'next/link';
-import { formatViews } from '@/lib/utils';
 import { createClient } from '@/lib/supabase/server';
 
 async function getDashboardStats() {
   const supabase = await createClient();
 
   const [postsResult, categoriesResult, bannersResult] = await Promise.all([
-    supabase.from('posts').select('id, status, view_count', { count: 'exact' }),
+    supabase.from('posts').select('id, status', { count: 'exact' }),
     supabase.from('categories').select('id', { count: 'exact' }).eq('is_active', true),
     supabase.from('banners').select('id', { count: 'exact' }).eq('is_active', true),
   ]);
 
   const totalPosts = postsResult.count || 0;
   const publishedPosts = postsResult.data?.filter((p) => p.status === 'published').length || 0;
-  const totalViews = postsResult.data?.reduce((sum, p) => sum + (p.view_count || 0), 0) || 0;
   const totalCategories = categoriesResult.count || 0;
   const activeBanners = bannersResult.count || 0;
 
@@ -22,7 +20,6 @@ async function getDashboardStats() {
     publishedPosts,
     totalCategories,
     activeBanners,
-    totalViews,
   };
 }
 
@@ -120,40 +117,6 @@ export default async function AdminDashboard() {
             </div>
           </Link>
         ))}
-      </div>
-
-      {/* Analytics Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="p-8 rounded-3xl bg-ink text-white">
-          <div className="flex items-start justify-between mb-6">
-            <div>
-              <p className="text-[13px] font-bold text-white/40 uppercase tracking-[0.1em] mb-2">Total Views</p>
-              <p className="text-[36px] font-heading font-bold tracking-tight">{formatViews(stats.totalViews)}</p>
-            </div>
-            <div className="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                <circle cx="12" cy="12" r="3" />
-              </svg>
-            </div>
-          </div>
-          <p className="text-[13px] text-white/40">Across all published posts</p>
-        </div>
-
-        <div className="p-8 rounded-3xl bg-accent text-accent-foreground">
-          <div className="flex items-start justify-between mb-6">
-            <div>
-              <p className="text-[13px] font-bold text-white/50 uppercase tracking-[0.1em] mb-2">Engagement</p>
-              <p className="text-[36px] font-heading font-bold tracking-tight">0</p>
-            </div>
-            <div className="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" />
-              </svg>
-            </div>
-          </div>
-          <p className="text-[13px] text-white/50">Likes across all posts</p>
-        </div>
       </div>
 
       {/* Quick Actions */}

@@ -1,24 +1,21 @@
 import Link from 'next/link';
-import { formatDate } from '@/lib/utils';
-import { IconArrowRight } from '@/components/icons';
 import type { PostWithRelations } from '@/lib/types/database';
 
-interface SponsorLeaderboardProps {
+interface LatestStripProps {
   posts: PostWithRelations[];
   /** Section label above the list */
   eyebrow?: string;
 }
 
-export function SponsorLeaderboard({ posts, eyebrow = 'Recently published' }: SponsorLeaderboardProps) {
+/** Numbered quick links to recent posts — editorial, not sponsorship. */
+export function LatestStrip({ posts, eyebrow = 'Recently published' }: LatestStripProps) {
   const items = posts.slice(0, 4);
 
   return (
     <div className="w-full border-y border-ink/[0.06]">
       <div className="mx-auto max-w-[min(1480px,calc(100vw-2.5rem))] px-5 md:px-10 py-5">
         <div className="flex items-center gap-3 mb-4">
-          <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-ink/45">
-            {eyebrow}
-          </span>
+          <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-ink/45">{eyebrow}</span>
           <div className="flex-1 h-px bg-ink/[0.04]" />
         </div>
 

@@ -150,12 +150,17 @@ export default function AffiliateDisclosurePage() {
                   </p>
                   <ul className="list-disc pl-6 space-y-2">
                     <li>Affiliate commissions from product and service recommendations</li>
-                    <li>Premium advertising placements for enterprise brands</li>
-                    <li>Sponsored content (clearly labeled and editorially independent)</li>
-                    <li>Newsletter subscriptions and premium content offerings</li>
+                    <li>
+                      Display advertising (including programmatic ads via Google AdSense and similar networks): we may earn
+                      revenue when ads are shown or clicked. Display ads are separate from affiliate links and do not
+                      determine what we publish or recommend.
+                    </li>
+                    <li>Premium advertising placements for enterprise brands, where used</li>
+                    <li>Sponsored content (clearly labeled and editorially independent), where published</li>
+                    <li>Newsletter and optional premium offerings, where offered</li>
                   </ul>
                   <p>
-                    This diversified revenue model ensures that no single source of income can influence our editorial direction. We're accountable to our readers first, not to advertisers or affiliate partners.
+                    This diversified revenue model ensures that no single source of income can dictate our editorial direction. We remain accountable to our readers first, not to advertisers or affiliate partners.
                   </p>
                 </div>
               </section>
