@@ -64,7 +64,7 @@ export default async function HomePage() {
 
       <main>
         {featured.length > 0 ? (
-          <SectionWrapper className="pt-8 md:pt-12 pb-6 md:pb-8">
+          <SectionWrapper wide className="pt-8 md:pt-12 pb-6 md:pb-8">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
               <div className="lg:col-span-2">
                 {mainFeatured && (
@@ -79,7 +79,7 @@ export default async function HomePage() {
             </div>
           </SectionWrapper>
         ) : (
-          <SectionWrapper className="pt-8 md:pt-12 pb-6 md:pb-8">
+          <SectionWrapper wide className="pt-8 md:pt-12 pb-6 md:pb-8">
             <div className="p-16 rounded-3xl bg-white border border-ink/[0.06] text-center">
               <div className="max-w-md mx-auto">
                 <div className="w-20 h-20 rounded-3xl bg-ink/[0.04] flex items-center justify-center mx-auto mb-6">
@@ -89,8 +89,9 @@ export default async function HomePage() {
                   </svg>
                 </div>
                 <h3 className="text-[24px] font-heading font-bold text-ink mb-3">No articles yet</h3>
-                <p className="text-[15px] text-ink/50">
-                  Check back soon for the latest UK accounting software reviews and guides.
+                <p className="text-[15px] text-ink/50 leading-relaxed">
+                  UK accounting and payroll reviews are added here as they are published — methodology and disclosures apply
+                  to all coverage.
                 </p>
               </div>
             </div>
@@ -98,37 +99,38 @@ export default async function HomePage() {
         )}
 
         {latest.length > 0 && (
-          <SponsorLeaderboard posts={latest} eyebrow="Recently published" />
+          <SponsorLeaderboard posts={latest} eyebrow="New on Ledger Businesses" />
         )}
 
         {/* Accounting Spotlight */}
         {accountingPosts.length > 0 && (
-          <SectionWrapper>
+          <SectionWrapper wide>
             <CategorySpotlight
               title="Accounting & Bookkeeping"
               slug="accounting-bookkeeping"
               posts={accountingPosts}
               tagline="Accounting"
-              description="Bookkeeping, cloud accounting, and record-keeping for UK businesses and advisers."
+              description="Cloud ledgers, reconciliations, and month-end workflows — written for UK companies and their advisers."
             />
           </SectionWrapper>
         )}
 
         {/* Comparisons — flagship block after Accounting (head-to-head / buyer-guide focus) */}
         {comparisonsPosts.length > 0 && (
-          <SectionWrapper>
+          <SectionWrapper wide>
             <ComparisonsShowcase posts={comparisonsPosts} />
           </SectionWrapper>
         )}
 
         {/* Latest Articles */}
         {latest.length > 0 && (
-          <SectionWrapper id="latest">
+          <SectionWrapper wide id="latest">
             <h2 className="text-[24px] md:text-[30px] font-heading font-bold text-ink leading-[1.1] mb-2">
               Latest articles
             </h2>
-            <p className="text-[14px] text-ink/55 mb-8 max-w-2xl">
-              New and updated reviews and guides. All content is written for a UK regulatory context unless stated otherwise.
+            <p className="text-[14px] text-ink/55 mb-8 max-w-2xl leading-relaxed">
+              Hands-on reviews and implementation guides for UK accounting, payroll, and tax software. Methodology and
+              affiliate relationships are documented on site; rankings reflect testing, not sponsorship.
             </p>
             <LatestArticles posts={latest} categories={categories} />
           </SectionWrapper>
@@ -136,45 +138,45 @@ export default async function HomePage() {
 
         {/* Payroll Spotlight */}
         {payrollPosts.length > 0 && (
-          <SectionWrapper className="pb-12">
+          <SectionWrapper wide className="pb-12">
             <CategorySpotlight
               title="Payroll & Compliance"
               slug="payroll"
               posts={payrollPosts}
               tagline="Payroll"
-              description="Payroll software, RTI, pensions, and workplace reporting for UK employers."
+              description="RTI submissions, pensions, and employer reporting — evaluated against UK payroll rules and real payroll runs."
             />
           </SectionWrapper>
         )}
 
         {/* VAT & Tax Compliance */}
         {vatTaxPosts.length > 0 && (
-          <SectionWrapper>
+          <SectionWrapper wide>
             <CategorySpotlight
               title="VAT & Tax Compliance"
               slug="vat-tax-compliance"
               posts={vatTaxPosts}
               tagline="Tax"
-              description="VAT, Making Tax Digital, and tax compliance software in a UK regulatory context."
+              description="VAT schemes, MTD filing paths, and compliance controls — tied to HMRC expectations and product behaviour we verify in testing."
             />
           </SectionWrapper>
         )}
 
         {/* Small Business */}
         {smallBusinessPosts.length > 0 && (
-          <SectionWrapper className="pb-12">
+          <SectionWrapper wide className="pb-12">
             <CategorySpotlight
               title="Small Business"
               slug="small-business"
               posts={smallBusinessPosts}
               tagline="SME"
-              description="Practical guides for sole traders, startups, and growing UK small businesses."
+              description="Operational guides for sole traders and growing UK SMEs — from first ledger to scaled finance processes."
             />
           </SectionWrapper>
         )}
 
         {/* Newsletter */}
-        <SectionWrapper id="newsletter" className="py-8 md:py-12">
+        <SectionWrapper wide id="newsletter" className="py-8 md:py-12">
           <NewsletterCard />
         </SectionWrapper>
       </main>

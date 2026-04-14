@@ -148,7 +148,7 @@ export function Header() {
         }}
         {...(navHidden ? { inert: true } : {})}
       >
-        <div className="mx-auto max-w-[1400px] px-4 md:px-8">
+        <div className="mx-auto max-w-[min(1480px,calc(100vw-2.5rem))] px-4 md:px-8">
           <div className="flex h-[56px] md:h-[60px] items-center justify-between gap-4">
             <Link href="/" className="shrink-0 min-w-0">
               <span className="hidden sm:block">

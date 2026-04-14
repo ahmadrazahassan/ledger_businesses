@@ -6,6 +6,8 @@ interface SectionWrapperProps {
   id?: string;
   as?: 'section' | 'div' | 'aside';
   narrow?: boolean;
+  /** Wider reading width for grids (category strips, listings). */
+  wide?: boolean;
   noPadding?: boolean;
 }
 
@@ -15,6 +17,7 @@ export function SectionWrapper({
   id,
   as: Component = 'section',
   narrow = false,
+  wide = false,
   noPadding = false,
 }: SectionWrapperProps) {
   return (
@@ -29,7 +32,7 @@ export function SectionWrapper({
       <div
         className={cn(
           'mx-auto px-5 md:px-10',
-          narrow ? 'max-w-4xl' : 'max-w-[1400px]'
+          narrow ? 'max-w-4xl' : wide ? 'max-w-[min(1520px,calc(100vw-2.5rem))]' : 'max-w-[min(1480px,calc(100vw-2.5rem))]'
         )}
       >
         {children}

@@ -61,16 +61,21 @@ export function ComparisonsShowcase({ posts }: { posts: PostWithRelations[] }) {
 
             {others.length > 0 && (
               <div
-                className={`grid gap-5 ${
-                  others.length === 1
-                    ? 'grid-cols-1'
-                    : others.length === 2
-                      ? 'grid-cols-1 sm:grid-cols-2'
-                      : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'
+                className={`grid gap-5 md:gap-6 ${
+                  others.length === 1 ? 'grid-cols-1' : 'grid-cols-1 sm:grid-cols-2'
                 }`}
               >
-                {others.map((post) => (
-                  <PostCardHero key={post.id} post={post} size="grid" />
+                {others.map((post, idx) => (
+                  <div
+                    key={post.id}
+                    className={
+                      others.length === 3 && idx === 2 ? 'sm:col-span-2 sm:flex sm:justify-center' : ''
+                    }
+                  >
+                    <div className={others.length === 3 && idx === 2 ? 'w-full max-w-xl sm:max-w-2xl' : 'w-full'}>
+                      <PostCardHero post={post} size="grid" />
+                    </div>
+                  </div>
                 ))}
               </div>
             )}

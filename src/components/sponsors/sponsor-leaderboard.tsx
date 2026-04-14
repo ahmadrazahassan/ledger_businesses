@@ -14,7 +14,7 @@ export function SponsorLeaderboard({ posts, eyebrow = 'Recently published' }: Sp
 
   return (
     <div className="w-full border-y border-ink/[0.06]">
-      <div className="mx-auto max-w-[1400px] px-5 md:px-10 py-5">
+      <div className="mx-auto max-w-[min(1480px,calc(100vw-2.5rem))] px-5 md:px-10 py-5">
         <div className="flex items-center gap-3 mb-4">
           <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-ink/45">
             {eyebrow}

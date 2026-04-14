@@ -45,7 +45,7 @@ export function AnnouncementStrip({ items = [] }: AnnouncementStripProps) {
       id="site-announcement-strip"
       className="relative z-40 bg-accent overflow-hidden"
     >
-      <div className="mx-auto max-w-[1400px] px-5 md:px-10 py-2 flex items-center justify-center gap-3">
+      <div className="mx-auto max-w-[min(1480px,calc(100vw-2.5rem))] px-5 md:px-10 py-2 flex items-center justify-center gap-3">
         {/* Indicator dots */}
         {items.length > 1 && (
           <div className="hidden sm:flex items-center gap-1 mr-1">

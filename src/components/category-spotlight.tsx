@@ -42,10 +42,11 @@ export function CategorySpotlight({ title, slug, posts, description, tagline = "
         </Link>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {/* Max two columns for grid cards — wider cards, less “skinny” thirds */}
+      <div className="grid grid-cols-1 items-start gap-6 md:grid-cols-2 md:gap-7 lg:gap-8">
         {posts.map((post, i) => (
-          <div key={post.id} className={i === 0 ? "md:col-span-2 lg:col-span-2 h-full" : "h-full"}>
-             <PostCardHero post={post} size={i === 0 ? "large" : "grid"} />
+          <div key={post.id} className={i === 0 ? 'md:col-span-2' : ''}>
+            <PostCardHero post={post} size={i === 0 ? 'large' : 'grid'} />
           </div>
         ))}
       </div>

@@ -25,7 +25,8 @@ export function NewsletterCard() {
         </h2>
 
         <p className="text-[15px] text-accent-foreground/75 leading-relaxed mb-10 max-w-md mx-auto">
-          Occasional emails on new UK software reviews and compliance topics. Unsubscribe any time.
+          Occasional updates when we publish UK software reviews or compliance explainers. Editorial content only — no paid
+          placements in email. Unsubscribe any time.
         </p>
 
         {submitted ? (

@@ -62,7 +62,7 @@ export function Footer() {
 
   return (
     <footer className="w-full bg-[#121212] text-white">
-      <div className="mx-auto max-w-[1320px] px-6 py-16 md:px-10 md:py-20 lg:px-12 lg:py-24">
+      <div className="mx-auto max-w-[min(1480px,calc(100vw-2.5rem))] px-6 py-16 md:px-10 md:py-20 lg:px-12 lg:py-24">
         <div className="flex flex-col gap-16 lg:flex-row lg:justify-between lg:gap-12 xl:gap-20">
           {/* Left — editorial + newsletter (Investa-style) */}
           <div className="max-w-lg shrink-0 lg:max-w-[440px]">

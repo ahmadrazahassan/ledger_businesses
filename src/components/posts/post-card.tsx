@@ -24,14 +24,14 @@ export function PostCard({ post, variant = 'default' }: PostCardProps) {
   const isCategory = variant === 'category';
 
   const imageSizes = isCategory
-    ? '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw'
+    ? '(max-width: 768px) 100vw, (max-width: 1536px) 50vw, 720px'
     : '128px';
 
   if (isCategory) {
     return (
-      <Link href={`/articles/${post.slug}`} className={`group block h-full ${focusRing}`}>
-        <article className={`flex h-full flex-col ${cardShell}`}>
-          <div className="relative aspect-[16/10] w-full overflow-hidden bg-warm">
+      <Link href={`/articles/${post.slug}`} className={`group block h-auto min-h-0 ${focusRing}`}>
+        <article className={`flex flex-col ${cardShell}`}>
+          <div className="relative aspect-[16/9] w-full overflow-hidden bg-warm sm:aspect-[16/8]">
             {post.cover_image ? (
               <Image
                 src={post.cover_image}
@@ -54,14 +54,14 @@ export function PostCard({ post, variant = 'default' }: PostCardProps) {
             />
           </div>
 
-          <div className="flex flex-1 flex-col border-t border-ink/[0.06] p-5 sm:p-6">
+          <div className="flex flex-col border-t border-ink/[0.06] p-5 sm:p-6 md:p-7">
             <p className={`${eyebrow} mb-2.5`}>{post.category.name}</p>
-            <h3 className="mb-2.5 line-clamp-3 font-heading text-[20px] font-bold leading-[1.22] tracking-[-0.028em] text-ink transition-colors duration-300 group-hover:text-ink sm:text-[22px]">
+            <h3 className="mb-2.5 line-clamp-3 font-heading text-[20px] font-bold leading-[1.22] tracking-[-0.028em] text-ink transition-colors duration-300 group-hover:text-ink sm:text-[22px] md:text-[23px]">
               {post.title}
             </h3>
-            <p className={`mb-6 line-clamp-3 ${excerptStyle}`}>{post.excerpt}</p>
+            <p className={`mb-5 line-clamp-3 ${excerptStyle}`}>{post.excerpt}</p>
 
-            <div className="mt-auto flex flex-wrap items-center gap-x-3 gap-y-1.5 border-t border-ink/[0.07] pt-4">
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 border-t border-ink/[0.07] pt-4">
               <time className={`${metaMuted} tabular-nums`} dateTime={post.published_at || post.created_at}>
                 {formatDate(post.published_at || post.created_at)}
               </time>

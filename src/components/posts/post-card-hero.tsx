@@ -16,8 +16,11 @@ const metaStyle = 'text-[12px] text-ink/[0.52]';
 const focusRing =
   'rounded-[22px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-content/35 focus-visible:ring-offset-2 focus-visible:ring-offset-cream';
 
-const cardShell =
-  'relative flex h-full flex-col overflow-hidden rounded-[22px] border border-ink/[0.08] bg-card shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_28px_rgba(30,31,38,0.06)] transition-[transform,box-shadow,border-color] duration-500 ease-[cubic-bezier(0.25,0.1,0.25,1)] hover:-translate-y-1 hover:border-ink/[0.11] hover:shadow-[0_4px_12px_rgba(0,0,0,0.04),0_20px_48px_rgba(30,31,38,0.08)]';
+const cardShellBase =
+  'relative flex flex-col overflow-hidden rounded-[22px] border border-ink/[0.08] bg-card shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_28px_rgba(30,31,38,0.06)] transition-[transform,box-shadow,border-color] duration-500 ease-[cubic-bezier(0.25,0.1,0.25,1)] hover:-translate-y-1 hover:border-ink/[0.11] hover:shadow-[0_4px_12px_rgba(0,0,0,0.04),0_20px_48px_rgba(30,31,38,0.08)]';
+
+/** Medium / grid: fill grid cells. Large: content-height only — avoids empty flex gap above meta row. */
+const cardShell = `${cardShellBase} h-full`;
 
 export function PostCardHero({ post, size = 'large', priority = false }: PostCardHeroProps) {
   const isLarge = size === 'large';
@@ -26,15 +29,23 @@ export function PostCardHero({ post, size = 'large', priority = false }: PostCar
   const imageSizes = isLarge
     ? '(max-width: 1024px) 100vw, 66vw'
     : isGrid
-      ? '(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw'
+      ? '(max-width: 768px) 100vw, (max-width: 1400px) 50vw, 680px'
       : '(max-width: 1024px) 100vw, 33vw';
 
-  const imageHeight = isLarge ? 'h-[228px] md:h-[308px]' : isGrid ? 'h-[204px] md:h-[244px]' : 'h-[168px]';
+  /** Large hero: taller image region so covers read clearly; object-cover fills the frame. */
+  const imageAreaClass = isLarge
+    ? 'relative w-full overflow-hidden bg-warm h-[296px] sm:h-[336px] md:h-[392px] lg:h-[min(432px,41vw)]'
+    : isGrid
+      ? 'relative w-full overflow-hidden bg-warm h-[204px] md:h-[244px]'
+      : 'relative w-full overflow-hidden bg-warm h-[168px]';
 
   return (
-    <Link href={`/articles/${post.slug}`} className={`group block h-full ${focusRing}`}>
-      <article className={cardShell}>
-        <div className={`relative w-full overflow-hidden bg-warm ${imageHeight}`}>
+    <Link
+      href={`/articles/${post.slug}`}
+      className={`group block ${isLarge ? 'h-auto min-h-0' : 'h-full min-h-0'} ${focusRing}`}
+    >
+      <article className={isLarge ? cardShellBase : cardShell}>
+        <div className={imageAreaClass}>
           {post.cover_image ? (
             <Image
               src={post.cover_image}
@@ -61,7 +72,7 @@ export function PostCardHero({ post, size = 'large', priority = false }: PostCar
         </div>
 
         <div
-          className={`flex flex-1 flex-col border-t border-ink/[0.06] ${isLarge ? 'p-6 md:p-7' : isGrid ? 'p-6' : 'p-5'}`}
+          className={`flex flex-col border-t border-ink/[0.06] ${isLarge ? 'p-6 md:p-7' : isGrid ? 'flex-1 p-6' : 'flex-1 p-5'}`}
         >
           <p className={`${eyebrow} mb-2.5 md:mb-3`}>{post.category.name}</p>
 
@@ -81,7 +92,9 @@ export function PostCardHero({ post, size = 'large', priority = false }: PostCar
             <p className="mb-5 line-clamp-2 text-[14px] leading-[1.55] text-ink/[0.62] md:text-[15px]">{post.excerpt}</p>
           )}
 
-          <div className="mt-auto flex flex-wrap items-center justify-between gap-3 border-t border-ink/[0.07] pt-4">
+          <div
+            className={`flex flex-wrap items-center justify-between gap-3 border-t border-ink/[0.07] pt-4 ${isLarge ? 'mt-0' : 'mt-auto'}`}
+          >
             <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
               <time className={`${metaStyle} tabular-nums`} dateTime={post.published_at || post.created_at}>
                 {formatDate(post.published_at || post.created_at)}

@@ -109,7 +109,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
       />
       <Header />
       <main>
-        <SectionWrapper className="pt-10 md:pt-16">
+        <SectionWrapper wide className="pt-10 md:pt-16">
           {/* Breadcrumb */}
           <nav className="flex items-center gap-1.5 text-xs text-gray mb-8">
             <Link href="/" className="hover:text-ink transition-colors">Home</Link>
@@ -138,7 +138,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
 
           {/* Posts */}
           {categoryPosts.length > 0 ? (
-            <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 md:gap-7">
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 sm:gap-7 lg:gap-8">
               {categoryPosts.map((post) => (
                 <PostCard key={post.id} post={post} variant="category" />
               ))}
@@ -148,8 +148,10 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
               <div className="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center mx-auto mb-4">
                 <span className="text-accent-content text-lg font-bold">0</span>
               </div>
-              <p className="text-base font-semibold text-ink/50 mb-1">No articles yet</p>
-              <p className="text-sm text-gray">New content is published regularly.</p>
+              <p className="text-base font-semibold text-ink/50 mb-1">No published articles in this topic yet</p>
+              <p className="text-sm text-ink/45 max-w-sm mx-auto leading-relaxed">
+                We publish UK-focused reviews on a rolling basis — check back or browse other topics from the header.
+              </p>
             </div>
           )}
         </SectionWrapper>

@@ -42,7 +42,7 @@ export function LatestArticles({ posts, categories }: LatestArticlesProps) {
         onSortChange={setActiveSort}
       />
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:gap-7 lg:gap-8">
         {visible.map((post) => (
           <div key={post.id} className="h-full">
             <PostCardHero post={post} size="grid" />
