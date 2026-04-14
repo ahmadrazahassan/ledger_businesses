@@ -3,6 +3,7 @@ import { DM_Sans, DM_Mono, Inter } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { getSiteUrl, toAbsoluteUrl, INSTAGRAM_HREF } from "@/lib/site";
 import { ConditionalSiteAssistant } from "@/components/ai/conditional-site-assistant";
+import { GoogleAnalytics } from "@/components/analytics/google-analytics";
 import { CookieBanner } from "@/components/ui/cookie-banner";
 import { CookieBannerProvider } from "@/components/ui/cookie-banner-provider";
 import "./globals.css";
@@ -142,6 +143,7 @@ export default function RootLayout({
         />
         <CookieBannerProvider>
           {children}
+          <GoogleAnalytics />
           <ConditionalSiteAssistant />
           <CookieBanner />
         </CookieBannerProvider>

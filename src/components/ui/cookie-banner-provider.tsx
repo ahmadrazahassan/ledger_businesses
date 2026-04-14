@@ -4,11 +4,17 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState } 
 
 const STORAGE_KEY = 'cookie-consent';
 
+export type CookieConsentState = 'loading' | 'pending' | 'accepted' | 'declined';
+
 type CookieBannerContextValue = {
   /** True while the consent prompt should be shown (after client hydration). */
   showBanner: boolean;
   accept: () => void;
   decline: () => void;
+  /** Raw consent — used for analytics gating */
+  cookieConsent: CookieConsentState;
+  /** True only when user chose "Accept all" — GA4 may load */
+  analyticsEnabled: boolean;
 };
 
 const CookieBannerContext = createContext<CookieBannerContextValue | null>(null);
@@ -16,12 +22,24 @@ const CookieBannerContext = createContext<CookieBannerContextValue | null>(null)
 export function CookieBannerProvider({ children }: { children: React.ReactNode }) {
   const [showBanner, setShowBanner] = useState(false);
   const [hydrated, setHydrated] = useState(false);
+  const [cookieConsent, setCookieConsent] = useState<CookieConsentState>('loading');
 
   useEffect(() => {
     setHydrated(true);
     try {
-      if (!localStorage.getItem(STORAGE_KEY)) setShowBanner(true);
+      const v = localStorage.getItem(STORAGE_KEY);
+      if (v === 'accepted') {
+        setCookieConsent('accepted');
+        return;
+      }
+      if (v === 'declined') {
+        setCookieConsent('declined');
+        return;
+      }
+      setCookieConsent('pending');
+      setShowBanner(true);
     } catch {
+      setCookieConsent('pending');
       setShowBanner(true);
     }
   }, []);
@@ -32,6 +50,7 @@ export function CookieBannerProvider({ children }: { children: React.ReactNode }
     } catch {
       /* ignore */
     }
+    setCookieConsent('accepted');
     setShowBanner(false);
   }, []);
 
@@ -41,16 +60,21 @@ export function CookieBannerProvider({ children }: { children: React.ReactNode }
     } catch {
       /* ignore */
     }
+    setCookieConsent('declined');
     setShowBanner(false);
   }, []);
+
+  const analyticsEnabled = cookieConsent === 'accepted';
 
   const value = useMemo(
     () => ({
       showBanner: hydrated && showBanner,
       accept,
       decline,
+      cookieConsent,
+      analyticsEnabled,
     }),
-    [hydrated, showBanner, accept, decline]
+    [hydrated, showBanner, accept, decline, cookieConsent, analyticsEnabled]
   );
 
   return <CookieBannerContext.Provider value={value}>{children}</CookieBannerContext.Provider>;
@@ -59,7 +83,13 @@ export function CookieBannerProvider({ children }: { children: React.ReactNode }
 export function useCookieBanner(): CookieBannerContextValue {
   const ctx = useContext(CookieBannerContext);
   if (!ctx) {
-    return { showBanner: false, accept: () => {}, decline: () => {} };
+    return {
+      showBanner: false,
+      accept: () => {},
+      decline: () => {},
+      cookieConsent: 'loading',
+      analyticsEnabled: false,
+    };
   }
   return ctx;
 }
