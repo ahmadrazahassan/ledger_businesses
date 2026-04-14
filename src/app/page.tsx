@@ -63,18 +63,6 @@ export default async function HomePage() {
       <Header />
 
       <main>
-        <SectionWrapper wide className="pt-6 md:pt-8 pb-4 md:pb-6">
-          <div className="max-w-3xl">
-            <h1 className="text-[clamp(1.375rem,2.8vw,2.125rem)] font-heading font-bold leading-[1.15] tracking-[-0.03em] text-ink">
-              UK accounting and payroll software reviews for SMEs, sole traders, and advisers
-            </h1>
-            <p className="mt-3 max-w-2xl text-[14px] leading-relaxed text-ink/55 md:text-[15px] md:leading-relaxed">
-              Hands-on comparisons, Making Tax Digital and VAT context, and practical setup guidance — independent
-              editorial, with clear disclosures when we earn commission or display advertising revenue.
-            </p>
-          </div>
-        </SectionWrapper>
-
         {featured.length > 0 ? (
           <SectionWrapper wide className="pt-8 md:pt-12 pb-6 md:pb-8">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
