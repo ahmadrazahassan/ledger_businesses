@@ -53,7 +53,7 @@ const websiteStructuredData = {
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Ledger Businesses — UK Accounting Software Reviews & Guides",
+    default: "Ledger Businesses",
     template: "%s | Ledger Businesses",
   },
   description:
@@ -97,7 +97,7 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_GB",
     siteName: "Ledger Businesses",
-    title: "Ledger Businesses — UK Accounting Software Reviews & Guides",
+    title: "Ledger Businesses",
     description:
       "Independent UK accounting and payroll software reviews and compliance-focused guides for SMEs and advisers.",
     url: siteUrl,
@@ -106,7 +106,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     site: "@ledgerbusinesses",
-    title: "Ledger Businesses — UK Accounting Software Reviews",
+    title: "Ledger Businesses",
     description:
       "Independent UK accounting and payroll software reviews and compliance-focused guides for SMEs and advisers.",
     images: ["/og-default.png"],

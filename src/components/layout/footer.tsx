@@ -1,27 +1,32 @@
 import Link from 'next/link';
 import { LogoFull } from '@/components/brand/logo-full';
-import { IconMapPin } from '@/components/icons';
+import { IconMapPin, IconMail } from '@/components/icons';
 import { FooterNewsletter } from '@/components/layout/footer-newsletter';
 import { FooterNavLink } from '@/components/layout/footer-nav-link';
 import { getCategoryNavLinks } from '@/config/category-navigation';
+import { CONTACT_EMAIL, CONTACT_MAILTO } from '@/lib/site';
 
 const INSTAGRAM_HREF = 'https://www.instagram.com/fiza_rana_42';
 
-const companyLinks = [
-  { label: 'Home', href: '/' },
+/** Governance-style links (reference: About, standards, disclosure, legal, feeds). */
+const governanceLinks = [
   { label: 'About', href: '/about' },
+  { label: 'Editorial Standards', href: '/editorial-standards' },
+  { label: 'Affiliate Disclosure', href: '/affiliate-disclosure' },
   { label: 'Contact', href: '/contact' },
-  { label: 'Software reviews', href: '/category/comparisons' },
-] as const;
-
-const legalLinks = [
-  { label: 'Privacy policy', href: '/privacy' },
+  { label: 'Privacy Policy', href: '/privacy' },
   { label: 'Cookie notice', href: '/cookies' },
   { label: 'Terms of Service', href: '/terms' },
-  { label: 'Affiliate disclosure', href: '/affiliate-disclosure' },
+  { label: 'RSS Feed', href: '/rss.xml' },
+  { label: 'Sitemap', href: '/sitemap.xml' },
 ] as const;
 
 const categoryLinks = getCategoryNavLinks();
+
+const sectionLabelClass =
+  'mb-5 text-[10px] font-semibold uppercase tracking-[0.18em] text-white/45';
+
+const colHeadingLegacy = 'mb-5 text-[15px] font-bold tracking-[-0.02em] text-white';
 
 function SocialInstagram({ className }: { className?: string }) {
   return (
@@ -33,20 +38,20 @@ function SocialInstagram({ className }: { className?: string }) {
   );
 }
 
-const colHeading = 'mb-5 text-[15px] font-bold tracking-[-0.02em] text-white';
-
 function NavColumn({
   title,
   links,
   ariaLabel,
+  titleClassName,
 }: {
   title: string;
   links: readonly { label: string; href: string }[];
   ariaLabel: string;
+  titleClassName?: string;
 }) {
   return (
     <nav aria-label={ariaLabel} className="min-w-0">
-      <h3 className={colHeading}>{title}</h3>
+      <h3 className={titleClassName ?? colHeadingLegacy}>{title}</h3>
       <ul className="space-y-3">
         {links.map((link) => (
           <li key={link.href + link.label}>
@@ -64,9 +69,9 @@ export function Footer() {
   return (
     <footer className="w-full bg-[#121212] text-white">
       <div className="mx-auto max-w-[min(1480px,calc(100vw-2.5rem))] px-6 py-16 md:px-10 md:py-20 lg:px-12 lg:py-24">
-        <div className="flex flex-col gap-16 lg:flex-row lg:justify-between lg:gap-12 xl:gap-20">
-          {/* Left — editorial + newsletter (Investa-style) */}
-          <div className="max-w-lg shrink-0 lg:max-w-[440px]">
+        <div className="flex flex-col gap-16 lg:flex-row lg:justify-between lg:gap-12 xl:gap-16">
+          {/* Left — brand + newsletter */}
+          <div className="max-w-lg shrink-0 lg:max-w-[400px]">
             <Link href="/" className="inline-block">
               <LogoFull variant="light" />
             </Link>
@@ -78,15 +83,10 @@ export function Footer() {
             <p className="mt-5 text-[12px] leading-relaxed text-white/40">
               Your email is never sold. See our{' '}
               <Link href="/privacy" className="text-white/55 underline underline-offset-2 hover:text-white/80">
-                privacy policy
+                Privacy Policy
               </Link>
               .
             </p>
-
-            <div className="mt-6 flex items-start gap-2.5 text-[13px] leading-snug text-white/65">
-              <IconMapPin size={18} className="mt-0.5 shrink-0 text-white/45" aria-hidden />
-              <span>Birmingham, United Kingdom</span>
-            </div>
 
             <div className="mt-4">
               <a
@@ -105,13 +105,41 @@ export function Footer() {
             </div>
           </div>
 
-          {/* Right — Company · Legal · Categories */}
-          <div className="grid min-w-0 flex-1 grid-cols-1 gap-12 sm:grid-cols-2 sm:gap-x-10 lg:grid-cols-3 lg:gap-8 xl:gap-12">
-            <NavColumn title="Company" links={companyLinks} ariaLabel="Company" />
-            <NavColumn title="Legal" links={legalLinks} ariaLabel="Legal" />
-            <div className="sm:col-span-2 lg:col-span-1">
-              <NavColumn title="Categories" links={categoryLinks} ariaLabel="Categories" />
+          {/* Governance · Contact · Categories */}
+          <div className="grid min-w-0 flex-1 grid-cols-1 gap-12 sm:grid-cols-2 lg:grid-cols-3 lg:gap-10 xl:gap-12">
+            <NavColumn
+              title="Governance"
+              titleClassName={sectionLabelClass}
+              links={governanceLinks}
+              ariaLabel="Governance"
+            />
+
+            <div className="min-w-0">
+              <h3 className={sectionLabelClass}>Contact</h3>
+              <p className="mb-5 text-[15px] font-semibold tracking-tight text-white">Contact us</p>
+              <div className="space-y-4 text-[13px] leading-snug text-white/55">
+                <a
+                  href={CONTACT_MAILTO}
+                  className="group flex items-start gap-2.5 transition-colors hover:text-white"
+                >
+                  <IconMail size={18} className="mt-0.5 shrink-0 text-white/45 group-hover:text-white/70" aria-hidden />
+                  <span className="break-all underline-offset-2 group-hover:underline">{CONTACT_EMAIL}</span>
+                </a>
+                <div className="flex items-start gap-2.5">
+                  <IconMapPin size={18} className="mt-0.5 shrink-0 text-white/45" aria-hidden />
+                  <span>Birmingham, United Kingdom</span>
+                </div>
+              </div>
+              <p className="mt-6 max-w-sm text-[13px] leading-relaxed text-white/45">
+                Editorial corrections, compliance questions, or partnership enquiries — see our{' '}
+                <Link href="/contact" className="text-white/70 underline underline-offset-2 hover:text-white">
+                  contact page
+                </Link>{' '}
+                or email the desk.
+              </p>
             </div>
+
+            <NavColumn title="Categories" titleClassName={sectionLabelClass} links={categoryLinks} ariaLabel="Categories" />
           </div>
         </div>
 
