@@ -90,8 +90,8 @@ export default async function HomePage() {
                 </div>
                 <h3 className="text-[24px] font-heading font-bold text-ink mb-3">No articles yet</h3>
                 <p className="text-[15px] text-ink/50 leading-relaxed">
-                  UK accounting and payroll reviews are added here as they are published — methodology and disclosures apply
-                  to all coverage.
+                  UK accounting and payroll reviews are added here as they are published — editorial standards and
+                  disclosures apply to all coverage.
                 </p>
               </div>
             </div>
@@ -129,8 +129,8 @@ export default async function HomePage() {
               Latest articles
             </h2>
             <p className="text-[14px] text-ink/55 mb-8 max-w-2xl leading-relaxed">
-              Hands-on reviews and implementation guides for UK accounting, payroll, and tax software. Methodology and
-              affiliate relationships are documented on site; rankings reflect testing, not sponsorship.
+              Hands-on reviews and implementation guides for UK accounting, payroll, and tax software. Affiliate
+              relationships are documented on site; rankings reflect testing and criteria, not sponsorship.
             </p>
             <LatestArticles posts={latest} categories={categories} />
           </SectionWrapper>

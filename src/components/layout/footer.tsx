@@ -11,11 +11,12 @@ const companyLinks = [
   { label: 'Home', href: '/' },
   { label: 'About', href: '/about' },
   { label: 'Contact', href: '/contact' },
-  { label: 'Methodology', href: '/methodology' },
+  { label: 'Software reviews', href: '/category/comparisons' },
 ] as const;
 
 const legalLinks = [
   { label: 'Privacy policy', href: '/privacy' },
+  { label: 'Cookie notice', href: '/cookies' },
   { label: 'Terms of use', href: '/terms' },
   { label: 'Affiliate disclosure', href: '/affiliate-disclosure' },
 ] as const;

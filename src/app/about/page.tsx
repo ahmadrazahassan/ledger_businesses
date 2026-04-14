@@ -7,7 +7,7 @@ import { EditorialArrowLink } from '@/components/ui/editorial-cta';
 export const metadata: Metadata = {
   title: 'About',
   description:
-    'Ledger Businesses: independent UK editorial on accounting, payroll, and tax compliance software — methodology, editor credentials, and contact.',
+    'Ledger Businesses: independent UK editorial on accounting, payroll, and tax compliance software — editor credentials, disclosures, and contact.',
   alternates: {
     canonical: '/about',
   },
@@ -138,7 +138,7 @@ export default function AboutPage() {
                   {
                     n: '03',
                     t: 'Transparency',
-                    d: 'Affiliate relationships and methodology are documented; readers can see how we work.',
+                    d: 'Affiliate relationships and disclosures are published; readers can see how we work.',
                   },
                 ].map((item) => (
                   <li key={item.n} className="flex gap-6 md:gap-10">

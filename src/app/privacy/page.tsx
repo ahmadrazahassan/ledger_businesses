@@ -70,7 +70,12 @@ export default function PrivacyPage() {
                     <li>Device identifiers and characteristics</li>
                   </ul>
 
-                  <h3 className="text-xl font-heading font-bold text-ink mt-6 mb-3">1.3 Cookies and Tracking Technologies</h3>
+                  <h3
+                    id="cookies"
+                    className="scroll-mt-24 text-xl font-heading font-bold text-ink mt-6 mb-3"
+                  >
+                    1.3 Cookies and Tracking Technologies
+                  </h3>
                   <p>
                     We use cookies, web beacons, and similar tracking technologies to enhance your experience, analyze site traffic, and understand user behavior. You can control cookie preferences through your browser settings, though disabling cookies may limit certain website functionality.
                   </p>

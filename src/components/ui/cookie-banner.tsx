@@ -35,12 +35,19 @@ export function CookieBanner() {
               </h2>
               <p id="cookie-banner-desc" className="mt-0.5 text-[11px] leading-[1.45] text-ink/[0.58] sm:mt-0 sm:inline sm:text-[12px] sm:leading-snug">
                 <span className="sm:mr-1">
-                  We use cookies to run and improve the site. See our{' '}
+                  We use cookies to run and improve the site. See how we use them in our{' '}
                   <Link
-                    href="/privacy"
+                    href="/privacy#cookies"
                     className="font-medium text-accent-content underline decoration-accent-content/25 underline-offset-[2px] transition-colors hover:decoration-accent-content"
                   >
-                    Privacy Policy
+                    Privacy Policy (cookies)
+                  </Link>{' '}
+                  and our{' '}
+                  <Link
+                    href="/cookies"
+                    className="font-medium text-accent-content underline decoration-accent-content/25 underline-offset-[2px] transition-colors hover:decoration-accent-content"
+                  >
+                    Cookie notice
                   </Link>
                   .
                 </span>

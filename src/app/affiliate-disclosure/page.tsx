@@ -71,6 +71,10 @@ export default function AffiliateDisclosurePage() {
                   <p>
                     We carefully select affiliate partners based on their relevance to UK small businesses, accountants, and bookkeepers. We only promote products and services that we believe provide genuine value and adhere to UK financial regulations.
                   </p>
+                  <p className="rounded-xl border border-ink/[0.08] bg-ink/[0.03] p-4 text-ink/80">
+                    We may earn commission when you purchase Sage or other products via tracked links; Sage does not pay
+                    for editorial outcomes.
+                  </p>
                 </div>
               </section>
 

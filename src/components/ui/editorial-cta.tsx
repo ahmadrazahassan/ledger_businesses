@@ -31,7 +31,7 @@ const linkBase =
 
 const linkHover = 'hover:text-ink/80';
 
-/** Text link + arrow (About, Methodology CTAs) */
+/** Text link + arrow (editorial CTAs) */
 export function EditorialArrowLink({
   href,
   children,
