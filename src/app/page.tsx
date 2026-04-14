@@ -8,6 +8,7 @@ import { SponsorLeaderboard } from '@/components/sponsors/sponsor-leaderboard';
 import { LatestArticles } from '@/components/latest-articles';
 import { NewsletterCard } from '@/components/newsletter-card';
 import { CategorySpotlight } from '@/components/category-spotlight';
+import { ComparisonsShowcase } from '@/components/home/comparisons-showcase';
 import {
   getFeaturedPosts,
   getLatestPosts,
@@ -96,19 +97,6 @@ export default async function HomePage() {
           </SectionWrapper>
         )}
 
-        {/* Comparisons — directly under hero */}
-        {comparisonsPosts.length > 0 && (
-          <SectionWrapper>
-            <CategorySpotlight
-              title="Comparisons"
-              slug="comparisons"
-              posts={comparisonsPosts}
-              tagline="Compare"
-              description="Side-by-side software picks, head-to-head reviews, and buying guides for UK businesses."
-            />
-          </SectionWrapper>
-        )}
-
         {latest.length > 0 && (
           <SponsorLeaderboard posts={latest} eyebrow="Recently published" />
         )}
@@ -123,6 +111,13 @@ export default async function HomePage() {
               tagline="Accounting"
               description="Bookkeeping, cloud accounting, and record-keeping for UK businesses and advisers."
             />
+          </SectionWrapper>
+        )}
+
+        {/* Comparisons — flagship block after Accounting (head-to-head / buyer-guide focus) */}
+        {comparisonsPosts.length > 0 && (
+          <SectionWrapper>
+            <ComparisonsShowcase posts={comparisonsPosts} />
           </SectionWrapper>
         )}
 
