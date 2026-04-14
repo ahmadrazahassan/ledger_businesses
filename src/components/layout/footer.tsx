@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { LogoFull } from '@/components/brand/logo-full';
-import { IconMapPin, IconMail } from '@/components/icons';
+import { IconMail } from '@/components/icons';
 import { FooterNewsletter } from '@/components/layout/footer-newsletter';
 import { FooterNavLink } from '@/components/layout/footer-nav-link';
 import { getCategoryNavLinks } from '@/config/category-navigation';
@@ -86,15 +86,22 @@ export function Footer() {
               .
             </p>
 
-            <div className="mt-4">
+            <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2">
               <a
                 href={INSTAGRAM_HREF}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Ledger Businesses on Instagram"
-                className="inline-flex rounded-lg p-1.5 -m-1.5 text-white/75 transition-colors hover:bg-white/[0.06] hover:text-accent"
+                className="inline-flex shrink-0 rounded-lg p-1.5 -m-1.5 text-white/75 transition-colors hover:bg-white/[0.06] hover:text-accent"
               >
                 <SocialInstagram />
+              </a>
+              <a
+                href={CONTACT_MAILTO}
+                className="group inline-flex min-w-0 items-center gap-2 text-[13px] leading-snug text-white/60 transition-colors hover:text-white"
+              >
+                <IconMail size={17} className="shrink-0 text-white/45 group-hover:text-white/70" aria-hidden />
+                <span className="break-all underline-offset-2 group-hover:underline">{CONTACT_EMAIL}</span>
               </a>
             </div>
 
@@ -103,40 +110,14 @@ export function Footer() {
             </div>
           </div>
 
-          {/* Governance · Contact · Categories */}
-          <div className="grid min-w-0 flex-1 grid-cols-1 gap-12 sm:grid-cols-2 lg:grid-cols-3 lg:gap-10 xl:gap-12">
+          {/* Governance · Categories */}
+          <div className="grid min-w-0 flex-1 grid-cols-1 gap-12 sm:grid-cols-2 lg:gap-10 xl:gap-12">
             <NavColumn
               title="Governance"
               titleClassName={sectionLabelClass}
               links={governanceLinks}
               ariaLabel="Governance"
             />
-
-            <div className="min-w-0">
-              <h3 className={sectionLabelClass}>Contact</h3>
-              <p className="mb-5 text-[15px] font-semibold tracking-tight text-white">Contact us</p>
-              <div className="space-y-4 text-[13px] leading-snug text-white/55">
-                <a
-                  href={CONTACT_MAILTO}
-                  className="group flex items-start gap-2.5 transition-colors hover:text-white"
-                >
-                  <IconMail size={18} className="mt-0.5 shrink-0 text-white/45 group-hover:text-white/70" aria-hidden />
-                  <span className="break-all underline-offset-2 group-hover:underline">{CONTACT_EMAIL}</span>
-                </a>
-                <div className="flex items-start gap-2.5">
-                  <IconMapPin size={18} className="mt-0.5 shrink-0 text-white/45" aria-hidden />
-                  <span>Birmingham, United Kingdom</span>
-                </div>
-              </div>
-              <p className="mt-6 max-w-sm text-[13px] leading-relaxed text-white/45">
-                Editorial corrections, compliance questions, or partnership enquiries — see our{' '}
-                <Link href="/contact" className="text-white/70 underline underline-offset-2 hover:text-white">
-                  contact page
-                </Link>{' '}
-                or email the desk.
-              </p>
-            </div>
-
             <NavColumn title="Categories" titleClassName={sectionLabelClass} links={categoryLinks} ariaLabel="Categories" />
           </div>
         </div>
