@@ -2,11 +2,12 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
-import { SectionWrapper } from '@/components/layout/section-wrapper';
+import { EditorialArrowLink } from '@/components/ui/editorial-cta';
 
 export const metadata: Metadata = {
   title: 'How We Test UK Accounting Software | Ledger Businesses Methodology',
-  description: 'Learn about the rigorous editorial methodology Ledger Businesses uses to review and evaluate accounting, payroll, and tax software for UK SMEs.',
+  description:
+    'Editorial methodology for hands-on UK accounting, payroll, and tax software reviews — testing, compliance checks, and independence.',
   alternates: {
     canonical: '/methodology',
   },
@@ -16,90 +17,140 @@ export default function MethodologyPage() {
   return (
     <>
       <Header />
-      <main>
-        <SectionWrapper narrow className="pt-16 md:pt-24 pb-16">
-          {/* Header */}
-          <div className="mb-12">
-            <span className="inline-block px-3 py-1 bg-accent/15 text-accent-content text-xs font-bold rounded-full mb-6">
-              Editorial Process
-            </span>
-            <h1 className="text-4xl md:text-5xl font-heading font-bold text-ink leading-tight mb-4">
-              How We Test & Review Software
-            </h1>
-            <p className="text-lg text-ink/60">
-              Our strict methodology ensures unbiased, hands-on evaluations of UK accounting, payroll, and finance software.
-            </p>
-          </div>
+      <main className="bg-white">
+        <div className="mx-auto max-w-[1240px] px-5 py-14 md:px-10 md:py-20 lg:px-14 lg:py-24">
+          <div className="rounded-2xl border border-ink/12 px-6 py-12 md:px-10 md:py-16 lg:px-14 lg:py-20">
+            <header className="max-w-3xl">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-ink/40">Editorial process</p>
+              <h1 className="mt-5 text-[clamp(2rem,4.5vw,3.25rem)] font-heading font-bold leading-[1.05] tracking-[-0.04em] text-ink">
+                How we test and review software
+              </h1>
+              <p className="mt-6 text-[17px] leading-[1.65] text-ink/55 md:text-[18px]">
+                Hands-on evaluations of UK accounting, payroll, and finance tools — structured around real workflows,
+                HMRC-facing requirements, and transparent independence from commercial relationships.
+              </p>
+            </header>
 
-          {/* Introduction */}
-          <div className="mb-12 p-6 rounded-2xl bg-accent/[0.06] border border-accent/10">
-            <p className="text-ink/70 leading-relaxed">
-              At Ledger Businesses, we believe UK small businesses and accounting professionals deserve honest, practical, and rigorously tested software reviews. We do not accept paid placements, and our editorial team maintains complete independence from our affiliate partnerships.
-            </p>
-          </div>
-
-          {/* Content */}
-          <div className="prose prose-lg max-w-none">
-            <div className="space-y-12">
-              {/* Section 1 */}
-              <section>
-                <h2 className="text-2xl md:text-3xl font-heading font-bold text-ink mb-4">1. Hands-on Testing</h2>
-                <div className="space-y-4 text-ink/70 leading-relaxed">
-                  <p>
-                    We never base our reviews purely on marketing materials. For every accounting and payroll platform we review (e.g., Sage, Xero, QuickBooks), we sign up for an active account and run it through a standard set of UK business scenarios.
-                  </p>
-                  <ul className="list-disc pl-6 space-y-2">
-                    <li><strong>Bank Feeds:</strong> We connect test bank accounts to evaluate sync reliability and transaction reconciliation speed.</li>
-                    <li><strong>Invoicing:</strong> We create, customize, and send invoices, tracking how easy it is to manage overdue payments and accept online card payments.</li>
-                    <li><strong>Payroll (RTI):</strong> We run dummy payrolls to verify compliance with HMRC's Real Time Information (RTI) requirements, including pension auto-enrolment features.</li>
-                    <li><strong>VAT & MTD:</strong> We test Making Tax Digital (MTD) readiness by preparing mock VAT returns and checking the submission workflow.</li>
-                  </ul>
-                </div>
-              </section>
-
-              {/* Section 2 */}
-              <section>
-                <h2 className="text-2xl md:text-3xl font-heading font-bold text-ink mb-4">2. UK Compliance & Localization</h2>
-                <div className="space-y-4 text-ink/70 leading-relaxed">
-                  <p>
-                    Software built for the US market often fails UK businesses. We specifically evaluate platforms on their adherence to UK financial regulations and terminology.
-                  </p>
-                  <ul className="list-disc pl-6 space-y-2">
-                    <li>Does it handle UK VAT schemes (Standard, Flat Rate, Cash Accounting)?</li>
-                    <li>Is it recognized by HMRC for MTD for VAT and MTD for ITSA?</li>
-                    <li>Does it correctly support Construction Industry Scheme (CIS) deductions?</li>
-                    <li>Are reports formatted according to UK accounting standards (e.g., Profit & Loss, Balance Sheet)?</li>
-                  </ul>
-                </div>
-              </section>
-
-              {/* Section 3 */}
-              <section>
-                <h2 className="text-2xl md:text-3xl font-heading font-bold text-ink mb-4">3. Value for Money</h2>
-                <div className="space-y-4 text-ink/70 leading-relaxed">
-                  <p>
-                    We analyze pricing structures to ensure transparency. We look beyond the "starter" tiers to calculate the true cost of ownership as a business scales.
-                  </p>
-                  <ul className="list-disc pl-6 space-y-2">
-                    <li>Are there hidden fees for adding extra users or accountants?</li>
-                    <li>Is payroll an expensive add-on, or included in the base price?</li>
-                    <li>How do the features in each tier compare to direct competitors?</li>
-                  </ul>
-                </div>
-              </section>
-
-              {/* Section 4 */}
-              <section>
-                <h2 className="text-2xl md:text-3xl font-heading font-bold text-ink mb-4">4. Editorial Independence</h2>
-                <div className="space-y-4 text-ink/70 leading-relaxed">
-                  <p>
-                    Our reviews are completely independent. While we may earn a commission if you purchase through our links (see our <Link href="/affiliate-disclosure" className="text-accent-content underline">Affiliate Disclosure</Link>), our recommendations are based solely on our testing data. We actively highlight the drawbacks and limitations of every software we review to help you make an informed decision.
-                  </p>
-                </div>
-              </section>
+            <div className="mt-12 border border-ink/10 bg-ink/[0.02] px-6 py-8 md:px-8 md:py-9">
+              <p className="text-[15px] leading-[1.75] text-ink/60 md:text-[16px]">
+                We do not accept paid placements in editorial rankings. Affiliate partnerships are disclosed; they do not
+                determine scores or verdicts. See our{' '}
+                <Link
+                  href="/affiliate-disclosure"
+                  className="border-b border-ink/25 pb-px font-medium text-ink transition-colors hover:border-ink"
+                >
+                  Affiliate disclosure
+                </Link>
+                .
+              </p>
             </div>
+
+            <div className="mt-14 space-y-0 border-t border-ink/10 md:mt-16">
+              {[
+                {
+                  n: '01',
+                  title: 'Hands-on testing',
+                  body: (
+                    <>
+                      <p>
+                        We do not rely on marketing copy alone. For platforms we cover (including major UK names such as
+                        Sage, Xero, and QuickBooks), we use live or trial accounts and run a consistent set of UK business
+                        scenarios.
+                      </p>
+                      <ul className="mt-4 list-none space-y-3 border-l border-ink/15 pl-5 text-[15px] leading-relaxed text-ink/55">
+                        <li>
+                          <span className="font-medium text-ink">Bank feeds:</span> connection stability and reconciliation
+                          behaviour.
+                        </li>
+                        <li>
+                          <span className="font-medium text-ink">Invoicing:</span> creation, chasing, and payment flows.
+                        </li>
+                        <li>
+                          <span className="font-medium text-ink">Payroll (RTI):</span> dummy runs against HMRC RTI and
+                          pensions expectations.
+                        </li>
+                        <li>
+                          <span className="font-medium text-ink">VAT &amp; MTD:</span> return preparation and submission
+                          paths where MTD applies.
+                        </li>
+                      </ul>
+                    </>
+                  ),
+                },
+                {
+                  n: '02',
+                  title: 'UK compliance and localization',
+                  body: (
+                    <>
+                      <p>
+                        US-first products often miss UK requirements. We score against UK tax logic, terminology, and
+                        reporting norms.
+                      </p>
+                      <ul className="mt-4 list-none space-y-3 border-l border-ink/15 pl-5 text-[15px] leading-relaxed text-ink/55">
+                        <li>VAT schemes (e.g. Standard, Flat Rate, Cash Accounting) where relevant.</li>
+                        <li>HMRC recognition for MTD for VAT and, where applicable, ITSA readiness.</li>
+                        <li>CIS and other sector-specific flows when the product targets those users.</li>
+                        <li>UK-style management and statutory reports.</li>
+                      </ul>
+                    </>
+                  ),
+                },
+                {
+                  n: '03',
+                  title: 'Value and total cost',
+                  body: (
+                    <>
+                      <p>
+                        We compare tiers and add-ons so the true cost at realistic headcount and feature use is visible —
+                        not only entry-level pricing.
+                      </p>
+                      <ul className="mt-4 list-none space-y-3 border-l border-ink/15 pl-5 text-[15px] leading-relaxed text-ink/55">
+                        <li>User, accountant, and payroll seat economics.</li>
+                        <li>What is bundled vs billed separately at scale.</li>
+                        <li>Feature parity across plans versus named competitors where we run comparisons.</li>
+                      </ul>
+                    </>
+                  ),
+                },
+                {
+                  n: '04',
+                  title: 'Editorial independence',
+                  body: (
+                    <p>
+                      Recommendations follow from testing evidence and documented criteria. We surface limitations and
+                      trade-offs explicitly so readers can decide fit — not only headline strengths.
+                    </p>
+                  ),
+                },
+              ].map((section) => (
+                <section key={section.n} className="border-b border-ink/10 py-12 md:py-14">
+                  <div className="grid gap-8 md:grid-cols-12 md:gap-10 lg:gap-14">
+                    <div className="md:col-span-4">
+                      <p className="text-[11px] font-semibold tabular-nums text-ink/35">{section.n}</p>
+                      <h2 className="mt-3 text-xl font-heading font-bold tracking-tight text-ink md:text-2xl">
+                        {section.title}
+                      </h2>
+                    </div>
+                    <div className="space-y-4 text-[16px] leading-[1.75] text-ink/60 md:col-span-8 md:text-[17px]">
+                      {section.body}
+                    </div>
+                  </div>
+                </section>
+              ))}
+            </div>
+
+            <footer className="mt-14 border-t border-ink/10 pt-12 md:mt-16 md:pt-16">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-ink/40">Questions</p>
+              <p className="mt-4 max-w-xl text-[16px] leading-relaxed text-ink/55">
+                For methodology detail, corrections, or partnership standards — use the contact form with the subject
+                line that best matches your enquiry.
+              </p>
+              <EditorialArrowLink href="/contact" className="mt-10">
+                Contact the editor
+              </EditorialArrowLink>
+            </footer>
           </div>
-        </SectionWrapper>
+        </div>
       </main>
       <Footer />
     </>

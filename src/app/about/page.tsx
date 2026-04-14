@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { CONTACT_EMAIL, CONTACT_MAILTO } from '@/lib/site';
+import { EditorialArrowLink } from '@/components/ui/editorial-cta';
 
 export const metadata: Metadata = {
   title: 'About',
@@ -158,13 +158,9 @@ export default function AboutPage() {
                 Editorial collaboration, factual corrections, or partnership standards — use the contact form and choose
                 the subject line that fits.
               </p>
-              <Link
-                href="/contact"
-                className="mt-8 inline-flex items-center gap-2 text-[14px] font-semibold text-ink transition-colors hover:text-ink/70"
-              >
+              <EditorialArrowLink href="/contact" className="mt-10">
                 Contact the editor
-                <span aria-hidden>—→</span>
-              </Link>
+              </EditorialArrowLink>
             </footer>
           </div>
         </div>

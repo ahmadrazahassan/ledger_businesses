@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { CONTACT_EMAIL, CONTACT_MAILTO, SITE_DOMAIN } from '@/lib/site';
+import { EditorialSubmitButton } from '@/components/ui/editorial-cta';
 
 const INSTAGRAM_HREF = 'https://www.instagram.com/fiza_rana_42';
 const LINKEDIN_HREF = 'https://linkedin.com/in/fiza-rana';
@@ -63,7 +64,7 @@ export default function ContactPage() {
                     setSubmitted(false);
                     setFormState({ name: '', company: '', email: '', subject: '', message: '' });
                   }}
-                  className="mt-10 text-[13px] font-semibold text-ink/50 underline-offset-4 transition-colors hover:text-ink"
+                  className="mt-12 inline-flex items-center gap-3 border border-ink/15 bg-white px-8 py-3.5 text-[11px] font-semibold uppercase tracking-[0.2em] text-ink transition-all duration-300 hover:border-ink/30 hover:bg-ink/[0.02]"
                 >
                   Send another message
                 </button>
@@ -205,16 +206,8 @@ export default function ContactPage() {
                       />
                     </div>
 
-                    <div className="pt-2">
-                      <button
-                        type="submit"
-                        className="group inline-flex items-center gap-2 text-[14px] font-semibold text-ink transition-colors hover:text-ink/70"
-                      >
-                        Submit
-                        <span className="translate-x-0 transition-transform group-hover:translate-x-1" aria-hidden>
-                          —→
-                        </span>
-                      </button>
+                    <div className="pt-4">
+                      <EditorialSubmitButton>Submit</EditorialSubmitButton>
                     </div>
                   </form>
                 </div>
