@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
+import { ArticleBody } from '@/components/article-body';
 import { SectionWrapper } from '@/components/layout/section-wrapper';
 import { NewsletterCard } from '@/components/newsletter-card';
 import { IconClock, IconCalendar, IconChevronRight } from '@/components/icons';
@@ -286,18 +287,19 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 
           {/* Article body */}
           <SectionWrapper narrow noPadding className="py-12">
-            <div className="prose prose-lg max-w-none text-ink/85 leading-[1.85] 
-              prose-headings:text-ink prose-headings:font-heading prose-headings:mb-4 prose-headings:mt-8
-              prose-p:mb-6
-              prose-a:text-accent-content prose-a:no-underline hover:prose-a:underline 
-              prose-strong:text-ink prose-strong:font-semibold
-              prose-blockquote:border-l-4 prose-blockquote:border-accent prose-blockquote:pl-6 prose-blockquote:text-ink/60 prose-blockquote:italic
-              prose-ul:my-6 prose-ol:my-6
-              prose-li:mb-2
-              prose-img:rounded-xl prose-img:shadow-md
-              prose-code:text-accent-content prose-code:bg-accent/10 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded">
-              <div dangerouslySetInnerHTML={{ __html: post.content_html }} />
-            </div>
+            <ArticleBody
+              html={post.content_html}
+              className="prose prose-lg max-w-none text-ink/85 leading-[1.85] 
+                prose-headings:text-ink prose-headings:font-heading prose-headings:mb-4 prose-headings:mt-8
+                prose-p:mb-6
+                prose-a:text-[#05ce78] prose-a:no-underline
+                prose-strong:text-ink prose-strong:font-semibold
+                prose-blockquote:border-l-4 prose-blockquote:border-accent prose-blockquote:pl-6 prose-blockquote:text-ink/60 prose-blockquote:italic
+                prose-ul:my-6 prose-ol:my-6
+                prose-li:mb-2
+                prose-img:rounded-xl prose-img:shadow-md
+                prose-code:text-accent-content prose-code:bg-accent/10 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded"
+            />
           </SectionWrapper>
 
           {/* Tags */}

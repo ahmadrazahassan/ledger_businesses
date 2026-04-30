@@ -29,10 +29,14 @@ export function RichEditor({
   const [imageUrl, setImageUrl] = useState('');
   const [blockType, setBlockType] = useState('p');
   const [pointerMenu, setPointerMenu] = useState<PointerMenu | null>(null);
+  const [showLinkPanel, setShowLinkPanel] = useState(false);
+  const [linkUrl, setLinkUrl] = useState('');
   const editorRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const selectionRef = useRef<Range | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
+  const linkPanelRef = useRef<HTMLDivElement>(null);
+  const linkInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     document.execCommand('styleWithCSS', false, 'true');
@@ -62,6 +66,30 @@ export function RichEditor({
       document.removeEventListener('keydown', onKey);
     };
   }, [pointerMenu]);
+
+  useEffect(() => {
+    if (!showLinkPanel) return;
+    const close = (e: MouseEvent) => {
+      if (linkPanelRef.current?.contains(e.target as Node)) return;
+      setShowLinkPanel(false);
+      setLinkUrl('');
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') { setShowLinkPanel(false); setLinkUrl(''); }
+    };
+    document.addEventListener('mousedown', close);
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('mousedown', close);
+      document.removeEventListener('keydown', onKey);
+    };
+  }, [showLinkPanel]);
+
+  useEffect(() => {
+    if (showLinkPanel && linkInputRef.current) {
+      linkInputRef.current.focus();
+    }
+  }, [showLinkPanel]);
 
   const syncContent = useCallback(() => {
     if (editorRef.current) {
@@ -266,6 +294,31 @@ export function RichEditor({
     setPointerMenu(null);
   };
 
+  const insertLink = useCallback((url: string) => {
+    if (!url.trim()) return;
+    const safeUrl = /^https?:\/\//i.test(url.trim()) ? url.trim() : `https://${url.trim()}`;
+    focusAndRestoreSelection();
+    document.execCommand('createLink', false, safeUrl);
+    if (editorRef.current) {
+      const anchors = editorRef.current.querySelectorAll(`a[href="${safeUrl}"]`);
+      anchors.forEach((a) => {
+        a.setAttribute('target', '_blank');
+        a.setAttribute('rel', 'noopener noreferrer');
+        (a as HTMLElement).style.color = '#05ce78';
+      });
+    }
+    saveSelection();
+    syncContent();
+    setLinkUrl('');
+    setShowLinkPanel(false);
+  }, [focusAndRestoreSelection, saveSelection, syncContent]);
+
+  const openLinkPanel = useCallback(() => {
+    saveSelection();
+    setShowLinkPanel(true);
+    setLinkUrl('');
+  }, [saveSelection]);
+
   const applyBlockType = (value: string) => {
     setBlockType(value);
     runCommand('formatBlock', value);
@@ -340,10 +393,7 @@ export function RichEditor({
         type="button"
         onMouseDown={(e) => e.preventDefault()}
         onClick={() => {
-          const enteredUrl = window.prompt('Enter link URL');
-          if (!enteredUrl) return;
-          const safeUrl = /^https?:\/\//i.test(enteredUrl) ? enteredUrl : `https://${enteredUrl}`;
-          runCommand('createLink', safeUrl);
+          openLinkPanel();
           if (closePointerMenu) setPointerMenu(null);
         }}
         className={dockButtonClass}
@@ -502,15 +552,49 @@ export function RichEditor({
             type="button"
             className={menuBtnClass}
             onClick={() => {
-              const enteredUrl = window.prompt('Link URL');
-              if (!enteredUrl) return;
-              const safeUrl = /^https?:\/\//i.test(enteredUrl) ? enteredUrl : `https://${enteredUrl}`;
-              runCommand('createLink', safeUrl);
+              openLinkPanel();
               setPointerMenu(null);
             }}
           >
             Add link
           </button>
+        </div>
+      )}
+
+      {showLinkPanel && activeTab === 'write' && (
+        <div
+          ref={linkPanelRef}
+          className="fixed bottom-0 left-0 right-0 z-[95] border-t border-ink/[0.08] bg-white shadow-[0_-8px_32px_rgba(0,0,0,0.08)]"
+          onMouseDown={(e) => e.preventDefault()}
+        >
+          <div className="mx-auto max-w-4xl px-4 py-3">
+            <p className="text-[11px] font-bold text-ink/40 uppercase tracking-[0.08em] mb-2">Insert link</p>
+            <div className="flex items-center gap-2">
+              <input
+                ref={linkInputRef}
+                value={linkUrl}
+                onChange={(e) => setLinkUrl(e.target.value)}
+                onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); insertLink(linkUrl); } }}
+                placeholder="Paste or type a URL"
+                className="h-10 flex-1 rounded-xl border border-ink/[0.1] bg-ink/[0.02] px-4 text-[13px] text-ink placeholder:text-ink/30 focus:border-ink/20 focus:bg-white focus:outline-none focus:ring-2 focus:ring-ink/[0.04] transition-all"
+              />
+              <button
+                type="button"
+                onClick={() => insertLink(linkUrl)}
+                disabled={!linkUrl.trim()}
+                className="h-10 shrink-0 rounded-xl bg-ink px-5 text-[12px] font-semibold text-white hover:opacity-90 transition-opacity disabled:opacity-30 disabled:cursor-not-allowed"
+              >
+                Apply
+              </button>
+              <button
+                type="button"
+                onClick={() => { setShowLinkPanel(false); setLinkUrl(''); }}
+                className="h-10 shrink-0 rounded-xl border border-ink/[0.08] bg-white px-4 text-[12px] font-semibold text-ink/50 hover:text-ink hover:border-ink/15 transition-all"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
         </div>
       )}
 
@@ -573,6 +657,17 @@ export function RichEditor({
           content: attr(data-placeholder);
           color: rgba(30, 31, 38, 0.3);
           pointer-events: none;
+        }
+
+        [contenteditable] a {
+          color: #05ce78;
+          text-decoration: none;
+          border-bottom: 1px solid rgba(5, 206, 120, 0.3);
+          transition: border-color 0.15s;
+        }
+
+        [contenteditable] a:hover {
+          border-bottom-color: #05ce78;
         }
 
         .preview-content {

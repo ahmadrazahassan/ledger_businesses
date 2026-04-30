@@ -109,6 +109,8 @@ function EditPostEditor({ post }: { post: any }) {
   const [showEditorImageUrl, setShowEditorImageUrl] = useState(false);
   const [editorImageUrl, setEditorImageUrl] = useState('');
   const [blockType, setBlockType] = useState('p');
+  const [showLinkPanel, setShowLinkPanel] = useState(false);
+  const [linkUrl, setLinkUrl] = useState('');
 
   const editorRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -116,6 +118,8 @@ function EditPostEditor({ post }: { post: any }) {
   const editorInitialized = useRef(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const selectionRef = useRef<Range | null>(null);
+  const linkPanelRef = useRef<HTMLDivElement>(null);
+  const linkInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     document.execCommand('styleWithCSS', false, 'true');
@@ -219,6 +223,30 @@ function EditPostEditor({ post }: { post: any }) {
       document.removeEventListener('keydown', onKey);
     };
   }, [pointerMenu]);
+
+  useEffect(() => {
+    if (!showLinkPanel) return;
+    const close = (e: MouseEvent) => {
+      if (linkPanelRef.current?.contains(e.target as Node)) return;
+      setShowLinkPanel(false);
+      setLinkUrl('');
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') { setShowLinkPanel(false); setLinkUrl(''); }
+    };
+    document.addEventListener('mousedown', close);
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('mousedown', close);
+      document.removeEventListener('keydown', onKey);
+    };
+  }, [showLinkPanel]);
+
+  useEffect(() => {
+    if (showLinkPanel && linkInputRef.current) {
+      linkInputRef.current.focus();
+    }
+  }, [showLinkPanel]);
 
   const insertImageAtCursor = useCallback((src: string) => {
     const editor = editorRef.current;
@@ -336,6 +364,31 @@ function EditPostEditor({ post }: { post: any }) {
 
   const handleEditorInput = () => syncEditorContent();
   const handleHtmlChange = (value: string) => setContentHtml(value);
+
+  const insertLink = useCallback((url: string) => {
+    if (!url.trim()) return;
+    const safeUrl = /^https?:\/\//i.test(url.trim()) ? url.trim() : `https://${url.trim()}`;
+    focusAndRestoreSelection();
+    document.execCommand('createLink', false, safeUrl);
+    if (editorRef.current) {
+      const anchors = editorRef.current.querySelectorAll(`a[href="${safeUrl}"]`);
+      anchors.forEach((a) => {
+        a.setAttribute('target', '_blank');
+        a.setAttribute('rel', 'noopener noreferrer');
+        (a as HTMLElement).style.color = '#05ce78';
+      });
+    }
+    saveSelection();
+    syncEditorContent();
+    setLinkUrl('');
+    setShowLinkPanel(false);
+  }, [focusAndRestoreSelection, saveSelection, syncEditorContent]);
+
+  const openLinkPanel = useCallback(() => {
+    saveSelection();
+    setShowLinkPanel(true);
+    setLinkUrl('');
+  }, [saveSelection]);
 
   const applyBlockType = (value: string) => {
     setBlockType(value);
@@ -736,15 +789,49 @@ function EditPostEditor({ post }: { post: any }) {
                 type="button"
                 className="flex w-full px-3 py-2 text-left text-[13px] text-ink rounded-lg hover:bg-ink/[0.06]"
                 onClick={() => {
-                  const enteredUrl = window.prompt('Link URL');
-                  if (!enteredUrl) return;
-                  const safeUrl = /^https?:\/\//i.test(enteredUrl) ? enteredUrl : `https://${enteredUrl}`;
-                  runCommand('createLink', safeUrl);
+                  openLinkPanel();
                   setPointerMenu(null);
                 }}
               >
                 Add link
               </button>
+            </div>
+          )}
+
+          {showLinkPanel && activeTab === 'write' && (
+            <div
+              ref={linkPanelRef}
+              className="fixed bottom-0 left-0 right-0 z-[95] border-t border-ink/[0.08] bg-white shadow-[0_-8px_32px_rgba(0,0,0,0.08)]"
+              onMouseDown={(e) => e.preventDefault()}
+            >
+              <div className="mx-auto max-w-4xl px-4 py-3">
+                <p className="text-[11px] font-bold text-ink/40 uppercase tracking-[0.08em] mb-2">Insert link</p>
+                <div className="flex items-center gap-2">
+                  <input
+                    ref={linkInputRef}
+                    value={linkUrl}
+                    onChange={(e) => setLinkUrl(e.target.value)}
+                    onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); insertLink(linkUrl); } }}
+                    placeholder="Paste or type a URL"
+                    className="h-10 flex-1 rounded-xl border border-ink/[0.1] bg-ink/[0.02] px-4 text-[13px] text-ink placeholder:text-ink/30 focus:border-ink/20 focus:bg-white focus:outline-none focus:ring-2 focus:ring-ink/[0.04] transition-all"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => insertLink(linkUrl)}
+                    disabled={!linkUrl.trim()}
+                    className="h-10 shrink-0 rounded-xl bg-ink px-5 text-[12px] font-semibold text-white hover:opacity-90 transition-opacity disabled:opacity-30 disabled:cursor-not-allowed"
+                  >
+                    Apply
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => { setShowLinkPanel(false); setLinkUrl(''); }}
+                    className="h-10 shrink-0 rounded-xl border border-ink/[0.08] bg-white px-4 text-[12px] font-semibold text-ink/50 hover:text-ink hover:border-ink/15 transition-all"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
             </div>
           )}
 
@@ -795,6 +882,12 @@ function EditPostEditor({ post }: { post: any }) {
                   </button>
                   <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => runCommand('insertUnorderedList')} className="flex h-11 min-w-[3.5rem] shrink-0 flex-col items-center justify-center rounded-xl border border-ink/[0.08] bg-white px-2 text-[10px] font-medium text-ink/65 hover:border-ink/20 hover:text-ink">
                     • List
+                  </button>
+                  <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => openLinkPanel()} className="flex h-11 min-w-[3.5rem] shrink-0 flex-col items-center justify-center rounded-xl border border-ink/[0.08] bg-white px-2 text-[10px] font-medium text-ink/65 hover:border-ink/20 hover:text-ink">
+                    Link
+                  </button>
+                  <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => runCommand('unlink')} className="flex h-11 min-w-[3.5rem] shrink-0 flex-col items-center justify-center rounded-xl border border-ink/[0.08] bg-white px-2 text-[10px] font-medium text-ink/65 hover:border-ink/20 hover:text-ink">
+                    Unlink
                   </button>
                   <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => runCommand('insertOrderedList')} className="flex h-11 min-w-[3.5rem] shrink-0 flex-col items-center justify-center rounded-xl border border-ink/[0.08] bg-white px-2 text-[10px] font-medium text-ink/65 hover:border-ink/20 hover:text-ink">
                     1. List

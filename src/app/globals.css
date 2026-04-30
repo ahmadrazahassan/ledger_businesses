@@ -138,3 +138,28 @@
   color: rgba(30, 31, 38, 0.2);
   pointer-events: none;
 }
+
+/* ContentEditable link styling (admin editors) */
+[contenteditable] a {
+  color: #05ce78;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(5, 206, 120, 0.3);
+  transition: border-color 0.15s;
+}
+
+[contenteditable] a:hover {
+  border-bottom-color: #05ce78;
+}
+
+/* Article body links — green accent, open in new tab visual cue */
+.prose a {
+  color: #05ce78;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(5, 206, 120, 0.25);
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.prose a:hover {
+  color: #04b86b;
+  border-bottom-color: #04b86b;
+}
